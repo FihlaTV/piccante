@@ -29,7 +29,7 @@ std::string GLSL_SIMPLE_EXPOSURE_GAMMA()
 {
     std::string ret;
 
-    ret = GLW_STRINGFY(
+    ret = MAKE_STRING(
     vec3 SimpleTMO(vec3 col, float exposure, float gamma) {
         pow(color.xyz * exposure, vec3(gamma))
     }
@@ -46,7 +46,7 @@ std::string GLSL_DRAGO_TMO()
 {
     std::string ret;
 
-    ret = GLW_STRINGFY(
+    ret = MAKE_STRING(
               const vec3 LUM_XYZ =   vec3(0.213, 0.715,  0.072);
               //maxL: maximum luminance
               //c1: log(Drago_b)/log(0.5)

@@ -118,7 +118,7 @@ FilterGLBilateral2DF::FilterGLBilateral2DF(float sigma_s,
 
 void FilterGLBilateral2DF::FragmentShader()
 {
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
                           uniform sampler2D u_tex;
                           uniform float     sigmas2;

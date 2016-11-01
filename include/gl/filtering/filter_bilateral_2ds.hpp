@@ -207,7 +207,7 @@ FilterGLBilateral2DS::~FilterGLBilateral2DS()
 
 void FilterGLBilateral2DS::FragmentShader()
 {
-    std::string fragment_source_classic = GLW_STRINGFY
+    std::string fragment_source_classic = MAKE_STRING
                                           (
                                                   uniform sampler2D  u_tex;
                                                   uniform isampler2D u_poisson;
@@ -247,7 +247,7 @@ void FilterGLBilateral2DS::FragmentShader()
     }
                                           );
 
-    std::string fragment_source_cross = GLW_STRINGFY
+    std::string fragment_source_cross = MAKE_STRING
                                         (
                                             uniform sampler2D	u_tex;
                                             uniform sampler2D	u_edge;
@@ -288,7 +288,7 @@ void FilterGLBilateral2DS::FragmentShader()
     }
                                         );
 
-    std::string fragment_source_brush = GLW_STRINGFY
+    std::string fragment_source_brush = MAKE_STRING
                                         (
                                             uniform sampler2D  u_tex;
                                             uniform isampler2D u_poisson;

@@ -91,7 +91,7 @@ void FilterGLWarp2D::Update(Matrix3x3 h, bool bSameSize = false, bool bCentroid 
 void FilterGLWarp2D::InitShaders()
 {
     //fragment program
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
     uniform sampler2D u_tex; \n
     uniform mat3 h_inv; \n

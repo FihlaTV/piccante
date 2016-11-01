@@ -86,7 +86,7 @@ FilterGLSigmoidTMO::FilterGLSigmoidTMO(float alpha, bool bLocal,
 
 void FilterGLSigmoidTMO::FragmentShader()
 {
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
                           uniform sampler2D	u_tex; \n
                           uniform sampler2D	u_tex_adapt; \n

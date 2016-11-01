@@ -202,7 +202,7 @@ public:
      */
     static std::string getVertexProgramV3()
     {
-        std::string vertex_program = GLW_STRINGFY
+        std::string vertex_program = MAKE_STRING
                                      (
                                          in vec3 a_position;
 
@@ -220,7 +220,7 @@ public:
      */
     static std::string getVertexProgramV2()
     {
-        std::string vertex_program = GLW_STRINGFY
+        std::string vertex_program = MAKE_STRING
                                      (
                                          in vec2 a_position;
 
@@ -239,7 +239,7 @@ public:
      */
     static std::string getVertexProgramWithTexCoordinates()
     {
-        std::string vertex_program = GLW_STRINGFY
+        std::string vertex_program = MAKE_STRING
                                      (
                                          in vec2 a_position;
                                          in vec2 a_tex_coord;
@@ -261,7 +261,7 @@ public:
     static std::string getFragmentProgram()
     {
 
-        std::string fragment_program = GLW_STRINGFY
+        std::string fragment_program = MAKE_STRING
                                       (
                                           uniform sampler2D u_tex;
                                           out     vec4      f_color;
@@ -282,7 +282,7 @@ public:
     static std::string getFragmentProgramForView()
     {
 
-        std::string fragment_program = GLW_STRINGFY
+        std::string fragment_program = MAKE_STRING
                                       (
                                           uniform sampler2D u_tex;
                                           out     vec4      f_color;

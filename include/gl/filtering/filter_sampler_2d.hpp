@@ -90,7 +90,7 @@ FilterGLSampler2D::FilterGLSampler2D(float scale): FilterGL()
 
 void FilterGLSampler2D::InitShaders()
 {
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
                           uniform sampler2D u_tex; \n
                           uniform float   scale; \n

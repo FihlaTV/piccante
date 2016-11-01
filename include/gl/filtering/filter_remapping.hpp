@@ -53,7 +53,7 @@ void FilterGLRemapping::InitShaders()
     	LumZone     = [-2, -1, 0, 1, 2, 3, 4];
     	TMOForZone =  [ 0,  0, 1, 0, 1, 0, 0];	*/
 
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
                           uniform sampler2D u_tex; \n
                           out     vec4      f_color; \n

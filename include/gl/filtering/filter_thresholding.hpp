@@ -72,7 +72,7 @@ FilterGLThresholding::FilterGLThresholding(): FilterGL()
 
 void FilterGLThresholding::FragmentShader()
 {
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
                           uniform sampler2D u_tex; \n
                           out     vec4      f_color;	\n

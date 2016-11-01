@@ -150,7 +150,7 @@ void FilterGLScatter::GenerateVA(int width, int height)
 
 void FilterGLScatter::FragmentShader()
 {
-    vertex_source = GLW_STRINGFY(
+    vertex_source = MAKE_STRING(
 
                         uniform sampler2D	u_tex;
                         uniform float		s_S;
@@ -176,7 +176,7 @@ void FilterGLScatter::FragmentShader()
     }
                     );
 
-    geometry_source = GLW_STRINGFY(
+    geometry_source = MAKE_STRING(
 
                           layout(points) in;
                           layout(points, max_vertices = 1) out;
@@ -197,7 +197,7 @@ void FilterGLScatter::FragmentShader()
     }
                       );
 
-    fragment_source = GLW_STRINGFY(
+    fragment_source = MAKE_STRING(
                           flat in	vec4	g2f_color;
                           layout(location = 0) out vec4    f_color;
 

@@ -218,7 +218,7 @@ FilterGLBilateral2DSE::~FilterGLBilateral2DSE()
 
 void FilterGLBilateral2DSE::FragmentShader()
 {
-    fragment_source = GLW_STRINGFY(
+    fragment_source = MAKE_STRING(
     uniform sampler2D	u_tex;
     uniform sampler2D	u_edge_pos;
     uniform sampler2D	u_edge_nor;

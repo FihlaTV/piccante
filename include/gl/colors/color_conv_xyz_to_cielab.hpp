@@ -48,7 +48,7 @@ public:
      */
     std::string getDirectFunction()
     {
-        std::string fragment_source = GLW_STRINGFY
+        std::string fragment_source = MAKE_STRING
                           (
         uniform sampler2D u_tex; \n
         uniform vec3 white_point; \n
@@ -93,7 +93,7 @@ public:
      */
     std::string getInverseFunction()
     {
-        std::string fragment_source = GLW_STRINGFY
+        std::string fragment_source = MAKE_STRING
                           (
         uniform sampler2D u_tex; \n
         uniform vec3 white_point; \n

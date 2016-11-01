@@ -61,7 +61,7 @@ FilterGLSlicer::FilterGLSlicer(float s_S, float s_R): FilterGL()
 
 void FilterGLSlicer::FragmentShader()
 {
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
                           uniform sampler2D	u_tex;
                           uniform sampler3D	u_grid;

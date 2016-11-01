@@ -69,7 +69,7 @@ FilterGLDownPP::FilterGLDownPP(float *value, float threshold): FilterGL()
 
 void FilterGLDownPP::InitShaders()
 {
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
                           uniform sampler2D u_tex; \n
                           uniform vec4    value; \n

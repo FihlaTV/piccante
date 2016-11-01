@@ -69,7 +69,7 @@ FilterGLUpPP::FilterGLUpPP(float *value, float threshold): FilterGL()
 
 void FilterGLUpPP::InitShaders()
 {
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
                           uniform sampler2D u_tex0; \n
                           uniform sampler2D u_tex1; \n

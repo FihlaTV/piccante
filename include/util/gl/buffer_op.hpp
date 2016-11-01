@@ -238,7 +238,7 @@ void BufferOpGL::InitShaders()
     strOp = stdStringRepAll(strOp, "C0", "u_val_0");
     strOp = stdStringRepAll(strOp, "C1", "u_val_1");
 
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
                           uniform sampler2D u_tex_0; \n
                           uniform sampler2D u_tex_1; \n

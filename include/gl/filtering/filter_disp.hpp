@@ -97,7 +97,7 @@ FilterGLDisp::FilterGLDisp(): FilterGL()
 
 void FilterGLDisp::InitShaders()
 {
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
                           uniform sampler2D u_texL; \n
                           uniform sampler2D u_texR; \n

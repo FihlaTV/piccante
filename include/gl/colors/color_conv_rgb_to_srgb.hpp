@@ -49,7 +49,7 @@ public:
      */
     std::string getDirectFunction()
     {
-        std::string fragment_source = GLW_STRINGFY(
+        std::string fragment_source = MAKE_STRING(
             uniform sampler2D u_tex; \n
             uniform float a; \n
             uniform float a_plus_one; \n
@@ -81,7 +81,7 @@ public:
      */
     std::string getInverseFunction()
     {
-        std::string fragment_source = GLW_STRINGFY(
+        std::string fragment_source = MAKE_STRING(
             uniform sampler2D u_tex; \n
             uniform float a; \n
             uniform float a_plus_one; \n

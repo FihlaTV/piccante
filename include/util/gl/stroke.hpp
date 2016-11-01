@@ -203,7 +203,7 @@ StrokeGL::~StrokeGL()
 void StrokeGL::SetupShaders()
 {
     //common vertex program
-    std::string vertex_source = GLW_STRINGFY
+    std::string vertex_source = MAKE_STRING
                                 (
     in vec2 a_position;
     in vec2 a_tex_coord;
@@ -217,7 +217,7 @@ void StrokeGL::SetupShaders()
                                 );
 
     //rendering
-    std::string fragment_source = GLW_STRINGFY
+    std::string fragment_source = MAKE_STRING
                                   (
     uniform sampler2D   u_tex;
     uniform vec4        current_color;
@@ -246,7 +246,7 @@ void StrokeGL::SetupShaders()
     glw::bind_program(0);
 
     //Annotation
-    std::string fragment_source_annotation = GLW_STRINGFY
+    std::string fragment_source_annotation = MAKE_STRING
                                   (
     uniform sampler2D   u_tex;
     uniform float       annotation;

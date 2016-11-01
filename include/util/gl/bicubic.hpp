@@ -18,6 +18,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #ifndef PIC_UTIL_GL_BICUBIC_HPP
 #define PIC_UTIL_GL_BICUBIC_HPP
 
+#include "util/string.hpp"
+
 namespace pic {
 
 /**
@@ -28,7 +30,7 @@ std::string GLSL_BICUBIC()
 {
     std::string ret;
 
-    ret = GLW_STRINGFY(
+    ret = MAKE_STRING(
                 float Bicubic(float x)
                 {
                     float y = abs(x);
@@ -57,7 +59,7 @@ std::string GLSL_TEXTURE_BICUBIC()
 {
     std::string ret;
 
-    ret = GLW_STRINGFY(
+    ret = MAKE_STRING(
 
             vec4 textureBicubic(sampler2D u_tex, vec2 coords)
             {

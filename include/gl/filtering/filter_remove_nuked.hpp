@@ -64,7 +64,7 @@ FilterGLRemoveNuked::FilterGLRemoveNuked(float threshold): FilterGL()
 
 void FilterGLRemoveNuked::FragmentShader()
 {
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
                           uniform sampler2D	u_tex;
                           uniform float		threshold;

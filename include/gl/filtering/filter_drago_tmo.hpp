@@ -124,7 +124,7 @@ FilterGLDragoTMO::FilterGLDragoTMO(float Ld_Max, float b, float LMax, float Lwa,
 
 void FilterGLDragoTMO::FragmentShader()
 {
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
     uniform sampler2D u_tex;	\n
     //uniform sampler2D u_lum;	\n

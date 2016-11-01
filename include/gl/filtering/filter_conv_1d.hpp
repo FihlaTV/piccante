@@ -80,7 +80,7 @@ FilterGLConv1D::FilterGLConv1D(ImageGL *weights, int direction,
 
 void FilterGLConv1D::FragmentShader()
 {
-    std::string fragment_source_2D = GLW_STRINGFY
+    std::string fragment_source_2D = MAKE_STRING
                                      (
                                          uniform sampler2D	u_tex;
                                          uniform sampler2D	u_weights;
@@ -112,7 +112,7 @@ void FilterGLConv1D::FragmentShader()
     }
                                      );
 
-    std::string fragment_source_3D = GLW_STRINGFY
+    std::string fragment_source_3D = MAKE_STRING
                                      (
                                          uniform sampler3D  u_tex;
                                          uniform sampler2D  u_weights;

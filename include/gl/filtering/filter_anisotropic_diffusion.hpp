@@ -108,7 +108,7 @@ FilterGLAnisotropicDiffusion::FilterGLAnisotropicDiffusion(float sigma_r,
 
 void FilterGLAnisotropicDiffusion::FragmentShader()
 {
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
                           uniform sampler2D u_tex; \n
                           uniform float	  k2; \n

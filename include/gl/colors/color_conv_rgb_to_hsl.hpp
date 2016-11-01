@@ -42,7 +42,7 @@ public:
      */
     static std::string getDirect()
     {
-        std::string fun = GLW_STRINGFY(
+        std::string fun = MAKE_STRING(
                     const vec3 LUM_XYZ =   vec3(0.213,  0.715,   0.072);
                     const vec3 ALPHA_VAL = vec3(0.0,    0.866,  -0.866);
                     const vec3 BETA_VAL =  vec3(1.0,   -0.5,    -0.5);
@@ -78,7 +78,7 @@ public:
      */
     static std::string getInverse()
     {
-        std::string fun = GLW_STRINGFY(
+        std::string fun = MAKE_STRING(
                     const vec3 R_VAL =	vec3(0.9990,    -0.3709,    0.7862);
                     const vec3 G_VAL =	vec3(0.9990,     0.2065,   -0.2138);
                     const vec3 B_VAL =	vec3(0.9990,    -0.9482,   -0.2138);
@@ -108,7 +108,7 @@ public:
      */
     std::string getDirectFunction()
     {
-        std::string fragment_source = getDirect() + GLW_STRINGFY(
+        std::string fragment_source = getDirect() + MAKE_STRING(
             uniform sampler2D u_tex; \n                
             out vec4 f_color; \n
 
@@ -129,7 +129,7 @@ public:
      */
     std::string getInverseFunction()
     {
-        std::string fragment_source = getInverse() + GLW_STRINGFY(
+        std::string fragment_source = getInverse() + MAKE_STRING(
             uniform sampler2D u_tex; \n
             out     vec4 f_color; \n
             void main(void) {\n

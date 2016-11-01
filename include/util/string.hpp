@@ -25,6 +25,11 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 namespace pic {
 
 /**
+*@brief MAKE_STRING creates a string from a block.
+*/
+#define MAKE_STRING(input_string) #input_string
+
+/**
  * @brief StringVec is an std::vector of std::string.
  */
 typedef std::vector<std::string > StringVec;

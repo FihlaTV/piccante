@@ -39,7 +39,7 @@ protected:
      */
     void FragmentShader(ImageGL *weights, int direction, GLenum target)
     {
-        std::string fragment_source_2D = GLW_STRINGFY
+        std::string fragment_source_2D = MAKE_STRING
                                          (
                                              uniform sampler2D	u_tex;
                                              uniform int        iX;
@@ -69,7 +69,7 @@ protected:
         }
                                          );
 
-        std::string fragment_source_3D = GLW_STRINGFY
+        std::string fragment_source_3D = MAKE_STRING
                                          (
                                              uniform sampler3D  u_tex;
                                              uniform int        slice;

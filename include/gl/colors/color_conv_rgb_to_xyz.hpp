@@ -44,7 +44,7 @@ public:
      */
     std::string getDirectFunction()
     {
-        std::string fragment_source = GLW_STRINGFY
+        std::string fragment_source = MAKE_STRING
                           (
         uniform sampler2D u_tex; \n
         uniform mat3 mtx; \n

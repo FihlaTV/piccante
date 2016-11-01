@@ -126,7 +126,7 @@ FilterGLChannel::FilterGLChannel(int channel) : FilterGL()
 
 void FilterGLChannel::InitShaders()
 {
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
     uniform sampler2D u_tex; \n
     uniform int channel; \n

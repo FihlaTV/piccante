@@ -101,7 +101,7 @@ FilterGLBilateral1D::FilterGLBilateral1D(float sigma_s, float sigma_r,
 
 void FilterGLBilateral1D::FragmentShader()
 {
-    std::string fragment_source_2D = GLW_STRINGFY
+    std::string fragment_source_2D = MAKE_STRING
                                      (
                                          uniform sampler2D	u_tex;
                                          uniform float		sigma_s2;
@@ -136,7 +136,7 @@ void FilterGLBilateral1D::FragmentShader()
     }
                                      );
 
-    std::string fragment_source_3D = GLW_STRINGFY
+    std::string fragment_source_3D = MAKE_STRING
                                      (
                                          uniform sampler2DArray	u_tex;
                                          uniform float		    sigma_s2;

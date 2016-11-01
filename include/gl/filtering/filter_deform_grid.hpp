@@ -89,7 +89,7 @@ void FilterGLDeformGrid::InitShaders()
     fragment_source  = GLSL_BICUBIC();
     fragment_source += GLSL_TEXTURE_BICUBIC();
 
-    fragment_source += GLW_STRINGFY
+    fragment_source += MAKE_STRING
                       (
     uniform sampler2D u_tex; \n
     uniform sampler2D u_grid; \n

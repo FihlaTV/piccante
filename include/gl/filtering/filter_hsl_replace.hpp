@@ -66,7 +66,7 @@ FilterGLHSLReplace::FilterGLHSLReplace(float delta_hue,
 
 void FilterGLHSLReplace::InitShaders()
 {
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
                           uniform float	  delta_hue; \n
                           uniform float	  delta_saturation; \n

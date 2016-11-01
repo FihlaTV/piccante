@@ -111,7 +111,7 @@ FilterGLLuminance::FilterGLLuminance(LUMINANCE_TYPE type): FilterGL()
 
 void FilterGLLuminance::InitShaders()
 {
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
     uniform sampler2D u_tex; \n
     uniform vec3 weights; \n

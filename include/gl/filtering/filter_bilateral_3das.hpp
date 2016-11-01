@@ -151,7 +151,7 @@ FilterGLBilateral3DAS::FilterGLBilateral3DAS(float sigma_s, float sigma_r,
 
 void FilterGLBilateral3DAS::FragmentShader()
 {
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
                           uniform sampler2DArray	u_tex;
                           uniform isampler2D	u_poisson;

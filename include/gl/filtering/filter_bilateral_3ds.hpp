@@ -146,7 +146,7 @@ FilterGLBilateral3DS::FilterGLBilateral3DS(float sigma_s, float sigma_r,
 
 void FilterGLBilateral3DS::FragmentShader()
 {
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
                           uniform sampler2DArray  u_tex;
 //		uniform sampler3D		u_tex;

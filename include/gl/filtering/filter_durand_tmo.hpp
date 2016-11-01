@@ -91,7 +91,7 @@ FilterGLDurandTMO::FilterGLDurandTMO(float compression_factor, float log_absolut
 
 void FilterGLDurandTMO::FragmentShader()
 {
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
     uniform sampler2D u_tex;        \n
     uniform sampler2D u_lum_log;    \n

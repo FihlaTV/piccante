@@ -115,7 +115,7 @@ FilterGLSimpleTMO::FilterGLSimpleTMO(float gamma, float fstop): FilterGL()
 
 void FilterGLSimpleTMO::FragmentShader()
 {
-    fragment_source = GLW_STRINGFY
+    fragment_source = MAKE_STRING
                       (
                           uniform sampler2D u_tex; \n
                           uniform float	  tn_gamma; \n
