@@ -18,13 +18,13 @@
 # See the GNU Lesser General Public License
 # ( http://www.gnu.org/licenses/lgpl-3.0.html ) for more details.
 
-TARGET = simple_augmented_reality
+TARGET = remove_nuked
 
 QT       += core
 TEMPLATE = app
+CONFIG   += c++11
 CONFIG   += console
 CONFIG   -= app_bundle
-CONFIG   += C++11
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
 
 INCLUDEPATH += ../../include
