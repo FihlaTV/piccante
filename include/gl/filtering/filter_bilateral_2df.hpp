@@ -158,17 +158,7 @@ void FilterGLBilateral2DF::FragmentShader()
 
 void FilterGLBilateral2DF::InitShaders()
 {
-    filteringProgram.setup(glw::version("330"), vertex_source, fragment_source);
-
-#ifdef PIC_DEBUG
-    printf("[filteringProgram log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color",    0);
-    filteringProgram.relink();
-    glw::bind_program(0);
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGLBilateral2DF");
 
     Update(-1.0f, -1.0f);
 }
@@ -189,12 +179,12 @@ void FilterGLBilateral2DF::Update(float sigma_s, float sigma_r)
     //Precomputation of the Gaussian Kernel
     int halfKernelSize = PrecomputedGaussian::KernelSize(this->sigma_s) >> 1;
 
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex", 0);
-    filteringProgram.uniform("sigmas2", sigmas2);
-    filteringProgram.uniform("sigmar2", sigmar2);
-    filteringProgram.uniform("halfKernelSize", halfKernelSize);
-    glw::bind_program(0);
+    technique.bind();
+    technique.setUniform("u_tex", 0);
+    technique.setUniform("sigmas2", sigmas2);
+    technique.setUniform("sigmar2", sigmar2);
+    technique.setUniform("halfKernelSize", halfKernelSize);
+    technique.unbind();
 }
 
 ImageGL *FilterGLBilateral2DF::Process(ImageGLVec imgIn,
@@ -233,7 +223,7 @@ ImageGL *FilterGLBilateral2DF::Process(ImageGLVec imgIn,
     glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 
     //Shaders
-    glw::bind_program(filteringProgram);
+    technique.bind();
 
     //Textures
     glActiveTexture(GL_TEXTURE0);
@@ -246,7 +236,7 @@ ImageGL *FilterGLBilateral2DF::Process(ImageGLVec imgIn,
     fbo->unbind();
 
     //Shaders
-    glw::bind_program(0);
+    technique.unbind();
 
     //Textures
     glActiveTexture(GL_TEXTURE0);

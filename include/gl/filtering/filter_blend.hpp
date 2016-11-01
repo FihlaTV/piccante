@@ -77,22 +77,13 @@ void FilterGLBlend::InitShaders()
 {
     FragmentShader();
 
-    std::string prefix;
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGLBlend");
 
-    filteringProgram.setup(glw::version("330"), vertex_source, fragment_source);
-
-#ifdef PIC_DEBUG
-    printf("[FilterGLBlend log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color",    0);
-    filteringProgram.relink();
-    filteringProgram.uniform("u_tex0", 0);
-    filteringProgram.uniform("u_tex1", 1);
-    filteringProgram.uniform("u_texMask", 2);
-    glw::bind_program(0);
+    technique.bind();
+    technique.setUniform("u_tex0", 0);
+    technique.setUniform("u_tex1", 1);
+    technique.setUniform("u_texMask", 2);
+    technique.unbind();
 }
 
 } // end namespace pic

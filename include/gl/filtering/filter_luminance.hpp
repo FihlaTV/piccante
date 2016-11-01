@@ -127,17 +127,7 @@ void FilterGLLuminance::InitShaders()
     }
                       );
 
-    filteringProgram.setup(glw::version("330"), vertex_source, fragment_source);
-
-#ifdef PIC_DEBUG
-    printf("[FilterGLLuminance log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color", 0);
-    filteringProgram.relink();
-    glw::bind_program(0);
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGLLuminance");
 
     Update(type);
 }
@@ -174,10 +164,10 @@ void FilterGLLuminance::Update(LUMINANCE_TYPE type)
         break;
     }
 
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex", 0);
-    filteringProgram.uniform("weights", weights[0], weights[1], weights[2]);
-    glw::bind_program(0);
+    technique.bind();
+    technique.setUniform("u_tex", 0);
+    technique.setUniform("weights", weights[0], weights[1], weights[2]);
+    technique.unbind();
 }
 
 ImageGL *FilterGLLuminance::Process(ImageGLVec imgIn, ImageGL *imgOut)
@@ -208,7 +198,7 @@ ImageGL *FilterGLLuminance::Process(ImageGLVec imgIn, ImageGL *imgOut)
     glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 
     //Shaders
-    glw::bind_program(filteringProgram);
+    technique.bind();
 
     //Textures
     glActiveTexture(GL_TEXTURE0);
@@ -221,7 +211,7 @@ ImageGL *FilterGLLuminance::Process(ImageGLVec imgIn, ImageGL *imgOut)
     fbo->unbind();
 
     //Shaders
-    glw::bind_program(0);
+    technique.unbind();
 
     //Textures
     glActiveTexture(GL_TEXTURE0);

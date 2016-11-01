@@ -134,18 +134,7 @@ void FilterGLSimpleTMO::FragmentShader()
 
 void FilterGLSimpleTMO::InitShaders()
 {
-    technique.init("330", vertex_source, fragment_source);
-//    filteringProgram.setup(glw::version("330"), vertex_source, fragment_source);
-
-#ifdef PIC_DEBUG
-    printf("[FilterGLSimpleTMO log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    technique.bind();
-    technique.setAttributeIndex("a_position", 0);
-    technique.setOutputFragmentShaderIndex("f_color", 0);
-    technique.link();
-    technique.unbind();
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGLSimpleTMO");
 
     /*
     glw::bind_program(filteringProgram);
@@ -167,17 +156,10 @@ void FilterGLSimpleTMO::Update(float gamma, float fstop)
     float exposure = powf(2.0f, fstop);
 
     technique.bind();
-    technique.SetUniform("u_tex", 0);
-    technique.SetUniform("tn_gamma", invGamma);
-    technique.SetUniform("tn_exposure", exposure);
+    technique.setUniform("u_tex", 0);
+    technique.setUniform("tn_gamma", invGamma);
+    technique.setUniform("tn_exposure", exposure);
     technique.unbind();
-/*
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex", 0);
-    filteringProgram.uniform("tn_gamma", invGamma);
-    filteringProgram.uniform("tn_exposure",	exposure);
-    glw::bind_program(0);
-    */
 }
 
 } // end namespace pic

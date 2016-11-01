@@ -22,6 +22,8 @@ namespace pic {
 
 #include <string>
 
+#include "gl/technique.hpp"
+
 /**
  * @brief The QuadGL class
  */
@@ -133,12 +135,12 @@ public:
 
     /**
      * @brief Render
-     * @param program
+     * @param technque
      * @param texture
      */
-    void Render(glw::program &program, GLuint texture)
+    void Render(TechniqueGL *technique, GLuint texture)
     {
-        glw::bind_program(program);
+        technique->bind();
 
         glEnable(GL_TEXTURE_2D);
         glActiveTexture(GL_TEXTURE0);
@@ -149,7 +151,7 @@ public:
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, 0);
 
-        glw::bind_program(0);
+        technique->unbind();
     }
 
     /**
@@ -304,32 +306,30 @@ public:
      * @param vp_src
      * @param fp_src
      */
-    static void getProgram(glw::program &ret, std::string vp_src = "", std::string fp_src = "", bool bTextureCoordinates = false)
+    static void getTechnique(TechniqueGL *ret, std::string vp_src = "", std::string fp_src = "", bool bTextureCoordinates = false)
     {
         if(vp_src.empty() || fp_src.empty()) {
-            ret.setup(glw::version("330"), getVertexProgramV3(), getFragmentProgram());
+            ret->init("330", getVertexProgramV3(), getFragmentProgram());
         } else {
-            ret.setup(glw::version("330"), vp_src, fp_src);
+            ret->init("330", vp_src, fp_src);
         }
 
         #ifdef PIC_DEBUG
-            printf("[QuadGL Program log]\n%s\n", ret.log().c_str());
+            ret->printLog("QuadGL");
         #endif
 
-        glw::bind_program(ret);
-        ret.attribute_source("a_position", 0);
-
+        ret->bind();
+        ret->setAttributeIndex("a_position", 0);
         if(bTextureCoordinates) {
-            ret.attribute_source("a_tex_coord", 1);
+            ret->setAttributeIndex("a_tex_coord", 1);
         }
+        ret->setOutputFragmentShaderIndex("f_color", 0);
+        ret->link();
+        ret->unbind();
 
-        ret.fragment_target("f_color",    0);
-
-        ret.relink();
-
-        glw::bind_program(ret);
-        ret.uniform("u_tex", 0);
-        glw::bind_program(0);
+        ret->bind();
+        ret->setUniform("u_tex", 0);
+        ret->unbind();
     }
 
     /**Draw: draw using compability mode (deprecated!)*/

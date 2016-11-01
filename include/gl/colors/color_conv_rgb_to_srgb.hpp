@@ -114,17 +114,18 @@ public:
     void setUniforms()
     {
         if(direct) {
-            glw::bind_program(programs[0]);
-            programs[0].uniform("a", a);
-            programs[0].uniform("a_plus_one", a_plus_1);
-            programs[0].uniform("gamma_inv", gamma_inv);
+            techniques[0].bind();
+            techniques[0].setUniform("a", a);
+            techniques[0].setUniform("a_plus_one", a_plus_1);
+            techniques[0].setUniform("gamma_inv", gamma_inv);
+            techniques[0].unbind();
         } else {
-            glw::bind_program(programs[1]);
-            programs[1].uniform("a", a);
-            programs[1].uniform("a_plus_one", a_plus_1);
-            programs[1].uniform("gamma", gamma);
+            techniques[1].bind();
+            techniques[1].setUniform("a", a);
+            techniques[1].setUniform("a_plus_one", a_plus_1);
+            techniques[1].setUniform("gamma", gamma);
+            techniques[1].unbind();
         }
-        glw::bind_program(0);
     }
 
 };

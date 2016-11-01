@@ -42,7 +42,7 @@ protected:
     pic::QuadGL *quad;
     pic::FilterGLColorConv *tmo;
     pic::ImageGL img, *imgOut;
-    glw::program    program;
+    pic::TechniqueGL technique;
 
     /**
      * @brief initializeGL sets variables up.
@@ -64,7 +64,7 @@ protected:
         img.generateTextureGL();
 
         //creating a screen aligned quad
-        pic::QuadGL::getProgram(program,
+        pic::QuadGL::getTechnique(&technique,
                                 pic::QuadGL::getVertexProgramV3(),
                                 pic::QuadGL::getFragmentProgramForView());
 
@@ -100,7 +100,7 @@ protected:
         imgOut = tmo->Process(SingleGL(&img), imgOut);
 
         //visualization
-        quad->Render(program, imgOut->getTexture());
+        quad->Render(&technique, imgOut->getTexture());
     }
 
 public:

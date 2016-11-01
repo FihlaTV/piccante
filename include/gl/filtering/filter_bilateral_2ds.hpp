@@ -359,17 +359,7 @@ void FilterGLBilateral2DS::InitShaders()
         break;
     }
 
-    filteringProgram.setup(glw::version("330"), vertex_source, fragment_sources[value]);
-
-#ifdef PIC_DEBUG
-    printf("[filteringProgram log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color",    0);
-    filteringProgram.relink();
-    glw::bind_program(0);
+    technique.initStandard("330", vertex_source, fragment_sources[value], "FilterGLBilateral2DS");
 
     Update(-1.0f, -1.0f);
 }
@@ -399,22 +389,22 @@ void FilterGLBilateral2DS::Update(float sigma_s, float sigma_r)
     float sigmas2 = 2.0f * this->sigma_s * this->sigma_s;
     float sigmar2 = 2.0f * this->sigma_r * this->sigma_r;
 
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex",       0);
-    filteringProgram.uniform("u_poisson",   1);
-    filteringProgram.uniform("u_rand",      2);
-    filteringProgram.uniform("u_mask",      3);
+    technique.bind();
+    technique.setUniform("u_tex",       0);
+    technique.setUniform("u_poisson",   1);
+    technique.setUniform("u_rand",      2);
+    technique.setUniform("u_mask",      3);
 
     if(type == BF_CROSS) {
-        filteringProgram.uniform("u_edge",  4);
+        technique.setUniform("u_edge",  4);
     }
 
-    filteringProgram.uniform("sigmas2",         sigmas2);
-    filteringProgram.uniform("sigmar2",         sigmar2);
-    filteringProgram.uniform("kernelSize",      kernelSize);
-    filteringProgram.uniform("kernelSizef",     float(kernelSize));
-    filteringProgram.uniform("nSamples",        ms->nSamples >> 1);
-    glw::bind_program(0);
+    technique.setUniform("sigmas2",         sigmas2);
+    technique.setUniform("sigmar2",         sigmar2);
+    technique.setUniform("kernelSize",      kernelSize);
+    technique.setUniform("kernelSizef",     float(kernelSize));
+    technique.setUniform("nSamples",        ms->nSamples >> 1);
+    technique.unbind();
 }
 
 //Processing
@@ -457,7 +447,7 @@ ImageGL *FilterGLBilateral2DS::Process(ImageGLVec imgIn,
     glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 
     //Shaders
-    glw::bind_program(filteringProgram);
+    technique.bind();
 
     //Textures
     glActiveTexture(GL_TEXTURE4);
@@ -482,7 +472,7 @@ ImageGL *FilterGLBilateral2DS::Process(ImageGLVec imgIn,
     fbo->unbind();
 
     //Shaders
-    glw::bind_program(0);
+    technique.unbind();
 
     //Textures
     glActiveTexture(GL_TEXTURE4);

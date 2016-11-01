@@ -192,16 +192,7 @@ void FilterGLBilateral1D::FragmentShader()
 
 void FilterGLBilateral1D::InitShaders()
 {
-    filteringProgram.setup(glw::version("330"), vertex_source, fragment_source);
-
-#ifdef PIC_DEBUG
-    printf("[FilterGLBilateral1D log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color",    0);
-    filteringProgram.relink();
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGLBilateral1D");
 
     Update(sigma_s, sigma_r);
 }
@@ -214,9 +205,11 @@ void FilterGLBilateral1D::SetUniformAux()
     //Precomputation of the Gaussian Kernel
     int halfKernelSize = PrecomputedGaussian::KernelSize(sigma_s) >> 1;
 
-    filteringProgram.uniform("sigma_s2",	sigma_s2);
-    filteringProgram.uniform("sigma_r2",	sigma_r2);
-    filteringProgram.uniform("halfKernelSize", halfKernelSize);
+    technique.bind();
+    technique.setUniform("sigma_s2",	sigma_s2);
+    technique.setUniform("sigma_r2",	sigma_r2);
+    technique.setUniform("halfKernelSize", halfKernelSize);
+    technique.unbind();
 }
 
 void FilterGLBilateral1D::Update(float sigma_s, float sigma_r)

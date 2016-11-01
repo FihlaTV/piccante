@@ -279,17 +279,7 @@ void FilterGLBilateral2DSE::InitShaders()
     printf("Number of samples: %d\n", ms->nSamples);
 #endif
 
-    filteringProgram.setup(glw::version("330"), vertex_source, fragment_source);
-
-#ifdef PIC_DEBUG
-    printf("[filteringProgram log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color",    0);
-    filteringProgram.relink();
-    glw::bind_program(0);
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGLBilateral2DSE");
 
     Update(-1.0f, -1.0f, -1.0f, -1.0f);
 }
@@ -332,26 +322,25 @@ void FilterGLBilateral2DSE::Update(float sigma_s, float sigma_p, float sigma_n, 
     float sigman2 = 2.0f * this->sigma_n * this->sigma_n;
     float sigmaa2 = 2.0f * this->sigma_a * this->sigma_a;
 
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex",       0);
-    filteringProgram.uniform("u_poisson",   1);
-    filteringProgram.uniform("u_rand",	    2);
+    technique.bind();
+    technique.setUniform("u_tex",       0);
+    technique.setUniform("u_poisson",   1);
+    technique.setUniform("u_rand",	    2);
 
-    filteringProgram.uniform("u_edge_pos",  3);
-    filteringProgram.uniform("u_edge_nor",  4);
-    filteringProgram.uniform("u_edge_alb",  5);
+    technique.setUniform("u_edge_pos",  3);
+    technique.setUniform("u_edge_nor",  4);
+    technique.setUniform("u_edge_alb",  5);
 
-    filteringProgram.uniform("kernelSize",      kernelSize);
-    filteringProgram.uniform("kernelSizef",     float(kernelSize));
-    filteringProgram.uniform("sigma_s2",        sigmas2);
-    filteringProgram.uniform("sigma_pos2",	    sigmap2);
-    filteringProgram.uniform("sigma_nor2",	    sigman2);
-    filteringProgram.uniform("sigma_alb2",	    sigmaa2);
-    filteringProgram.uniform("nSamples",        ms->nSamples >> 1);
-    glw::bind_program(0);
+    technique.setUniform("kernelSize",      kernelSize);
+    technique.setUniform("kernelSizef",     float(kernelSize));
+    technique.setUniform("sigma_s2",        sigmas2);
+    technique.setUniform("sigma_pos2",	    sigmap2);
+    technique.setUniform("sigma_nor2",	    sigman2);
+    technique.setUniform("sigma_alb2",	    sigmaa2);
+    technique.setUniform("nSamples",        ms->nSamples >> 1);
+    technique.unbind();
 }
 
-//Processing
 ImageGL *FilterGLBilateral2DSE::Process(ImageGLVec imgIn,
         ImageGL *imgOut)
 {
@@ -383,7 +372,7 @@ ImageGL *FilterGLBilateral2DSE::Process(ImageGLVec imgIn,
     glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 
     //Shaders
-    glw::bind_program(filteringProgram);
+    technique.bind();
 
     //Textures
     glActiveTexture(GL_TEXTURE5);
@@ -411,7 +400,7 @@ ImageGL *FilterGLBilateral2DSE::Process(ImageGLVec imgIn,
     fbo->unbind();
 
     //Shaders
-    glw::bind_program(0);
+    technique.unbind();
 
     //Textures
     glActiveTexture(GL_TEXTURE5);

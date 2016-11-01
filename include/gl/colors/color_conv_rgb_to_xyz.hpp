@@ -76,14 +76,14 @@ public:
     void setUniforms()
     {
         if(direct) {
-            glw::bind_program(programs[0]);
-            programs[0].uniform3x3("mtx", mtxRGBtoXYZ, true);
+            techniques[0].bind();
+            techniques[0].setUniform3x3("mtx", mtxRGBtoXYZ, true);
+            techniques[0].unbind();
         } else {
-            glw::bind_program(programs[1]);
-            programs[1].uniform3x3("mtx", mtxXYZtoRGB, true);
+            techniques[1].bind();
+            techniques[1].setUniform3x3("mtx", mtxXYZtoRGB, true);
+            techniques[1].unbind();
         }
-
-        glw::bind_program(0);
     }
 
 };

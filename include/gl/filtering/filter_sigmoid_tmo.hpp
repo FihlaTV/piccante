@@ -137,16 +137,7 @@ void FilterGLSigmoidTMO::InitShaders()
 {
     FragmentShader();
 
-    filteringProgram.setup(glw::version("330"), vertex_source, fragment_source);
-
-#ifdef PIC_DEBUG
-    printf("[FilterGLSigmoidTMO log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position",		0);
-    filteringProgram.fragment_target("f_color",			0);
-    filteringProgram.relink();
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGLSigmoidTMO");
 
     Update(alpha);
 }
@@ -157,12 +148,12 @@ void FilterGLSigmoidTMO::Update(float alpha)
         this->alpha = alpha;
     }
 
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex", 0);
-    filteringProgram.uniform("u_tex_adapt", 1);
-    filteringProgram.uniform("alpha", this->alpha);
-    filteringProgram.uniform("epsilon", epsilon);
-    glw::bind_program(0);
+    technique.bind();
+    technique.setUniform("u_tex", 0);
+    technique.setUniform("u_tex_adapt", 1);
+    technique.setUniform("alpha", this->alpha);
+    technique.setUniform("epsilon", epsilon);
+    technique.unbind();
 }
 
 } // end namespace pic

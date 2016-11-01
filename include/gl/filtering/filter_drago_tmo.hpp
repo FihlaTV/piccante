@@ -163,17 +163,7 @@ void FilterGLDragoTMO::ComputeConstants()
 
 void FilterGLDragoTMO::InitShaders()
 {
-    filteringProgram.setup(glw::version("330"), vertex_source, fragment_source);
-
-#ifdef PIC_DEBUG
-    printf("[FilterGLDragoTMO log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color",    0);
-    filteringProgram.relink();
-
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGLDragoTMO");
     Update(Ld_Max, b, LMax, Lwa);
 }
 
@@ -205,14 +195,14 @@ void FilterGLDragoTMO::Update(float Ld_Max, float b, float LMax, float Lwa)
 
     ComputeConstants();
 
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex", 0);
-    //filteringProgram.uniform("u_lum", 1);
-    filteringProgram.uniform("constant1", constant1);
-    filteringProgram.uniform("constant2", constant2);
-    filteringProgram.uniform("LMax", LMax_scaled);
-    filteringProgram.uniform("Lwa",	Lwa_scaled);
-    glw::bind_program(0);   
+    technique.bind();
+    technique.setUniform("u_tex", 0);
+    //technique.setUniform("u_lum", 1);
+    technique.setUniform("constant1", constant1);
+    technique.setUniform("constant2", constant2);
+    technique.setUniform("LMax", LMax_scaled);
+    technique.setUniform("Lwa",	Lwa_scaled);
+    technique.unbind();
 }
 
 } // end namespace pic

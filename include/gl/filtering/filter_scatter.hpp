@@ -209,20 +209,7 @@ void FilterGLScatter::FragmentShader()
 
 void FilterGLScatter::InitShaders()
 {
-    filteringProgram.setup(glw::version("330"), vertex_source, geometry_source, fragment_source,
-                           GL_POINTS, GL_POINTS, 1);
-
-#ifdef PIC_DEBUG
-    printf("[FilterGLScatter shader log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color",    0);
-    filteringProgram.relink();
-
-    glw::bind_program(0);
+    technique.initStandard("410", vertex_source, fragment_source, geometry_source, "FilterGLScatter");
 
     Update(s_S, s_R);
 }
@@ -238,11 +225,11 @@ void FilterGLScatter::Update(float s_S, float s_R)
         printf("Rate S: %f Rate R: %f Mul E: %f\n", s_S, s_R, mul_E);
     #endif
 
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex", 0);
-    filteringProgram.uniform("s_S", s_S);
-    filteringProgram.uniform("mul_E", mul_E);
-    glw::bind_program(0);
+    technique.bind();
+    technique.setUniform("u_tex", 0);
+    technique.setUniform("s_S", s_S);
+    technique.setUniform("mul_E", mul_E);
+    technique.unbind();
 }
 
 ImageGL *FilterGLScatter::Process(ImageGLVec imgIn, ImageGL *imgOut)
@@ -278,7 +265,7 @@ ImageGL *FilterGLScatter::Process(ImageGLVec imgIn, ImageGL *imgOut)
     glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 
     //Shaders
-    glw::bind_program(filteringProgram);
+    technique.bind();
 
     //Textures
     glActiveTexture(GL_TEXTURE0);
@@ -297,7 +284,7 @@ ImageGL *FilterGLScatter::Process(ImageGLVec imgIn, ImageGL *imgOut)
     fbo->unbind();
 
     //Shaders
-    glw::bind_program(0);
+    technique.unbind();
 
     //Textures
     glActiveTexture(GL_TEXTURE0);

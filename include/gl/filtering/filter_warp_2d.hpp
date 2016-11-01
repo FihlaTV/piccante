@@ -83,9 +83,9 @@ void FilterGLWarp2D::Update(Matrix3x3 h, bool bSameSize = false, bool bCentroid 
     this->h = h;
     h.Inverse(&h_inv);
 
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform3x3("h_inv", h_inv.data, true);
-    glw::bind_program(0);
+    technique.bind();
+    technique.setUniform3x3("h_inv", h_inv.data, true);
+    technique.unbind();
 }
 
 void FilterGLWarp2D::InitShaders()
@@ -114,18 +114,11 @@ void FilterGLWarp2D::InitShaders()
     }
     );
 
-    filteringProgram.setup(glw::version("330"), vertex_source, fragment_source);
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGLWarp2D");
 
-#ifdef PIC_DEBUG
-    printf("[FilterGLWarp2D log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color", 0);
-    filteringProgram.relink();
-    filteringProgram.uniform("u_tex", 0);
-    glw::bind_program(0);
+    technique.bind();
+    technique.setUniform("u_tex", 0);
+    technique.unbind();
 }
 
 ImageGL *FilterGLWarp2D::Process(ImageGLVec imgIn, ImageGL *imgOut)
@@ -172,7 +165,7 @@ ImageGL *FilterGLWarp2D::Process(ImageGLVec imgIn, ImageGL *imgOut)
     glClear(GL_COLOR_BUFFER_BIT);
 
     //Shaders
-    glw::bind_program(filteringProgram);
+    technique.bind();
 
     float mid[2];
 
@@ -184,8 +177,8 @@ ImageGL *FilterGLWarp2D::Process(ImageGLVec imgIn, ImageGL *imgOut)
         mid[1] = 0.0f;
     }
 
-    filteringProgram.uniform("mid", mid[0], mid[1]);
-    filteringProgram.uniform("inv_tSize", 1.0f / imgIn[0]->widthf, 1.0f / imgIn[0]->heightf);
+    technique.setUniform("mid", mid[0], mid[1]);
+    technique.setUniform("inv_tSize", 1.0f / imgIn[0]->widthf, 1.0f / imgIn[0]->heightf);
 
     //Textures
     glActiveTexture(GL_TEXTURE0);
@@ -198,7 +191,7 @@ ImageGL *FilterGLWarp2D::Process(ImageGLVec imgIn, ImageGL *imgOut)
     fbo->unbind();
 
     //Shaders
-    glw::bind_program(0);
+    technique.unbind();
 
     //Textures
     glActiveTexture(GL_TEXTURE0);

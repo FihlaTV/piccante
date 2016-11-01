@@ -26,6 +26,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
     #include "../opengl_common_code/gl_core_4_0.h"
 #endif
 
+#define PIC_DEBUG
+
 #include "piccante.hpp"
 
 #include <QKeyEvent>
@@ -44,7 +46,7 @@ protected:
     pic::FilterGLBilateral2DG *fltBilG;
 
     pic::ImageGL img, *img_flt, *img_flt_tmo;
-    glw::program program;
+    pic::TechniqueGL technique;
 
     int method;
 
@@ -68,7 +70,7 @@ protected:
         img.generateTextureGL();
 
         //creating a screen aligned quad
-        pic::QuadGL::getProgram(program,
+        pic::QuadGL::getTechnique(&technique,
                                 pic::QuadGL::getVertexProgramV3(),
                                 pic::QuadGL::getFragmentProgramForView());
 
@@ -115,7 +117,7 @@ protected:
         }
 
         //visualization
-        quad->Render(program, img_flt_tmo->getTexture());
+        quad->Render(&technique, img_flt_tmo->getTexture());
     }
 
 public:

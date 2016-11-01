@@ -102,20 +102,11 @@ void FilterGLGradient::InitShaders()
 {
     FragmentShader();
 
-    std::string prefix;
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGLGradient");
 
-    filteringProgram.setup(glw::version("330"), vertex_source, fragment_source);
-
-#ifdef PIC_DEBUG
-    printf("[filteringProgram log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color",    0);
-    filteringProgram.relink();
-    filteringProgram.uniform("u_tex",      0);
-    glw::bind_program(0);
+    technique.bind();
+    technique.setUniform("u_tex",      0);
+    technique.unbind();
 }
 
 } // end namespace pic

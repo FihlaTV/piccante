@@ -59,13 +59,98 @@ public:
 
         bool bCheck = main.setupProgram(shaders);
 
+        return bCheck;
+    }
+
+    bool init( std::string version_number,
+               std::string vertex_shader_source,
+               std::string fragment_shader_source,
+               std::string geomety_shader_source)
+    {
+        ProgramGL *vss = new ProgramGL(version_number, "", vertex_shader_source, GL_VERTEX_SHADER);
+        ProgramGL *gss = new ProgramGL(version_number, "", geomety_shader_source, GL_GEOMETRY_SHADER);
+        ProgramGL *fss = new ProgramGL(version_number, "", fragment_shader_source, GL_FRAGMENT_SHADER);
+
+        shaders.push_back(vss);
+        shaders.push_back(gss);
+        shaders.push_back(fss);
+
+        bool bCheck = main.setupProgram(shaders);
+
+        return bCheck;
+    }
+
+    /**
+     * @brief initStandard
+     * @param version_number
+     * @param vertex_shader_source
+     * @param fragment_shader_source
+     * @param name
+     * @return
+     */
+    bool initStandard( std::string version_number,
+                    std::string vertex_shader_source,
+                    std::string fragment_shader_source,
+                    std::string name)
+    {
+        this->init(version_number,
+                   vertex_shader_source,
+                   fragment_shader_source);
+
+    #ifdef PIC_DEBUG
+        this->printLog(name);
+    #endif
+
+        this->bind();
+        this->setAttributeIndex("a_position", 0);
+        this->setOutputFragmentShaderIndex("f_color", 0);
+        this->link();
+        this->unbind();
+    }
+
+    /**
+     * @brief initStandard
+     * @param version_number
+     * @param vertex_shader_source
+     * @param fragment_shader_source
+     * @param geometry_shader_source
+     * @param name
+     * @return
+     */
+    bool initStandard( std::string version_number,
+                       std::string vertex_shader_source,
+                       std::string fragment_shader_source,
+                       std::string geometry_shader_source,
+                       std::string name)
+    {
+        this->init(version_number,
+                   vertex_shader_source,
+                   fragment_shader_source,
+                   geometry_shader_source);
+
+    #ifdef PIC_DEBUG
+        this->printLog(name);
+    #endif
+
+        this->bind();
+        this->setAttributeIndex("a_position", 0);
+        this->setOutputFragmentShaderIndex("f_color", 0);
+        this->link();
+        this->unbind();
+    }
+
+    /**
+     * @brief printLog
+     * @param name
+     */
+    void printLog(std::string name)
+    {
+        printf("\nLog for: %s\n", name.c_str());
         for(unsigned int i = 0; i < shaders.size(); i++) {
             printf("%s", shaders[i]->log.c_str());
         }
 
         printf("%s", main.log.c_str());
-
-        return bCheck;
     }
 
     /**
@@ -118,9 +203,10 @@ public:
      * @param name_uniform
      * @param value0
      */
-    void SetUniform(const char *name_uniform, int value0)
+    void setUniform(const char *name_uniform, int value0)
     {
-        glUniform1i(getLocation(name_uniform), GLint(value0));
+        glUniform1i(getLocation(name_uniform),
+                    GLint(value0));
     }
 
     /**
@@ -128,9 +214,90 @@ public:
      * @param name_uniform
      * @param value0
      */
-    void SetUniform(const char *name_uniform, float value0)
+    void setUniform(const char *name_uniform, float value0)
     {
-        glUniform1f(getLocation(name_uniform), GLfloat(value0));
+        glUniform1f(getLocation(name_uniform),
+                    GLfloat(value0));
+    }
+
+    /**
+     * @brief setUniform
+     * @param name_uniform
+     * @param value0
+     * @param value1
+     */
+    void setUniform(const char *name_uniform, float value0, float value1)
+    {
+        glUniform2f(getLocation(name_uniform),
+                    GLfloat(value0),
+                    GLfloat(value1));
+    }
+
+    /**
+     * @brief setUniform
+     * @param name_uniform
+     * @param value0
+     * @param value1
+     * @param value2
+     */
+    void setUniform(const char *name_uniform, float value0, float value1, float value2)
+    {
+        glUniform3f(getLocation(name_uniform),
+                    GLfloat(value0),
+                    GLfloat(value1),
+                    GLfloat(value2));
+    }
+
+    /**
+     * @brief setUniform3x3
+     * @param name_uniform
+     * @param matrix
+     * @param bTranspose
+     */
+    void setUniform3x3(const char *name_uniform, const float *matrix, bool bTranspose)
+    {
+        glUniformMatrix3fv(getLocation(name_uniform),
+                           GLsizei(1),
+                           bTranspose ? GL_TRUE : GL_FALSE,
+                           (const GLfloat*)(matrix));
+    }
+
+    /**
+     * @brief setUniform4x4
+     * @param name_uniform
+     * @param matrix
+     * @param bTranspose
+     */
+    void setUniform4x4(const char *name_uniform, const float *matrix, bool bTranspose)
+    {
+        glUniformMatrix4fv(getLocation(name_uniform),
+                           GLsizei(1),
+                           bTranspose ? GL_TRUE : GL_FALSE,
+                           (const GLfloat*)(matrix));
+    }
+
+    /**
+     * @brief setUniform3
+     * @param name_uniform
+     * @param value
+     */
+    void setUniform3(const char *name_uniform, const float *value)
+    {
+        glUniform3fv(getLocation(name_uniform),
+                     GLsizei(1),
+                     (const GLfloat *)value);
+    }
+
+    /**
+     * @brief setUniform4
+     * @param name_uniform
+     * @param value
+     */
+    void setUniform4(const char *name_uniform, const float *value)
+    {
+        glUniform4fv(getLocation(name_uniform),
+                     GLsizei(1),
+                     (const GLfloat *)value);
     }
 };
 

@@ -69,20 +69,12 @@ void FilterGLAnaglyph::InitShaders()
     }
                       );
 
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGLAnaglyph");
 
-    filteringProgram.setup(glw::version("330"), vertex_source, fragment_source);
-
-#ifdef PIC_DEBUG
-    printf("[filteringProgram log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color",    0);
-    filteringProgram.relink();
-    filteringProgram.uniform("u_texL",      0);
-    filteringProgram.uniform("u_texR",      1);
-    glw::bind_program(0);
+    technique.bind();
+    technique.setUniform("u_texL",      0);
+    technique.setUniform("u_texR",      1);
+    technique.unbind();
 }
 
 } // end namespace pic

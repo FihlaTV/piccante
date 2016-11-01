@@ -43,7 +43,7 @@ protected:
     pic::FilterGLSimpleTMO *flt_tmo;
     pic::FilterGLWarp2D *flt_warp;
     pic::ImageGL img, *img_flt, *img_flt_tmo;
-    glw::program    program;
+    pic::TechniqueGL program;
     pic::Matrix3x3 h;
 
     int degrees;
@@ -68,7 +68,7 @@ protected:
         img.generateTextureGL();
 
         //creating a screen aligned quad
-        pic::QuadGL::getProgram(program,
+        pic::QuadGL::getTechnique(&program,
                                 pic::QuadGL::getVertexProgramV3(),
                                 pic::QuadGL::getFragmentProgramForView());
 
@@ -116,7 +116,7 @@ protected:
         img_flt_tmo = flt_tmo->Process(SingleGL(img_flt), img_flt_tmo);
 
         //visualization
-        quad->Render(program, img_flt_tmo->getTexture());
+        quad->Render(&program, img_flt_tmo->getTexture());
     }
 
 public:

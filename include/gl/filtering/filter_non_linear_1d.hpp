@@ -142,8 +142,8 @@ public:
      */
     void SetUniformAux()
     {
-        filteringProgram.uniform("halfKernelSize", halfKernelSize);
-        filteringProgram.uniform("kernelSize", kernelSize);
+        technique.setUniform("halfKernelSize", halfKernelSize);
+        technique.setUniform("kernelSize", kernelSize);
     }
 
     /**

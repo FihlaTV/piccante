@@ -193,20 +193,7 @@ void FilterGLBilateral3DS::FragmentShader()
 
 void FilterGLBilateral3DS::InitShaders()
 {
-    //printf("Number of samples: %d\n",ms->nSamples);
-
-    std::string prefix;
-    prefix += glw::version("150");
-    prefix += glw::ext_require("GL_EXT_gpu_shader4");
-    filteringProgram.setup(prefix, vertex_source, fragment_source);
-#ifdef PIC_DEBUG
-    printf("[filteringProgram log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color",    0);
-    filteringProgram.relink();
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGLBilateral3DS");
 
     sigmas2 = 2.0f * sigma_s * sigma_s;
     sigmat2 = 2.0f * sigma_t * sigma_t;
@@ -251,18 +238,18 @@ void FilterGLBilateral3DS::Update(float sigma_s, float sigma_r, float sigma_t)
 
 void FilterGLBilateral3DS::UpdateUniform()
 {
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex",      0);
-    filteringProgram.uniform("u_poisson",  1);
-    filteringProgram.uniform("u_rand",	 2);
+    technique.bind();
+    technique.setUniform("u_tex",      0);
+    technique.setUniform("u_poisson",  1);
+    technique.setUniform("u_rand",	 2);
 
-    filteringProgram.uniform("sigmas2",  sigmas2);
-    filteringProgram.uniform("sigmat2",  sigmat2);
-    filteringProgram.uniform("sigmar2",  sigmar2);
-    filteringProgram.uniform("TOKEN_BANANA",  ms->nSamples / 3);
-    filteringProgram.uniform("frame",  frame);
+    technique.setUniform("sigmas2",  sigmas2);
+    technique.setUniform("sigmat2",  sigmat2);
+    technique.setUniform("sigmar2",  sigmar2);
+    technique.setUniform("TOKEN_BANANA",  ms->nSamples / 3);
+    technique.setUniform("frame",  frame);
 
-    glw::bind_program(0);
+    technique.unbind();
 }
 
 ImageGL *FilterGLBilateral3DS::Process(ImageGLVec imgIn,
@@ -291,7 +278,7 @@ ImageGL *FilterGLBilateral3DS::Process(ImageGLVec imgIn,
     glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 
     //Shaders
-    glw::bind_program(filteringProgram);
+    technique.bind();
 
     //Textures
     glActiveTexture(GL_TEXTURE2);
@@ -310,7 +297,7 @@ ImageGL *FilterGLBilateral3DS::Process(ImageGLVec imgIn,
     fbo->unbind();
 
     //Shaders
-    glw::bind_program(0);
+    technique.unbind();
 
     //Textures
     glActiveTexture(GL_TEXTURE2);

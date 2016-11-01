@@ -193,7 +193,7 @@ public:
         this->source.clear();
 
         //create full source
-        if(!version.empty()) {
+        if(!version_number.empty()) {
             this->source += "#version ";
             this->source += version_number;
             this->source += "\n";

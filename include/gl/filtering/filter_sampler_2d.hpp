@@ -103,22 +103,12 @@ void FilterGLSampler2D::InitShaders()
     }
                       );
 
-    filteringProgram.setup(glw::version("330"), vertex_source, fragment_source);
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGLSampler2D");
 
-#ifdef PIC_DEBUG
-    printf("[FilterGLSampler2D log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color", 0);
-    filteringProgram.relink();
-    glw::bind_program(0);
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex", 0);
-    filteringProgram.uniform("scale", scale);
-    glw::bind_program(0);
+    technique.bind();
+    technique.setUniform("u_tex", 0);
+    technique.setUniform("scale", scale);
+    technique.unbind();
 }
 
 ImageGL *FilterGLSampler2D::Process(ImageGLVec imgIn, ImageGL *imgOut)
@@ -151,7 +141,7 @@ ImageGL *FilterGLSampler2D::Process(ImageGLVec imgIn, ImageGL *imgOut)
     glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 
     //Shaders
-    glw::bind_program(filteringProgram);
+    technique.bind();
 
     //Textures
     glActiveTexture(GL_TEXTURE0);
@@ -164,7 +154,7 @@ ImageGL *FilterGLSampler2D::Process(ImageGLVec imgIn, ImageGL *imgOut)
     fbo->unbind();
 
     //Shaders
-    glw::bind_program(0);
+    technique.unbind();
 
     //Textures
     glActiveTexture(GL_TEXTURE0);

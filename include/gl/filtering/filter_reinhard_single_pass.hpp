@@ -191,17 +191,7 @@ void FilterGLReinhardSinglePass::InitShaders()
     printf("Number of samples: %d\n", ms->nSamples);
 #endif
 
-    filteringProgram.setup(glw::version("330"), vertex_source, fragment_source);
-
-#ifdef PIC_DEBUG
-    printf("[filteringProgram log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color",    0);
-    filteringProgram.relink();
-    glw::bind_program(0);
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGLReinhardSinglePass");
 
     Update(-1.0f, -1.0f, 1.0f);
 }
@@ -235,21 +225,21 @@ void FilterGLReinhardSinglePass::Update(float sigma_s, float sigma_r, float Lwa)
     float sigmas2 = 2.0f * this->sigma_s * this->sigma_s;
     float sigmar2 = 2.0f * this->sigma_r * this->sigma_r;
 
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex",       0);
-    filteringProgram.uniform("u_poisson",   1);
-    filteringProgram.uniform("u_rand",      2);
-    filteringProgram.uniform("u_tex_col",   3);
+    technique.bind();
+    technique.setUniform("u_tex",       0);
+    technique.setUniform("u_poisson",   1);
+    technique.setUniform("u_rand",      2);
+    technique.setUniform("u_tex_col",   3);
 
-    filteringProgram.uniform("sigmas2",         sigmas2);
-    filteringProgram.uniform("a",               alpha / Lwa);
-    filteringProgram.uniform("sigmoid_constant", sigmoid_constant);
+    technique.setUniform("sigmas2",         sigmas2);
+    technique.setUniform("a",               alpha / Lwa);
+    technique.setUniform("sigmoid_constant", sigmoid_constant);
 
-    filteringProgram.uniform("sigmar2",         sigmar2);
-    filteringProgram.uniform("kernelSize",      kernelSize);
-    filteringProgram.uniform("kernelSizef",     float(kernelSize));
-    filteringProgram.uniform("nSamples",        ms->nSamples >> 1);
-    glw::bind_program(0);
+    technique.setUniform("sigmar2",         sigmar2);
+    technique.setUniform("kernelSize",      kernelSize);
+    technique.setUniform("kernelSizef",     float(kernelSize));
+    technique.setUniform("nSamples",        ms->nSamples >> 1);
+    technique.unbind();
 }
 
 //Processing
@@ -284,7 +274,7 @@ ImageGL *FilterGLReinhardSinglePass::Process(ImageGLVec imgIn,
     glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 
     //Shaders
-    glw::bind_program(filteringProgram);
+    technique.bind();
 
     //Textures
     glActiveTexture(GL_TEXTURE3);
@@ -306,7 +296,7 @@ ImageGL *FilterGLReinhardSinglePass::Process(ImageGLVec imgIn,
     fbo->unbind();
 
     //Shaders
-    glw::bind_program(0);
+    technique.unbind();
 
     //Textures
     glActiveTexture(GL_TEXTURE3);

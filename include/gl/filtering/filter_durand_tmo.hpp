@@ -122,16 +122,7 @@ void FilterGLDurandTMO::FragmentShader()
 
 void FilterGLDurandTMO::InitShaders()
 {
-    filteringProgram.setup(glw::version("330"), vertex_source, fragment_source);
-
-#ifdef PIC_DEBUG
-    printf("[FilterGLDurandTMO log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color",    0);
-    filteringProgram.relink();
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGLDurandTMO");
 
     Update(compression_factor, log_absolute);
 }
@@ -141,13 +132,13 @@ void FilterGLDurandTMO::Update(float compression_factor, float log_absolute)
     this->compression_factor = compression_factor;
     this->log_absolute = log_absolute;
 
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex", 0);
-    filteringProgram.uniform("u_lum_log", 1);
-    filteringProgram.uniform("u_base", 2);
-    filteringProgram.uniform("compression_factor", compression_factor);
-    filteringProgram.uniform("log_absolute", log_absolute);
-    glw::bind_program(0);   
+    technique.bind();
+    technique.setUniform("u_tex", 0);
+    technique.setUniform("u_lum_log", 1);
+    technique.setUniform("u_base", 2);
+    technique.setUniform("compression_factor", compression_factor);
+    technique.setUniform("log_absolute", log_absolute);
+    technique.unbind();
 }
 
 } // end namespace pic

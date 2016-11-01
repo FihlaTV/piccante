@@ -30,7 +30,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "gl/image_vec.hpp"
 #include "util/gl/quad.hpp"
 
-#include "externals/glw/program.hpp"
+#include "gl/technique.hpp"
 
 namespace pic {
 
@@ -49,7 +49,6 @@ protected:
     //Shaders
     TechniqueGL technique;
 
-    glw::program filteringProgram;
     GLenum target;
 
     ImageGLVec param;

@@ -183,34 +183,24 @@ void FilterGLDisp::InitShaders()
     }
                       );
 
-    std::string prefix;
-    prefix += glw::version("150");
-    prefix += glw::ext_require("GL_EXT_gpu_shader4");
-
-    filteringProgram.setup(prefix, vertex_source, fragment_source);
-#ifdef PIC_DEBUG
-    printf("[filteringProgram log]\n%s\n", filteringProgram.log().c_str());
-#endif
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color",    0);
-    filteringProgram.relink();
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGLDisp");
 
     float sigma_s2 = 2.0f * sigma_s * sigma_s;
     float sigma_r2 = 2.0f * sigma_r * sigma_r;
     int halfKernelSize = PrecomputedGaussian::KernelSize(sigma_s) >> 1;
 
-    filteringProgram.uniform("sigma_s2",	sigma_s2);
-    filteringProgram.uniform("sigma_r2",	sigma_r2);
-    filteringProgram.uniform("sigma",		sigma * sigma * 2.0f);
-    filteringProgram.uniform("halfKernelSize", halfKernelSize);
-    filteringProgram.uniform("bUse", 1.0f);
-    filteringProgram.uniform("bLeft", -1.0f);
+    technique.bind();
+    technique.setUniform("sigma_s2",	sigma_s2);
+    technique.setUniform("sigma_r2",	sigma_r2);
+    technique.setUniform("sigma",		sigma * sigma * 2.0f);
+    technique.setUniform("halfKernelSize", halfKernelSize);
+    technique.setUniform("bUse", 1.0f);
+    technique.setUniform("bLeft", -1.0f);
 
-    filteringProgram.uniform("u_texL",      0);
-    filteringProgram.uniform("u_texR",      1);
-    filteringProgram.uniform("u_texD",      2);
-    glw::bind_program(0);
+    technique.setUniform("u_texL",      0);
+    technique.setUniform("u_texR",      1);
+    technique.setUniform("u_texD",      2);
+    technique.unbind();
 }
 
 void FilterGLDisp::Update(float sigma, float sigma_s, float sigma_r, bool bUse,
@@ -225,28 +215,28 @@ void FilterGLDisp::Update(float sigma, float sigma_s, float sigma_r, bool bUse,
     float sigma_s2 = 2.0f * sigma_s * sigma_s;
     float sigma_r2 = 2.0f * sigma_r * sigma_r;
 
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_texL",      0);
-    filteringProgram.uniform("u_texR",      1);
-    filteringProgram.uniform("u_texD",      2);
-    filteringProgram.uniform("sigma_s2",	sigma_s2);
-    filteringProgram.uniform("sigma_r2",	sigma_r2);
+    technique.bind();
+    technique.setUniform("u_texL",      0);
+    technique.setUniform("u_texR",      1);
+    technique.setUniform("u_texD",      2);
+    technique.setUniform("sigma_s2",	sigma_s2);
+    technique.setUniform("sigma_r2",	sigma_r2);
 
     if(bUse) {
-        filteringProgram.uniform("bUse", 1.0f);
+        technique.setUniform("bUse", 1.0f);
     } else {
-        filteringProgram.uniform("bUse", 0.0f);
+        technique.setUniform("bUse", 0.0f);
     }
 
     if(bLeft) {
-        filteringProgram.uniform("bLeft", 1.0f);
+        technique.setUniform("bLeft", 1.0f);
     } else {
-        filteringProgram.uniform("bLeft", -1.0f);
+        technique.setUniform("bLeft", -1.0f);
     }
 
-    filteringProgram.uniform("sigma",		sigma * sigma * 2.0f);
-    filteringProgram.uniform("halfKernelSize", halfKernelSize);
-    glw::bind_program(0);
+    technique.setUniform("sigma",		sigma * sigma * 2.0f);
+    technique.setUniform("halfKernelSize", halfKernelSize);
+    technique.unbind();
 }
 
 } // end namespace pic

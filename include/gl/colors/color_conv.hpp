@@ -20,7 +20,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <string>
 
-#include "externals/glw/program.hpp"
+#include "gl/technique.hpp"
 
 namespace pic {
 
@@ -32,7 +32,7 @@ class ColorConvGL
 protected:
     bool direct;
 
-    glw::program programs[2];
+    TechniqueGL techniques[2];
 
 public:
 
@@ -63,32 +63,18 @@ public:
     void generatePrograms(std::string vertex_source)
     {
         //direct transform
-        programs[0].setup(glw::version("330"), vertex_source, getDirectFunction());
+        techniques[0].initStandard("330", vertex_source, getDirectFunction(), "ColorConv (direct)");
 
-        #ifdef PIC_DEBUG
-            printf("[ColorConv direct log]\n%s\n", programs[0].log().c_str());
-        #endif
-
-        glw::bind_program(programs[0]);
-        programs[0].attribute_source("a_position", 0);
-        programs[0].fragment_target("f_color", 0);
-        programs[0].relink();
-        programs[0].uniform("u_tex", 0);
-        glw::bind_program(0);
+        techniques[0].bind();
+        techniques[0].setUniform("u_tex", 0);
+        techniques[0].unbind();
 
         //inverse transform
-        programs[1].setup(glw::version("330"), vertex_source, getInverseFunction());
+        techniques[1].initStandard("330", vertex_source, getInverseFunction(), "ColorConv (inverse)");
 
-        #ifdef PIC_DEBUG
-            printf("[ColorConv inverse log]\n%s\n", programs[1].log().c_str());
-        #endif
-
-        glw::bind_program(programs[1]);
-        programs[1].attribute_source("a_position", 0);
-        programs[1].fragment_target("f_color", 0);
-        programs[1].relink();
-        programs[1].uniform("u_tex", 0);
-        glw::bind_program(0);
+        techniques[1].bind();
+        techniques[1].setUniform("u_tex", 0);
+        techniques[1].unbind();
     }
 
     /**
@@ -106,9 +92,9 @@ public:
     void bindProgram()
     {
         if(direct) {
-            glw::bind_program(programs[0]);
+            techniques[0].bind();
         } else {
-            glw::bind_program(programs[1]);
+            techniques[1].bind();
         }
     }
 
@@ -117,7 +103,11 @@ public:
      */
     void unbindProgram()
     {
-        glw::bind_program(0);
+        if(direct) {
+            techniques[0].unbind();
+        } else {
+            techniques[1].unbind();
+        }
     }
     
     /**

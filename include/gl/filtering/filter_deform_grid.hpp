@@ -105,17 +105,7 @@ void FilterGLDeformGrid::InitShaders()
     }
                       );
 
-    filteringProgram.setup(glw::version("330"), vertex_source, fragment_source);
-
-#ifdef PIC_DEBUG
-    printf("[FilterGLDeformGrid log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color", 0);
-    filteringProgram.relink();
-    glw::bind_program(0);
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGLDeformGrid");
 
     Update(NULL);
 }
@@ -132,10 +122,10 @@ void FilterGLDeformGrid::Update(Image *grid_move)
         grid_diff_gl->loadFromMemory();
     }
 
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex", 0);
-    filteringProgram.uniform("u_grid", 1);
-    glw::bind_program(0);
+    technique.bind();
+    technique.setUniform("u_tex", 0);
+    technique.setUniform("u_grid", 1);
+    technique.unbind();
 }
 
 } // end namespace pic

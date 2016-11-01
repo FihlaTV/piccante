@@ -149,21 +149,8 @@ void FilterGLAnisotropicDiffusion::FragmentShader()
 
 void FilterGLAnisotropicDiffusion::InitShaders()
 {
-
     FragmentShader();
-
-    std::string prefix;
-
-    filteringProgram.setup(glw::version("330"), vertex_source, fragment_source);
-
-#ifdef PIC_DEBUG
-    printf("[filteringProgram log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color",    0);
-    filteringProgram.relink();
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGLAnisotropicDiffusion");
     Update(k);
 }
 
@@ -175,11 +162,11 @@ void FilterGLAnisotropicDiffusion::Update(float k)
 
     float k2 = this->k * this->k;
 
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex",      0);
-    filteringProgram.uniform("k2",		k2);
-    filteringProgram.uniform("delta_t",	delta_t);
-    glw::bind_program(0);
+    technique.bind();
+    technique.setUniform("u_tex",      0);
+    technique.setUniform("k2",		k2);
+    technique.setUniform("delta_t",	delta_t);
+    technique.unbind();
 }
 
 //Processing
@@ -208,7 +195,7 @@ ImageGL *FilterGLAnisotropicDiffusion::Process(ImageGLVec imgIn,
     glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 
     //Shaders
-    glw::bind_program(filteringProgram);
+    technique.bind();
 
     //Textures
     glActiveTexture(GL_TEXTURE0);
@@ -221,7 +208,7 @@ ImageGL *FilterGLAnisotropicDiffusion::Process(ImageGLVec imgIn,
     fbo->unbind();
 
     //Shaders
-    glw::bind_program(0);
+    technique.unbind();
 
     //Textures
     glBindTexture(GL_TEXTURE_2D, 0);

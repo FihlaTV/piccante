@@ -92,7 +92,7 @@ public:
     void setSlice2(int slice)
     {
         this->slice = slice;
-        filteringProgram.uniform("slice", slice);
+        technique.setUniform("slice", slice);
     }
 
     /**
@@ -154,32 +154,22 @@ void FilterGL1D::ChangePass(int pass, int tPass)
 
 void FilterGL1D::SetUniform()
 {
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex", 0);
-    SetUniformAux();
-    filteringProgram.uniform("iX", dirs[0]);
-    filteringProgram.uniform("iY", dirs[1]);
+    technique.bind();
+    technique.setUniform("u_tex", 0);
+    technique.setUniform("iX", dirs[0]);
+    technique.setUniform("iY", dirs[1]);
 
     if(target == GL_TEXTURE_3D || target == GL_TEXTURE_2D_ARRAY) {
-        filteringProgram.uniform("iZ", dirs[2]);
-        filteringProgram.uniform("slice", slice);
+        technique.setUniform("iZ", dirs[2]);
+        technique.setUniform("slice", slice);
     }
 
-    glw::bind_program(0);
+    technique.unbind();
 }
 
 void FilterGL1D::InitShaders()
 {
-    filteringProgram.setup(glw::version("330"), vertex_source, fragment_source);
-
-#ifdef PIC_DEBUG
-    printf("[FilterGL1D shader log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color", 0);
-    filteringProgram.relink();
+    technique.initStandard("410", vertex_source, fragment_source, "FilterGL1D");
 
     SetUniform();
 }
@@ -218,7 +208,8 @@ ImageGL *FilterGL1D::Process(ImageGLVec imgIn, ImageGL *imgOut)
     glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 
     //Shaders
-    glw::bind_program(filteringProgram);
+    technique.bind();
+//    glw::bind_program(filteringProgram);
 
     //Rendering
     fbo->bind2();
@@ -235,7 +226,7 @@ ImageGL *FilterGL1D::Process(ImageGLVec imgIn, ImageGL *imgOut)
     fbo->unbind2();
 
     //Shaders
-    glw::bind_program(0);
+    technique.unbind();
 
     //Textures
     if(weights != NULL) {

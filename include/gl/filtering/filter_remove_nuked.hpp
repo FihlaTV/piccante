@@ -111,17 +111,7 @@ void FilterGLRemoveNuked::FragmentShader()
 
 void FilterGLRemoveNuked::InitShaders()
 {
-    filteringProgram.setup(glw::version("330"), vertex_source, fragment_source);
-
-#ifdef PIC_DEBUG
-    printf("[FilterGLRemoveNuked log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color",    0);
-    filteringProgram.relink();
-    glw::bind_program(0);
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGLRemoveNuked");
 
     Update(-1.0f);
 }
@@ -132,10 +122,10 @@ void FilterGLRemoveNuked::Update(float threshold)
         this->threshold = threshold;
     }
 
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex",      0);
-    filteringProgram.uniform("threshold",  this->threshold);
-    glw::bind_program(0);
+    technique.bind();
+    technique.setUniform("u_tex",      0);
+    technique.setUniform("threshold",  this->threshold);
+    technique.unbind();
 }
 
 } // end namespace pic

@@ -114,28 +114,17 @@ void FilterGLExposureFusionWeights::InitShaders()
 {
     FragmentShader();
 
-    filteringProgram.setup(glw::version("330"), vertex_source, fragment_source);
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGLExposureFusionWeights");
 
-#ifdef PIC_DEBUG
-    printf("[FilterGLExposureFusionWeights log]\n%s\n", filteringProgram.log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color",    0);
-    filteringProgram.relink();
-
-    glw::bind_program(0);
-
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex_lum", 0);
-    filteringProgram.uniform("u_tex", 1);
-    filteringProgram.uniform("wC", wC);
-    filteringProgram.uniform("wE", wE);
-    filteringProgram.uniform("wS", wS);
-    filteringProgram.uniform("mu", mu);
-    filteringProgram.uniform("sigma2", sigma2);
-    glw::bind_program(0);
+    technique.bind();
+    technique.setUniform("u_tex_lum", 0);
+    technique.setUniform("u_tex", 1);
+    technique.setUniform("wC", wC);
+    technique.setUniform("wE", wE);
+    technique.setUniform("wS", wS);
+    technique.setUniform("mu", mu);
+    technique.setUniform("sigma2", sigma2);
+    technique.unbind();
 }
 
 } // end namespace pic

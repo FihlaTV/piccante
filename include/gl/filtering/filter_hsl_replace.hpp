@@ -105,19 +105,14 @@ void FilterGLHSLReplace::InitShaders()
     final_fragment_source += ColorConvGLRGBtoHSL::getInverse();
     final_fragment_source += fragment_source;
 
-    filteringProgram.setup(glw::version("330"), vertex_source, final_fragment_source);
-#ifdef PIC_DEBUG
-    printf("[FilterGLHSLReplace log]\n%s\n", filteringProgram.log().c_str());
-#endif
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color",    0);
-    filteringProgram.relink();
-    filteringProgram.uniform("u_tex",      0);
-    filteringProgram.uniform("u_change",   1);
-    filteringProgram.uniform("delta_hue",  delta_hue);
-    filteringProgram.uniform("delta_saturation",  delta_saturation);
-    glw::bind_program(0);
+    technique.initStandard("330", vertex_source, final_fragment_source, "FilterGLGradient");
+
+    technique.bind();
+    technique.setUniform("u_tex",      0);
+    technique.setUniform("u_change",   1);
+    technique.setUniform("delta_hue",  delta_hue);
+    technique.setUniform("delta_saturation",  delta_saturation);
+    technique.unbind();
 }
 
 } // end namespace pic

@@ -104,17 +104,17 @@ void FilterGLDownPP::InitShaders()
     }
                       );
 
-    filteringProgram.setup(glw::version("330"), vertex_source, fragment_source);
+    technique.init("330", vertex_source, fragment_source);
 
 #ifdef PIC_DEBUG
-    printf("[FilterGLDownPP log]\n%s\n", filteringProgram.log().c_str());
+    technique.printLog("FilterGLDownPP");
 #endif
 
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color", 0);
-    filteringProgram.relink();
-    glw::bind_program(0);
+    technique.bind();
+    technique.setAttributeIndex("a_position", 0);
+    technique.setOutputFragmentShaderIndex("f_color", 0);
+    technique.link();
+    technique.unbind();
 }
 
 /**
@@ -140,11 +140,11 @@ void FilterGLDownPP::Update(float *value, float threshold)
         this->threshold = 1e-4f;
     }
 
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex", 0);
-    filteringProgram.uniform("threshold", this->threshold);
-    filteringProgram.uniform4("value", this->value);
-    glw::bind_program(0);
+    technique.bind();
+    technique.setUniform("u_tex", 0);
+    technique.setUniform("threshold", this->threshold);
+    technique.setUniform4("value", this->value);
+    technique.unbind();
 }
 
 ImageGL *FilterGLDownPP::Process(ImageGLVec imgIn, ImageGL *imgOut)
@@ -177,7 +177,7 @@ ImageGL *FilterGLDownPP::Process(ImageGLVec imgIn, ImageGL *imgOut)
     glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 
     //Shaders
-    glw::bind_program(filteringProgram);
+    technique.bind();
 
     //Textures
     glActiveTexture(GL_TEXTURE0);
@@ -190,7 +190,7 @@ ImageGL *FilterGLDownPP::Process(ImageGLVec imgIn, ImageGL *imgOut)
     fbo->unbind();
 
     //Shaders
-    glw::bind_program(0);
+    technique.unbind();
 
     //Textures
     glActiveTexture(GL_TEXTURE0);
