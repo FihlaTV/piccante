@@ -47,6 +47,9 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "externals/glw/program.hpp"
 #include "externals/glw/utility.hpp"
 
+#include "gl/program.hpp"
+#include "gl/technique.hpp"
+
 #include "gl/algorithms/pyramid.hpp"
 #include "gl/algorithms/pushpull.hpp"
 #include "gl/algorithms/color_to_gray.hpp"

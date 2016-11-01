@@ -47,6 +47,8 @@ protected:
     QuadGL *quad;
 
     //Shaders
+    TechniqueGL technique;
+
     glw::program filteringProgram;
     GLenum target;
 
@@ -181,7 +183,8 @@ ImageGL *FilterGL::Process(ImageGLVec imgIn, ImageGL *imgOut)
     glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 
     //Shaders
-    glw::bind_program(filteringProgram);
+//    glw::bind_program(filteringProgram);
+    technique.bind();
 
     //Textures
     unsigned int n = imgIn.size();
