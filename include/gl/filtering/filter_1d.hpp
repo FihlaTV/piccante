@@ -156,6 +156,8 @@ void FilterGL1D::SetUniform()
 {
     technique.bind();
     technique.setUniform("u_tex", 0);
+    SetUniformAux();
+
     technique.setUniform("iX", dirs[0]);
     technique.setUniform("iY", dirs[1]);
 
@@ -169,7 +171,7 @@ void FilterGL1D::SetUniform()
 
 void FilterGL1D::InitShaders()
 {
-    technique.initStandard("410", vertex_source, fragment_source, "FilterGL1D");
+    technique.initStandard("330", vertex_source, fragment_source, "FilterGL1D");
 
     SetUniform();
 }

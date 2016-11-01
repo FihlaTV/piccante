@@ -93,7 +93,7 @@ void FilterGLSlicer::FragmentShader()
 
 void FilterGLSlicer::InitShaders()
 {
-    technique.initStandard("410", vertex_source, fragment_source, "FilterGLSlicer");
+    technique.initStandard("400", vertex_source, fragment_source, "FilterGLSlicer");
 
     Update(s_S, s_R);
 }
