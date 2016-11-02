@@ -15,8 +15,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 */
 
-#ifndef PIC_GL_PROGRAM_HPP
-#define PIC_GL_PROGRAM_HPP
+#ifndef PIC_UTIL_GL_PROGRAM_HPP
+#define PIC_UTIL_GL_PROGRAM_HPP
 
 #include <string>
 
@@ -233,9 +233,10 @@ public:
     {
         printf("%s", log.c_str());
     }
+
 };
 
 } // end namespace pic
 
-#endif /* PIC_GL_PROGRAM_HPP */
+#endif /* PIC_UTIL_GL_PROGRAM_HPP */
 

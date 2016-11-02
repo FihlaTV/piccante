@@ -50,8 +50,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
     #include "externals/glw/utility.hpp"
 #endif
 
-#include "gl/program.hpp"
-#include "gl/technique.hpp"
+#include "util/gl/program.hpp"
+#include "util/gl/technique.hpp"
 
 #include "gl/algorithms/pyramid.hpp"
 #include "gl/algorithms/pushpull.hpp"

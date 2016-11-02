@@ -29,6 +29,9 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "util/file_lister.hpp"
 
 #ifndef PIC_DISABLE_OPENGL
+#include "util/gl/program.hpp"
+#include "util/gl/technique.hpp"
+#include "util/gl/ssbo.hpp"
 #include "util/gl/stroke.hpp"
 #include "util/gl/fbo.hpp"
 #include "util/gl/formats.hpp"

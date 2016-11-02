@@ -15,8 +15,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 */
 
-#ifndef PIC_GL_TECHNIQUE_HPP
-#define PIC_GL_TECHNIQUE_HPP
+#ifndef PIC_UTIL_GL_TECHNIQUE_HPP
+#define PIC_UTIL_GL_TECHNIQUE_HPP
 
 #include <string>
 
@@ -320,9 +320,18 @@ public:
                      GLsizei(1),
                      (const GLfloat *)value);
     }
+
+    #ifdef OPEN_GL_4_30
+    void setSSBOIndex(const char *ssbo_name, unsigned int index)
+    {
+        GLunit block_index = 0;
+        block_index = glGetProgramResourceIndex(main, GL_SHADER_STORAGE_BLOCK, ssbo_name);
+        glShaderStorageBlockBinding(program, block_index, index);
+    }
+    #endif
 };
 
 } // end namespace pic
 
-#endif /* PIC_GL_TECHNIQUE_HPP */
+#endif /* PIC_UTIL_GL_TECHNIQUE_HPP */
 
