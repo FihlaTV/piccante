@@ -43,6 +43,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #endif /* os selection */
 
 #ifdef PIC_DEPRECATE_CODE
+    #pragma message("GLW is deprecated. It will be removed in the next version!")
+    #warning "GLW is deprecated. It will be removed in the next version!"
     #include "externals/glw/base.hpp"
     #include "externals/glw/program.hpp"
     #include "externals/glw/utility.hpp"
