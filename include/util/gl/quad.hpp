@@ -22,7 +22,7 @@ namespace pic {
 
 #include <string>
 
-#include "gl/technique.hpp"
+#include "util/gl/technique.hpp"
 
 /**
  * @brief The QuadGL class

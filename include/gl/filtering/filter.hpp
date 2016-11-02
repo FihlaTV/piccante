@@ -28,9 +28,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #define PIC_GL_FILTERING_FILTER_HPP
 
 #include "gl/image_vec.hpp"
+#include "util/gl/technique.hpp"
 #include "util/gl/quad.hpp"
-
-#include "gl/technique.hpp"
 
 namespace pic {
 

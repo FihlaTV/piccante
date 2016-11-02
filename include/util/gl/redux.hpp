@@ -18,12 +18,11 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #ifndef PIC_UTIL_GL_REDUX_HPP
 #define PIC_UTIL_GL_REDUX_HPP
 
+#include "util/gl/technique.hpp"
 #include "util/gl/fbo.hpp"
 #include "util/gl/quad.hpp"
 
 namespace pic {
-
-#include "gl/technique.hpp"
 
 /**
  * @brief The ReduxGL class
