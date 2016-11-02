@@ -33,7 +33,7 @@ inline GLuint glBeginTimeQuery()
 	#ifndef PIC_DISABLE_OPENGL_NON_CORE
 		glGenQueries(1, &ret);
 		glFinish();
-	    glBeginQuery(GL_TIME_ELAPSED_EXT, ret);
+        glBeginQuery(GL_TIME_ELAPSED, ret);
     #endif
     return ret;
 }
@@ -43,14 +43,15 @@ inline GLuint glBeginTimeQuery()
  * @param ret
  * @return
  */
-inline GLuint glEndTimeQuery(GLuint ret)
+inline GLuint64 glEndTimeQuery(GLuint64 ret)
 {
-    GLuint timeVal = 0;
+    GLuint64 timeVal = 0;
     //Timing
     #ifndef PIC_DISABLE_OPENGL_NON_CORE
-	    glEndQuery(GL_TIME_ELAPSED_EXT);
-	    glGetQueryObjectui64vEXT(ret, GL_QUERY_RESULT, &timeVal);
+        glEndQuery(GL_TIME_ELAPSED);
+        glGetQueryObjectui64v(ret, GL_QUERY_RESULT, &timeVal);
     #endif
+
     return timeVal;
 }
 

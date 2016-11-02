@@ -18,11 +18,5 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #ifndef PIC_FEATURES_EXTERNALS_HPP
 #define PIC_FEATURES_EXTERNALS_HPP
 
-#ifndef PIC_DISABLE_OPENGL
-
-#include "externals/glw/base.hpp"
-#include "externals/glw/program.hpp"
-#include "externals/glw/utility.hpp"
-#endif /* PIC_DISABLE_OPENGL */
 
 #endif // PIC_FEATURES_EXTERNALS_HPP
