@@ -18,14 +18,15 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #ifndef PIC_UTIL_POLYNOMIAL_HPP
 #define PIC_UTIL_POLYNOMIAL_HPP
 
-
-#ifndef PIC_DISABLE_EIGEN
-
 #include <vector>
 
-#include "externals/Eigen/QR"
+#ifndef PIC_DISABLE_EIGEN
+    #include "externals/Eigen/QR"
+#endif
 
 namespace pic {
+
+#ifndef PIC_DISABLE_EIGEN
 
 /**
  * @brief polynomialFit
@@ -72,6 +73,8 @@ std::vector<float> polynomialFit(std::vector<float> &x, std::vector<float> &y, u
     return poly;
 }
 
+#endif
+
 /**
  * @brief polyval
  * @param poly
@@ -89,7 +92,5 @@ float polynomialVal(std::vector< float > & poly, float x)
 }
 
 } // end namespace pic
-
-#endif
 
 #endif //PIC_UTIL_POLYNOMIAL_HPP

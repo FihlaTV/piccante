@@ -93,19 +93,23 @@ public:
                     std::string fragment_shader_source,
                     std::string name)
     {
-        this->init(version_number,
-                   vertex_shader_source,
-                   fragment_shader_source);
+        bool bCheck = this->init(version_number,
+                                vertex_shader_source,
+                                fragment_shader_source);
 
     #ifdef PIC_DEBUG
         this->printLog(name);
     #endif
 
-        this->bind();
-        this->setAttributeIndex("a_position", 0);
-        this->setOutputFragmentShaderIndex("f_color", 0);
-        this->link();
-        this->unbind();
+        if (bCheck) {
+            this->bind();
+            this->setAttributeIndex("a_position", 0);
+            this->setOutputFragmentShaderIndex("f_color", 0);
+            this->link();
+            this->unbind();
+        }
+
+        return bCheck;
     }
 
     /**
@@ -123,7 +127,7 @@ public:
                        std::string geometry_shader_source,
                        std::string name)
     {
-        this->init(version_number,
+        bool bCheck = this->init(version_number,
                    vertex_shader_source,
                    fragment_shader_source,
                    geometry_shader_source);
@@ -131,12 +135,15 @@ public:
     #ifdef PIC_DEBUG
         this->printLog(name);
     #endif
+        if (bCheck) {
+            this->bind();
+            this->setAttributeIndex("a_position", 0);
+            this->setOutputFragmentShaderIndex("f_color", 0);
+            this->link();
+            this->unbind();
+        }
 
-        this->bind();
-        this->setAttributeIndex("a_position", 0);
-        this->setOutputFragmentShaderIndex("f_color", 0);
-        this->link();
-        this->unbind();
+        return bCheck;
     }
 
     /**

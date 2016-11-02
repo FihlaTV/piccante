@@ -43,9 +43,9 @@ inline GLuint glBeginTimeQuery()
  * @param ret
  * @return
  */
-inline GLuint64 glEndTimeQuery(GLuint ret)
+inline GLuint glEndTimeQuery(GLuint ret)
 {
-    GLuint64 timeVal = 0;
+    GLuint timeVal = 0;
     //Timing
     #ifndef PIC_DISABLE_OPENGL_NON_CORE
 	    glEndQuery(GL_TIME_ELAPSED_EXT);
