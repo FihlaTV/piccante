@@ -48,6 +48,13 @@ public:
 
     }
 
+    ~TechniqueGL()
+    {
+        for(unsigned int i = 0; i < shaders.size(); i++) {
+            delete shaders[i];
+        }
+    }
+
     bool init( std::string version_number,
                std::string vertex_shader_source,
                std::string fragment_shader_source)
@@ -57,9 +64,7 @@ public:
         shaders.push_back(vss);
         shaders.push_back(fss);
 
-        bool bCheck = main.setupProgram(shaders);
-
-        return bCheck;
+        return main.initProgram(shaders);
     }
 
     bool init( std::string version_number,
@@ -75,9 +80,18 @@ public:
         shaders.push_back(gss);
         shaders.push_back(fss);
 
-        bool bCheck = main.setupProgram(shaders);
+        return main.initProgram(shaders);
+    }
 
-        return bCheck;
+    bool initCompute(std::string version_number,
+                     std::string compute_shader_source)
+    {
+        #ifdef OPEN_GL_4_30
+            ProgramGL *css = new ProgramGL(version_number, "", compute_shader_source, GL_COMPUTE_SHADER);
+            shaders.push_back(css);
+        #endif
+
+        return main.initProgram(shaders);
     }
 
     /**
@@ -154,10 +168,10 @@ public:
     {
         printf("\nLog for: %s\n", name.c_str());
         for(unsigned int i = 0; i < shaders.size(); i++) {
-            printf("%s", shaders[i]->log.c_str());
+            shaders[i]->printLog();
         }
 
-        printf("%s", main.log.c_str());
+        main.printLog();
     }
 
     /**

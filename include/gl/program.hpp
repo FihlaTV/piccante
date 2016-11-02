@@ -29,6 +29,8 @@ protected:
     GLenum type;
     GLuint object;
     std::string source;
+    std::string log;
+    bool bType;
 
     /**
      * @brief checkShaderStatus
@@ -101,11 +103,10 @@ protected:
     }
 
 public:
-    std::string log;
 
     ProgramGL()
     {
-        SetNULL();
+        setNULL();
     }
 
     ProgramGL( std::string version,
@@ -113,28 +114,36 @@ public:
                std::string source,
                GLenum type)
     {
-        SetNULL();
-        setupShader(version, extensions, source, type);
+        setNULL();
+        initShader(version, extensions, source, type);
     }
 
     ProgramGL(std::vector<ProgramGL*> &shaders)
     {
-        setupProgram(shaders);
+        initProgram(shaders);
     }
 
     ~ProgramGL()
     {
-        if(this->object != 0) {
-            glDeleteShader(object);
-            this->object = 0;
+        if(object != 0) {
+            if(bType) {
+                glDeleteShader(object);
+            } else {
+                glDeleteProgram(object);
+            }
+            object = 0;
         }
+
+        log.clear();
+        source.clear();
     }
 
     /**
      * @brief SetNULL
      */
-    void SetNULL()
+    void setNULL()
     {
+        this->bType = true;
         this->type = 0;
         this->object = 0;
         this->log = "";
@@ -152,12 +161,13 @@ public:
     }
 
     /**
-     * @brief setupProgram
+     * @brief initProgram
      * @param shaders
      * @return
      */
-    bool setupProgram(std::vector<ProgramGL*> &shaders)
+    bool initProgram(std::vector<ProgramGL*> &shaders)
     {
+        bType = false;
         object = glCreateProgram();
 
         for(unsigned int i = 0; i < shaders.size(); i++)
@@ -174,19 +184,20 @@ public:
     }
 
     /**
-     * @brief setupShader
+     * @brief initShader
      * @param version
      * @param extensions
      * @param source
      * @param type
      * @return
      */
-    bool setupShader( std::string version_number,
+    bool initShader( std::string version_number,
                 std::string extensions,
                 std::string source,
                 GLenum type)
     {
         this->type = type;
+        this->bType = true;
 
         object = glCreateShader(type);
 
@@ -209,20 +220,19 @@ public:
         }
 
         const GLchar *tmp = (const GLchar *) this->source.c_str();
-        glShaderSource(object, 1, &tmp, 0);
+        glShaderSource(object, 1, &tmp, NULL);
         glCompileShader(object);
 
         return checkShaderStatus();
     }
 
-/*
-    inline void program::uniform(const char *name, int v0)
+    /**
+     * @brief printLog
+     */
+    void printLog()
     {
-        glUniform1i(getLocation(name), GLint(v0));
-
-        this->uniform(this->uniform_location(name), v0);
+        printf("%s", log.c_str());
     }
-*/
 };
 
 } // end namespace pic
