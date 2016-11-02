@@ -64,7 +64,7 @@ protected:
         img.generateTextureGL();
 
         //creating a screen aligned quad
-        pic::QuadGL::getTechnique(&technique,
+        pic::QuadGL::getTechnique(technique,
                                 pic::QuadGL::getVertexProgramV3(),
                                 pic::QuadGL::getFragmentProgramForView());
 
@@ -100,7 +100,7 @@ protected:
         imgOut = tmo->Process(SingleGL(&img), imgOut);
 
         //visualization
-        quad->Render(&technique, imgOut->getTexture());
+        quad->Render(technique, imgOut->getTexture());
     }
 
 public:

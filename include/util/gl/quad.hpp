@@ -138,9 +138,9 @@ public:
      * @param technque
      * @param texture
      */
-    void Render(TechniqueGL *technique, GLuint texture)
+    void Render(TechniqueGL &technique, GLuint texture)
     {
-        technique->bind();
+        technique.bind();
 
         glEnable(GL_TEXTURE_2D);
         glActiveTexture(GL_TEXTURE0);
@@ -151,7 +151,7 @@ public:
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, 0);
 
-        technique->unbind();
+        technique.unbind();
     }
 
     /**
@@ -306,33 +306,35 @@ public:
      * @param vp_src
      * @param fp_src
      */
-    static void getTechnique(TechniqueGL *ret, std::string vp_src = "", std::string fp_src = "", bool bTextureCoordinates = false)
+    static void getTechnique(TechniqueGL &technique, std::string vp_src = "", std::string fp_src = "", bool bTextureCoordinates = false)
     {
         if(vp_src.empty() || fp_src.empty()) {
-            ret->init("330", getVertexProgramV3(), getFragmentProgram());
+            technique.init("330", getVertexProgramV3(), getFragmentProgram());
         } else {
-            ret->init("330", vp_src, fp_src);
+            technique.init("330", vp_src, fp_src);
         }
 
         #ifdef PIC_DEBUG
-            ret->printLog("QuadGL");
+            technique.printLog("QuadGL");
         #endif
 
-        ret->bind();
-        ret->setAttributeIndex("a_position", 0);
+        technique.bind();
+        technique.setAttributeIndex("a_position", 0);
         if(bTextureCoordinates) {
-            ret->setAttributeIndex("a_tex_coord", 1);
+            technique.setAttributeIndex("a_tex_coord", 1);
         }
-        ret->setOutputFragmentShaderIndex("f_color", 0);
-        ret->link();
-        ret->unbind();
+        technique.setOutputFragmentShaderIndex("f_color", 0);
+        technique.link();
+        technique.unbind();
 
-        ret->bind();
-        ret->setUniform("u_tex", 0);
-        ret->unbind();
+        technique.bind();
+        technique.setUniform("u_tex", 0);
+        technique.unbind();
     }
 
-    /**Draw: draw using compability mode (deprecated!)*/
+    /**
+     * @brief Draw: draw using compability mode (deprecated!)
+     */
     static void Draw()
     {
         glDisable(GL_DEPTH_TEST);
@@ -435,7 +437,7 @@ public:
      * @param height
      * @param pg
      */
-    static void Draw(GLuint texture, int width, int height, glw::program &pg)
+    static void Draw(GLuint texture, int width, int height, TechniqueGL &technique)
     {
         glFrontFace(GL_CW);
 
@@ -450,7 +452,7 @@ public:
         glDisable(GL_DEPTH_TEST);
         glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 
-        glw::bind_program(pg);
+        technique.bind();
 
         glEnable(GL_TEXTURE_2D);
         glActiveTexture(GL_TEXTURE0);
@@ -470,7 +472,8 @@ public:
         #endif
 
         glDisable(GL_TEXTURE_2D);
-        glw::bind_program(0);
+
+        technique.unbind();
         glEnable(GL_DEPTH_TEST);
     }
 };

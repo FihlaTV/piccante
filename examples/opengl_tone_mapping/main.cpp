@@ -46,7 +46,7 @@ protected:
     pic::DurandTMOGL       *durand_tmo;
 
     pic::ImageGL    img, *img_tmo, *img_tmo_with_sRGB;
-    glw::program    program;
+    pic::TechniqueGL technique;
 
     int    method;
 
@@ -71,7 +71,7 @@ protected:
         img.generateTextureGL();
 
         //creating a screen aligned quad
-        pic::QuadGL::getProgram(program,
+        pic::QuadGL::getTechnique(technique,
                                 pic::QuadGL::getVertexProgramV3(),
                                 pic::QuadGL::getFragmentProgramForView());
 
@@ -138,7 +138,7 @@ protected:
         img_tmo_with_sRGB = tmo->Process(SingleGL(img_tmo), img_tmo_with_sRGB);
 
         //img_tmo_with_sRGB visualization
-        quad->Render(program, img_tmo_with_sRGB->getTexture());
+        quad->Render(technique, img_tmo_with_sRGB->getTexture());
     }
 
 public:

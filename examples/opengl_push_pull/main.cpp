@@ -42,7 +42,7 @@ protected:
     pic::QuadGL *quad;
     pic::FilterGLSimpleTMO *tmo;
     pic::ImageGL img, *imgRec, *img_flt_tmo;
-    glw::program program;
+    pic::TechniqueGL technique;
     int method;
     pic::PushPullGL *pp;
 
@@ -73,7 +73,7 @@ protected:
         img.generateTextureGL();
 
         //creating a screen aligned quad
-        pic::QuadGL::getProgram(program,
+        pic::QuadGL::getTechnique(technique,
                             pic::QuadGL::getVertexProgramV3(),
                             pic::QuadGL::getFragmentProgramForView());
         quad = new pic::QuadGL(true);
@@ -115,7 +115,7 @@ protected:
         }
 
         //visualization
-        quad->Render(program, img_flt_tmo->getTexture());
+        quad->Render(technique, img_flt_tmo->getTexture());
     }
 
 public:

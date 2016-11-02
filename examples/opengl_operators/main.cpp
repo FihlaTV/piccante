@@ -43,7 +43,7 @@ protected:
     pic::FilterGLSimpleTMO *tmo;
 
     pic::ImageGL img, *imgRand, *img_flt_tmo;
-    glw::program    program;
+    pic::TechniqueGL technique;
 
     int method;
 
@@ -73,7 +73,7 @@ protected:
         *imgRand *= 0.1f;
 
         //creating a screen aligned quad
-        pic::QuadGL::getProgram(program,
+        pic::QuadGL::getTechnique(technique,
                                 pic::QuadGL::getVertexProgramV3(),
                                 pic::QuadGL::getFragmentProgramForView());
         quad = new pic::QuadGL(true);
@@ -108,7 +108,7 @@ protected:
         img_flt_tmo = tmo->Process(SingleGL(&img), img_flt_tmo);
 
         //img_flt_tmo visualization
-        quad->Render(program, img_flt_tmo->getTexture());
+        quad->Render(technique, img_flt_tmo->getTexture());
     }
 
 public:

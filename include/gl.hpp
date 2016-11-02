@@ -42,10 +42,11 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #endif /* os selection */
 
-//GLW
-#include "externals/glw/base.hpp"
-#include "externals/glw/program.hpp"
-#include "externals/glw/utility.hpp"
+#ifdef PIC_DEPRECATE_CODE
+    #include "externals/glw/base.hpp"
+    #include "externals/glw/program.hpp"
+    #include "externals/glw/utility.hpp"
+#endif
 
 #include "gl/program.hpp"
 #include "gl/technique.hpp"

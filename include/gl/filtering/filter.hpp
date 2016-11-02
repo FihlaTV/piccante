@@ -182,7 +182,6 @@ ImageGL *FilterGL::Process(ImageGLVec imgIn, ImageGL *imgOut)
     glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 
     //Shaders
-//    glw::bind_program(filteringProgram);
     technique.bind();
 
     //Textures
@@ -206,7 +205,7 @@ ImageGL *FilterGL::Process(ImageGLVec imgIn, ImageGL *imgOut)
     fbo->unbind();
 
     //Shaders
-    glw::bind_program(0);
+    technique.unbind();
 
     //Textures
     for(unsigned int i=0; i< n; i++) {

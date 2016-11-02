@@ -49,7 +49,7 @@ protected:
     pic::FilterGLSimpleTMO *tmo;
     pic::ImageGL    img, *img_tmo;
     pic::ImageGLVec img_vec;
-    glw::program    program;
+    pic::TechniqueGL technique;
 
     unsigned int    method;
 
@@ -73,7 +73,7 @@ protected:
         img.generateTextureGL();
 
         //creating a screen aligned quad
-        pic::QuadGL::getProgram(program,
+        pic::QuadGL::getTechnique(technique,
                                 pic::QuadGL::getVertexProgramV3(),
                                 pic::QuadGL::getFragmentProgramForView());
 
@@ -120,7 +120,7 @@ protected:
         }
 
         //visualization
-        quad->Render(program, img_tmo->getTexture());
+        quad->Render(technique, img_tmo->getTexture());
     }
 
 public:

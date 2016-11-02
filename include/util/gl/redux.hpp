@@ -23,6 +23,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 namespace pic {
 
+#include "gl/technique.hpp"
+
 /**
  * @brief The ReduxGL class
  */
@@ -40,7 +42,7 @@ protected:
 
     //Shaders
     std::string vertex_source, geometry_source, fragment_source, fragment_source_domain_transform;
-    glw::program filteringProgram[2];
+    TechniqueGL techinques[2];
 
     std::string reduxOperation;
 
@@ -275,18 +277,11 @@ void ReduxGL::InitShaders()
     size_t processing_found = fragment_source.find("___REDUX_OPERATION___");
     fragment_source.replace(processing_found, 21, reduxOperation);
 
-    filteringProgram[0].setup(glw::version("330"), vertex_source, fragment_source);
+    techinques[0].initStandard("330", vertex_source, fragment_source, "ReduxGL");
 
-#ifdef PIC_DEBUG
-    printf("[ReduxGL log]\n%s\n", filteringProgram[0].log().c_str());
-#endif
-
-    glw::bind_program(filteringProgram[0]);
-    filteringProgram[0].attribute_source("a_position", 0);
-    filteringProgram[0].fragment_target("f_color", 0);
-    filteringProgram[0].relink();
-    filteringProgram[0].uniform("u_tex", 0);
-    glw::bind_program(0);
+    techinques[0].bind();
+    techinques[0].setUniform("u_tex", 0);
+    techinques[0].unbind();
 
     if(bDomainTransform) {
         size_t processing_found = fragment_source_domain_transform.find("___REDUX_OPERATION___");
@@ -294,18 +289,11 @@ void ReduxGL::InitShaders()
         domain_transform += reduxOperation;
         fragment_source_domain_transform.replace(processing_found, 21, domain_transform);
 
-        filteringProgram[1].setup(glw::version("330"), vertex_source, fragment_source_domain_transform);
+        techinques[1].initStandard("330", vertex_source, fragment_source_domain_transform, "ReduxGL");
 
-        #ifdef PIC_DEBUG
-            printf("[ReduxGL log]\n%s\n", filteringProgram[1].log().c_str());
-        #endif
-
-        glw::bind_program(filteringProgram[1]);
-        filteringProgram[1].attribute_source("a_position", 0);
-        filteringProgram[1].fragment_target("f_color", 0);
-        filteringProgram[1].relink();
-        filteringProgram[1].uniform("u_tex", 0);
-        glw::bind_program(0);
+        techinques[1].bind();
+        techinques[1].setUniform("u_tex", 0);
+        techinques[1].unbind();
     }
 }
 
@@ -336,7 +324,7 @@ GLuint ReduxGL::Process(GLuint texIn, int width, int height, int channels, GLuin
     glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 
     //Shaders
-    glw::bind_program(filteringProgram[counter]);
+    techinques[counter].bind();
 
     //Textures
     glActiveTexture(GL_TEXTURE0);
@@ -349,7 +337,7 @@ GLuint ReduxGL::Process(GLuint texIn, int width, int height, int channels, GLuin
     fbo->unbind();
 
     //Shaders
-    glw::bind_program(0);
+    techinques[counter].unbind();
 
     //Textures
     glActiveTexture(GL_TEXTURE0);

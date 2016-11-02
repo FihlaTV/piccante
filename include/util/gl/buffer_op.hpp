@@ -38,7 +38,7 @@ protected:
     QuadGL *quad;
 
     //Shaders
-    glw::program filteringProgram;
+    TechniqueGL technique;
     GLenum target;
 
     std::string op;
@@ -267,32 +267,29 @@ void BufferOpGL::InitShaders()
     size_t processing_found = fragment_source.find("_PROCESSING_OPERATOR_");
     fragment_source.replace(processing_found, 21, strOp);
 
-    std::string prefix;
-    prefix += glw::version("330");
-
-    filteringProgram.setup(prefix, vertex_source, fragment_source);
+    technique.init("330", vertex_source, fragment_source);
 
 #ifdef PIC_DEBUG
-    printf("[BufferOp log]\n%s\n", filteringProgram.log().c_str());
+    technique.printLog("BufferOp");
 #endif
 
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
+    technique.bind();
+    technique.setAttributeIndex("a_position", 0);
 
     if(!bTexelFetch) {
-        filteringProgram.attribute_source("a_tex_coord",  1);
+        technique.setAttributeIndex("a_tex_coord", 1);
     }
 
-    filteringProgram.fragment_target("f_color", 0);
-    filteringProgram.relink();
-    glw::bind_program(0);
+    technique.setOutputFragmentShaderIndex("f_color", 0);
+    technique.link();
+    technique.unbind();
 
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex_0",  0);
-    filteringProgram.uniform("u_tex_1",  1);
-    filteringProgram.uniform4("u_val_0", c0);
-    filteringProgram.uniform4("u_val_1", c1);
-    glw::bind_program(0);
+    technique.bind();
+    technique.setUniform("u_tex_0",  0);
+    technique.setUniform("u_tex_1",  1);
+    technique.setUniform4("u_val_0", c0);
+    technique.setUniform4("u_val_1", c1);
+    technique.unbind();
 }
 
 void BufferOpGL::Update(float *c0, float *c1)
@@ -309,12 +306,12 @@ void BufferOpGL::Update(float *c0, float *c1)
         }
     }
 
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex_0",  0);
-    filteringProgram.uniform("u_tex_1",  1);
-    filteringProgram.uniform4("u_val_0", this->c0);
-    filteringProgram.uniform4("u_val_1", this->c1);
-    glw::bind_program(0);
+    technique.bind();
+    technique.setUniform("u_tex_0",  0);
+    technique.setUniform("u_tex_1",  1);
+    technique.setUniform4("u_val_0", this->c0);
+    technique.setUniform4("u_val_1", this->c1);
+    technique.unbind();
 }
 
 void BufferOpGL::Update(float c0 = 0.0f, float c1 = 0.0f)
@@ -327,12 +324,12 @@ void BufferOpGL::Update(float c0 = 0.0f, float c1 = 0.0f)
         this->c1[i] = c1;
     }
 
-    glw::bind_program(filteringProgram);
-    filteringProgram.uniform("u_tex_0",  0);
-    filteringProgram.uniform("u_tex_1",  1);
-    filteringProgram.uniform4("u_val_0", this->c0);
-    filteringProgram.uniform4("u_val_1", this->c1);
-    glw::bind_program(0);
+    technique.bind();
+    technique.setUniform("u_tex_0",  0);
+    technique.setUniform("u_tex_1",  1);
+    technique.setUniform4("u_val_0", this->c0);
+    technique.setUniform4("u_val_1", this->c1);
+    technique.unbind();
 }
 
 void BufferOpGL::Process(GLuint tex0, GLuint tex1, GLuint texOut, int width, int height)
@@ -355,7 +352,7 @@ void BufferOpGL::Process(GLuint tex0, GLuint tex1, GLuint texOut, int width, int
     glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 
     //Shaders
-    glw::bind_program(filteringProgram);
+    technique.bind();
 
     //Textures
     glActiveTexture(GL_TEXTURE0);
@@ -370,7 +367,7 @@ void BufferOpGL::Process(GLuint tex0, GLuint tex1, GLuint texOut, int width, int
     fbo->unbind();
 
     //Shaders
-    glw::bind_program(0);
+    technique.unbind();
 
     //Textures
     glActiveTexture(GL_TEXTURE1);
