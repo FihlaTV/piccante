@@ -24,7 +24,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 */
 
-#ifndef PIC_UTIL_GL_SSBOO_HPP
+#ifndef PIC_UTIL_GL_SSBO_HPP
 #define PIC_UTIL_GL_SSBO_HPP
 
 #include <iostream>

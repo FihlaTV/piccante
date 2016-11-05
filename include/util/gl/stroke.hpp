@@ -20,7 +20,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "gl/image.hpp"
 #include "util/gl/quad.hpp"
-#include "externals/glw/program.hpp"
+#include "util/gl/technique.hpp"
 
 namespace pic {
 
@@ -42,8 +42,8 @@ protected:
 
     std::vector<float>	positions;
 
-    glw::program		annotationProgram;
-    glw::program        brushProgram;
+    TechniqueGL    annotationProgram;
+    TechniqueGL    brushProgram;
 
 public:
     float				annotation;
@@ -217,7 +217,7 @@ void StrokeGL::SetupShaders()
                                 );
 
     //rendering
-    std::string fragment_source = MAKE_STRING
+    std::string fragment_source_brush = MAKE_STRING
                                   (
     uniform sampler2D   u_tex;
     uniform vec4        current_color;
@@ -230,20 +230,21 @@ void StrokeGL::SetupShaders()
     }
                                   );
 
-    brushProgram.setup(glw::version("330"), vertex_source, fragment_source);
-
-    printf("[StrokeGL log]\n%s\n", brushProgram.log().c_str());
+    brushProgram.init("330", vertex_source, fragment_source_brush, "");
+    brushProgram.printLog("Brush - StrokeGL");
     
-    glw::bind_program(brushProgram);
-    brushProgram.attribute_source("a_position", 0);
-    brushProgram.attribute_source("a_tex_coord", 1);
-    brushProgram.fragment_target("f_color", 0);
-    brushProgram.relink();
+    brushProgram.bind();
+    brushProgram.setAttributeIndex("a_position", 0);
+    brushProgram.setAttributeIndex("a_tex_coord", 1);
+    brushProgram.setOutputFragmentShaderIndex("f_color", 0);
+    brushProgram.link();
+    brushProgram.unbind();
 
-    brushProgram.uniform("u_tex", 0);
-    brushProgram.uniform("shift_position", 0.0f, 0.0f);
-    brushProgram.uniform("current_color", 1.0f, 1.0f, 1.0f, 1.0f);
-    glw::bind_program(0);
+    brushProgram.bind();
+    brushProgram.setUniform("u_tex", 0);
+    brushProgram.setUniform("shift_position", 0.0f, 0.0f);
+    brushProgram.setUniform("current_color", 1.0f, 1.0f, 1.0f, 1.0f);
+    brushProgram.unbind();
 
     //Annotation
     std::string fragment_source_annotation = MAKE_STRING
@@ -260,20 +261,21 @@ void StrokeGL::SetupShaders()
     }
                                   );
 
-    annotationProgram.setup(glw::version("330"), vertex_source, fragment_source_annotation);
+    annotationProgram.init("330", vertex_source, fragment_source_annotation, "");
+    annotationProgram.printLog("Brush - StrokeGL");
 
-    printf("[StrokeGL log]\n%s\n", annotationProgram.log().c_str());
-    
-    glw::bind_program(annotationProgram);
-    annotationProgram.attribute_source("a_position", 0);
-    annotationProgram.attribute_source("a_tex_coord", 1);
-    annotationProgram.fragment_target("f_color", 0);
-    annotationProgram.relink();
+    annotationProgram.bind();
+    annotationProgram.setAttributeIndex("a_position", 0);
+    annotationProgram.setAttributeIndex("a_tex_coord", 1);
+    annotationProgram.setOutputFragmentShaderIndex("f_color", 0);
+    annotationProgram.link();
+    annotationProgram.unbind();
 
-    annotationProgram.uniform("u_tex", 0);
-    annotationProgram.uniform("shift_position", 0.0f, 0.0f);
-    annotationProgram.uniform("annotation", annotation);
-    glw::bind_program(0);
+    annotationProgram.bind();
+    annotationProgram.setUniform("u_tex", 0);
+    annotationProgram.setUniform("shift_position", 0.0f, 0.0f);
+    annotationProgram.setUniform("annotation", annotation);
+    annotationProgram.unbind();
 }
 
 void StrokeGL::Resample()
@@ -404,19 +406,19 @@ void StrokeGL::RenderBrushGL(int x, int y)
     glActiveTexture(GL_TEXTURE0);
     shape->bindTexture();
       
-    glw::bind_program(brushProgram);
         
+    brushProgram.bind();
     if(annotation < 0.0f) {
-        brushProgram.uniform("current_color", 1.0f - color[0], 1.0f - color[1], 1.0f - color[2], 1.0f);
+        brushProgram.setUniform("current_color", 1.0f - color[0], 1.0f - color[1], 1.0f - color[2], 1.0f);
     } else {
-        brushProgram.uniform("current_color", color[0], color[1], color[2], 0.5f);
+        brushProgram.setUniform("current_color", color[0], color[1], color[2], 0.5f);
     }
     
-    brushProgram.uniform("shift_position", xf, yf);
+    brushProgram.setUniform("shift_position", xf, yf);
 
     quad->Render();
 
-    glw::bind_program(0);
+    brushProgram.unbind();
 
     shape->unBindTexture();
 
@@ -435,17 +437,17 @@ void StrokeGL::RenderGL()
 
     glBindTexture(GL_TEXTURE_2D, shape->getTexture());
 
-    glw::bind_program(brushProgram);
+    brushProgram.bind();
 
-    brushProgram.uniform("current_color", color[0], color[1], color[2], 1.0f);
+    brushProgram.setUniform("current_color", color[0], color[1], color[2], 1.0f);
     const int n = size_t(positions.size());
 
     for(int i = 0; i < n; i += 2) {
-        brushProgram.uniform("shift_position", positions[i], positions[i + 1]);
+        brushProgram.setUniform("shift_position", positions[i], positions[i + 1]);
         quad->Render();
     }
 
-    glw::bind_program(0);
+    brushProgram.unbind();
 
     shape->unBindTexture();
 
@@ -458,13 +460,14 @@ void StrokeGL::RenderAnnotationGL()
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE);
 
-    glw::bind_program(annotationProgram);
+
+    annotationProgram.bind();
 
 #ifdef PIC_DEBUG
     printf("Annotation value: %f\n", annotation);
 #endif
 
-    annotationProgram.uniform("annotation",  annotation);
+    annotationProgram.setUniform("annotation",  annotation);
 
     glEnable(GL_TEXTURE_2D);
     glActiveTexture(GL_TEXTURE0);
@@ -473,13 +476,14 @@ void StrokeGL::RenderAnnotationGL()
     const int n = size_t(positions.size());
 
     for(int i = 0; i < n; i += 2) {
-        annotationProgram.uniform("shift_position", positions[i], positions[i + 1]);
+        annotationProgram.setUniform("shift_position", positions[i], positions[i + 1]);
         quad->Render();
     }
 
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
-    glw::bind_program(0);
+
+    annotationProgram.unbind();
     glDisable(GL_BLEND);
 }
 

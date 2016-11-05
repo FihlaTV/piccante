@@ -270,6 +270,23 @@ public:
     }
 
     /**
+     * @brief setUniform
+     * @param name_uniform
+     * @param value0
+     * @param value1
+     * @param value2
+     * @param value3
+     */
+    void setUniform(const char *name_uniform, float value0, float value1, float value2, float value3)
+    {
+        glUniform4f(getLocation(name_uniform),
+                    GLfloat(value0),
+                    GLfloat(value1),
+                    GLfloat(value2),
+                    GLfloat(value3));
+    }
+
+    /**
      * @brief setUniform3x3
      * @param name_uniform
      * @param matrix

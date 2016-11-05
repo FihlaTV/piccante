@@ -211,7 +211,6 @@ ImageGL *FilterGL1D::Process(ImageGLVec imgIn, ImageGL *imgOut)
 
     //Shaders
     technique.bind();
-//    glw::bind_program(filteringProgram);
 
     //Rendering
     fbo->bind2();
