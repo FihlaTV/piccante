@@ -460,7 +460,6 @@ void StrokeGL::RenderAnnotationGL()
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE);
 
-
     annotationProgram.bind();
 
 #ifdef PIC_DEBUG
@@ -486,26 +485,6 @@ void StrokeGL::RenderAnnotationGL()
     annotationProgram.unbind();
     glDisable(GL_BLEND);
 }
-
-/*
-    if(bPointSprite) {
-        glEnable(GL_POINT_SPRITE);
-        glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
-        glPointSize(GLfloat(brushSize));
-        glBegin(GL_POINTS);
-        glColor3fv(color);
-        const int n = size_t(positions.size());
-
-        for(int i = 0; i < n; i += 2) {
-            glVertex2f(positions[i], positions[i + 1]);
-        }
-
-        glEnd();
-
-        //glDisable(GL_POINT_SMOOTH);
-        glDisable(GL_POINT_SPRITE);
-*/
-
 
 } // end namespace pic
 
