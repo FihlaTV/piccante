@@ -324,44 +324,44 @@ public:
     }
 
     /**
-     * @brief ScaleTau
+     * @brief scaleTau
      * @param tau
      */
-    void ScaleTau(const Color3 *tau)
+    void scaleTau(const Color3 *tau)
     {
-        x *= exp(-tau->x);
-        y *= exp(-tau->y);
-        z *= exp(-tau->z);
+        x *= expf(-tau->x);
+        y *= expf(-tau->y);
+        z *= expf(-tau->z);
     }
 
     /**
-     * @brief ScaleTau
+     * @brief scaleTau
      * @param sigma_t
      * @param tau
      */
-    void ScaleTau(const Color3 *sigma_t, const Color3 *tau)
+    void scaleTau(const Color3 *sigma_t, const Color3 *tau)
     {
-        x *= exp(-tau->x * sigma_t->x);
-        y *= exp(-tau->y * sigma_t->y);
-        z *= exp(-tau->z * sigma_t->z);
+        x *= expf(-tau->x * sigma_t->x);
+        y *= expf(-tau->y * sigma_t->y);
+        z *= expf(-tau->z * sigma_t->z);
     }
 
     /**
-     * @brief ScaleTau
+     * @brief scaleTau
      * @param sigma_t
      * @param t
      */
-    void ScaleTau(const Color3 *sigma_t, float t)
+    void scaleTau(const Color3 *sigma_t, float t)
     {
-        x *= exp(-sigma_t->x * t);
-        y *= exp(-sigma_t->y * t);
-        z *= exp(-sigma_t->z * t);
+        x *= expf(-sigma_t->x * t);
+        y *= expf(-sigma_t->y * t);
+        z *= expf(-sigma_t->z * t);
     }
 
     /**
-     * @brief SetBlack
+     * @brief setBlack
      */
-    void SetBlack()
+    void setBlack()
     {
         x = 0.0f;
         y = 0.0f;
@@ -369,9 +369,9 @@ public:
     }
 
     /**
-     * @brief SetWhite
+     * @brief setWhite
      */
-    void SetWhite()
+    void setWhite()
     {
         x = 1.0f;
         y = 1.0f;
@@ -381,14 +381,14 @@ public:
     /**
      * @brief convCRGB2XYZ
      */
-    void	convCRGB2XYZ()
+    void convCRGB2XYZ()
     {
     }
 
     /**
      * @brief convCXYZ2RGB
      */
-    void	convCXYZ2RGB()
+    void convCXYZ2RGB()
     {
     }
 
@@ -441,10 +441,10 @@ public:
     }
 
     /**
-     * @brief Mean
+     * @brief mean
      * @return
      */
-    float	Mean()
+    float getMean()
     {
         return (x + y + z) / 3.0f;
     }
@@ -453,7 +453,7 @@ public:
      * @brief luminance
      * @return
      */
-    float	luminance()
+    float luminance()
     {
         return	0.213f * x +
                 0.715f * y +
@@ -461,13 +461,23 @@ public:
     }
 
     /**
-     * @brief Saturate
+     * @brief saturate
      */
-    void Saturate()
+    void saturate()
     {
         x = x * 0.5f + 0.5f;
         y = y * 0.5f + 0.5f;
         z = z * 0.5f + 0.5f;
+    }
+
+    /**
+    * @brief sqrt
+    */
+    void sqrt()
+    {
+        x = sqrtf(x);
+        y = sqrtf(y);
+        z = sqrtf(z);
     }
 
     /**
@@ -482,19 +492,19 @@ public:
     }
 
     /**
-     * @brief IsGreater0
+     * @brief isGreaterThanZero
      * @return
      */
-    bool IsGreater0()
+    bool isGreaterThanZero()
     {
         return (x > 0.0f) && (y > 0.0f) && (z > 0.0f);
     }
 
     /**
-     * @brief GetMax
+     * @brief getMax
      * @return
      */
-    float GetMax()
+    float getMax()
     {
         float tmp = x > y ? x : y;
         return tmp > z ? tmp : z;
@@ -504,9 +514,9 @@ public:
      * @brief GetMaxChannel
      * @return
      */
-    int GetMaxChannel()
+    int getMaxChannel()
     {
-        float valMax = GetMax();
+        float valMax = getMax();
 
         if(valMax == x) {
             return 0;
@@ -524,12 +534,12 @@ public:
     }
 
     /**
-     * @brief ImportanceSampling computes wavelength importance sampling: e is a uniform distributed random number in [0,1]
+     * @brief importanceSampling computes wavelength importance sampling: e is a uniform distributed random number in [0,1]
      * @param e
      * @param channel
      * @param pdf
      */
-    void ImportanceSampling(float e, int &channel, float &pdf)
+    void importanceSampling(float e, int &channel, float &pdf)
     {
         float sum = x + y + z;
 
@@ -575,6 +585,11 @@ public:
         y = powf(y, g);
         z = powf(z, g);
 
+    }
+
+    Color3 valOver(float a)
+    {
+        return Color3(a / x, a / y, a / z);
     }
 
     /**
@@ -637,10 +652,10 @@ public:
     }
 
     /**
-     * @brief Expf
+     * @brief Exp
      * @return
      */
-    Color3 Expf()
+    Color3 exp()
     {
         Color3 col(expf(x), expf(y), expf(z));
         return col;
@@ -657,7 +672,7 @@ public:
         printf("Testing Importance sampling for Color3 class:\n");
 
         for(int i = 0; i < 120; i++) {
-            col.ImportanceSampling(float(rand() % 100) / 100.0f, channel, p);
+            col.importanceSampling(float(rand() % 100) / 100.0f, channel, p);
             printf("[Channenl: %d;\t p: %f]\n", channel, p);
         }
     }
