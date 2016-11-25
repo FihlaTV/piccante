@@ -216,7 +216,7 @@ public:
     void operator /=(const float &a)
     {
         for (int i = 0; i < N; i++) {
-            data[i] /= a[i];
+            data[i] /= a;
         }
     }
 
@@ -522,7 +522,7 @@ public:
     {
         float valMax = getMax();
 
-        for (int 0 = 1; i < N; i++) {
+        for (int i = 1; i < N; i++) {
             if (valMax == data[i]) {
                 return i;
             }
@@ -570,7 +570,11 @@ public:
      */
     void print()
     {
-        printf("\n Values --> R: %f G: %f B: %f\n", x, y, z);
+        printf("\n Values :");
+        for(unsigned int i = 0; i < N; i++) {
+            printf("%d ", data[i]);
+        }
+        printf("\n");
     }
 
     /**
@@ -580,7 +584,7 @@ public:
     void gamma(float g)
     {
         for (int i = 1; i < N; i++) {
-            data[i] = pwof(data[i], gamma);
+            data[i] = pwof(data[i], g);
         }
     }
 
@@ -590,7 +594,7 @@ public:
      */
     Color<N> inverse()
     {
-        float maxVal = GetMax();
+        float maxVal = getMax();
 
         Color<N> ret;
 
@@ -661,10 +665,7 @@ public:
     {
         Color<N> ret;
 
-
-        for i
-        Color col(expf(x), expf(y), expf(z));
-        return col;
+        return ret;
     }
 
     /**

@@ -76,8 +76,9 @@ std::vector<float> polynomialFit(std::vector<float> &x, std::vector<float> &y, u
 #endif
 
 /**
- * @brief polyval
+ * @brief polynomialVal
  * @param poly
+ * @param x
  * @return
  */
 float polynomialVal(std::vector< float > & poly, float x)
