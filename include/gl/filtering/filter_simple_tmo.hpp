@@ -136,14 +136,6 @@ void FilterGLSimpleTMO::InitShaders()
 {
     technique.initStandard("330", vertex_source, fragment_source, "FilterGLSimpleTMO");
 
-    /*
-    glw::bind_program(filteringProgram);
-    filteringProgram.attribute_source("a_position", 0);
-    filteringProgram.fragment_target("f_color",    0);
-    filteringProgram.relink();
-    glw::bind_program(0);
-    */
-
     Update(gamma, fstop);
 }
 
