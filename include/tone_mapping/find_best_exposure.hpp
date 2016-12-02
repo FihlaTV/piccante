@@ -39,7 +39,7 @@ float FindBestExposure(Image *img)
     Image *lum = FilterLuminance::Execute(img, NULL, LT_CIE_LUMINANCE);
     Histogram hist(lum, VS_LOG_2, 1024, 0);
 
-    float fstop = hist.FindBestExposure(8.0f);
+    float fstop = hist.getBestExposure(8);
 
     delete lum;
 

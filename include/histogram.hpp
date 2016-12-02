@@ -373,14 +373,14 @@ public:
      * @brief ExposureCovering computes the exposure values for fully covering
      * the dynamic range of the image. This function works only if the histogram
      * was compute usign VS_LOG_2.
-     * @param bits is the number of bit used for storing each output exposure image.
+     * @param nBits is the number of bit used for storing each output exposure image.
      * The default value is 8.
      * @param overlap is the value, in f-stops, of overlapping between two exposure images.
      * This value is set to 1 by default.
      * @return It returns an std::vector<float> which contains the exposure values
      * in f-stops for all required exposures for covering information.
      */
-    std::vector< float > ExposureCovering(int bits = 8, float overlap = 1.0f)
+    std::vector< float > ExposureCovering(int nBits = 8, float overlap = 1.0f)
     {
         std::vector< float > ret;
 
@@ -393,11 +393,11 @@ public:
         }
 
         //assuming 8-bit images
-        float halfBits = float( bits >> 1 );
+        float halfnBits = float( nBits >> 1 );
 
-        float dMM = (fMax - fMin) / float(nBin);
+        float dMM = deltaMaxMin / nBinf;
 
-        int removingBins = MAX(int(lround((halfBits - overlap) / dMM)), 1);
+        int removingBins = MAX(int(lround((halfnBits - overlap) / dMM)), 1);
 
         if( bin_work == NULL) {
             bin_work = new unsigned int [nBin];
@@ -425,32 +425,35 @@ public:
     }
 
     /**
-     * @brief BestInterval computes the best
-     * @param intSize is the budget dynamic range for the output image in f-stops
+     * @brief getBestInterval computes the best interval center.
+     * @param nBits is the number of bits in the budget for the output image.
      * @return It returns the exposure, in f-stops, for setting the image
      * with the best exposure at given dynamic range.
      */
-    float BestInterval(float intSize)
+    float getBestInterval(int nBits)
     {
-        if((type != VS_LOG_2) && (intSize > (fMax - fMin))){
+        float nBits_f = float(nBits);
+        if((type != VS_LOG_2) && (nBits_f > deltaMaxMin) && (nBits < 1)){
             return 0.0f;
         }
 
-        float iDelta = float(nBin + 1) / (fMax - fMin);
-        int iS = int(intSize * iDelta + 0.5);
+        float n_values_f = float(1 << nBits);
+        float delta_inv = nBinf / deltaMaxMin;
+        int range_size_hist = int(float(nBits) / (delta_inv / n_values_f) + 0.5f);
+
+        range_size_hist = range_size_hist < 1 ? 1 : range_size_hist;
 
         #ifdef PIC_DEBUG
-            printf("Histogram [%f %f] %d\n", fMin, fMax, iS);
+            printf("Histogram [%f %f] %d\n", fMin, fMax, range_size_hist);
         #endif
 
         int count = 0;
         int index = 0;
 
-        for(int i = 0; i < (nBin - iS); i++) {
-
+        for(int i = 0; i < (nBin - range_size_hist); i++) {
             int tmpCount = 0;
 
-            for(int j = i; j < (iS + i); j++) {
+            for(int j = i; j < (i + range_size_hist); j++) {
                 tmpCount += bin[j];
             }
 
@@ -460,28 +463,19 @@ public:
             }
         }
 
-        return (float(index + iS) / iDelta) + fMin;
+        float mid = float(range_size_hist) / 2.0f;
+        return (float(index + mid) / delta_inv) + fMin;
     }
 
     /**
-     * @brief FindBestExposure computes the best exposure given
+     * @brief getBestExposure computes the best exposure given
      * a budget dynamig range.
      * @param range is the input dynamic range.
      * @return It returns the exposure value in f-stops.
      */
-    float FindBestExposure(float range = 8.0f)
+    float getBestExposure(float range = 8.0f)
     {
-        return -BestInterval(range);
-    }
-
-    /**
-     * @brief binarizationOtsu
-     * @param numberPixels
-     * @return
-     */
-    float binarizationOtsu(int numberPixels)
-    {
-        return 1.0;
+        return -getBestInterval(range);
     }
 };
 

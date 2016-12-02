@@ -53,8 +53,8 @@ void getMinMaxFstops(Image *imgIn, int &minFstop, int &maxFstop)
     IntCoord coord;
     IndexedArray::findSimple(img_lum->data, nData, IndexedArray::bFuncNotNeg, coord);
 
-    float commonMax = IndexedArray::max(img_lum->data, coord);
     float commonMin = IndexedArray::min(img_lum->data, coord);
+    float commonMax = IndexedArray::max(img_lum->data, coord);
 
     float tminFstop = logf(commonMin) / logf(2.0f);
     float tmaxFstop = logf(commonMax) / logf(2.0f);
