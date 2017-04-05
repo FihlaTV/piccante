@@ -38,25 +38,28 @@ int main(int argc, char *argv[])
     if(img.isValid()) {
         printf("OK\n");
 
-        bool bWritten;
+        bool bWritten = true;
 
+
+/*
         //FAST corners
-        std::vector< Eigen::Vector3f > corners;
+        std::vector< Eigen::Vector3f > corners_fast;
         pic::FastCornerDetector fcd;
         fcd.Update(1.0f, 5);
-        fcd.Compute(&img, &corners);
+        fcd.Compute(&img, &corners_fast);
 
         printf("\nFAST Corner Detector Test:\n");
-        for(unsigned int i = 0; i < corners.size(); i++) {
-            printf("X: %3.2f Y: %3.2f\n", corners[i][0], corners[i][1]);
+        for(unsigned int i = 0; i < corners_fast.size(); i++) {
+            printf("X: %3.2f Y: %3.2f\n", corners_fast[i][0], corners_fast[i][1]);
         }
 
         printf("\n");
 
-        pic::Image *imgCorners = fcd.getCornersImage(&corners);
+        pic::Image *imgCorners = fcd.getCornersImage(&corners_fast, NULL, img.width, img.height, true);
 
         bWritten = imgCorners->Write("../data/output/corner_fast_output.png");
 
+*/
 
         //Harris corners
         std::vector< Eigen::Vector3f > corners_harris;
@@ -70,10 +73,11 @@ int main(int argc, char *argv[])
         }
         printf("\n");
 
-        pic::Image *imgCorners_harris = fcd.getCornersImage(&corners_harris);
+        pic::Image *imgCorners_harris = hcd.getCornersImage(&corners_harris, NULL, img.width, img.height, true);
         bWritten = imgCorners_harris->Write("../data/output/corner_harris_output.png");
 
 
+/*
         //SUSAN corners
         std::vector< Eigen::Vector3f > corners_susan;
         pic::SusanCornerDetector scd;
@@ -85,7 +89,7 @@ int main(int argc, char *argv[])
         }
         printf("\n");
 
-        pic::Image *imgCorners_susan = scd.getCornersImage(&corners_susan);
+        pic::Image *imgCorners_susan = scd.getCornersImage(&corners_susan, NULL, img.width, img.height, true);
 
         bWritten = imgCorners_susan->Write("../data/output/corner_susan_output.png");
 
@@ -96,9 +100,11 @@ int main(int argc, char *argv[])
         } else {
             printf("Writing had some issues!\n");
         }
+*/
     } else {
         printf("No, the file is not valid!\n");
     }
+
 
     return 0;
 }

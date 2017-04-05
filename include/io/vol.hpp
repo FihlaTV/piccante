@@ -116,7 +116,7 @@ PIC_INLINE float *ReadVOL(std::string nameFile, float *data, int &width,
  * @param channels
  * @return
  */
-PIC_INLINE bool WriteVOL(std::string nameFile, const float *data, int width, int height,
+PIC_INLINE bool WriteVOL(std::string nameFile, float *data, int width, int height,
                int depth, int channels = 3)
 {
 
@@ -129,8 +129,6 @@ PIC_INLINE bool WriteVOL(std::string nameFile, const float *data, int width, int
     int tot = width * height * depth * 3;
 
     unsigned char *tmpData = new unsigned char[tot];
-
-//    int len = width;
 
     int sh1 = 0;
     int sh2 = 0;

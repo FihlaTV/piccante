@@ -34,8 +34,8 @@ namespace pic {
 class GeneralCornerDetector
 {
 protected:
-    bool     bLum;
     Image *lum;
+    bool bLum;
 
 public:
     /**
@@ -49,7 +49,6 @@ public:
 
     ~GeneralCornerDetector()
     {
-
     }
 
     /**
@@ -70,23 +69,18 @@ public:
      * @return
      */
     Image *getCornersImage(std::vector< Eigen::Vector3f > *corners,
-                              Image *imgOut = NULL, bool bColor = true)
+                              Image *imgOut, unsigned int width, unsigned int height, bool bColor)
     {
         if(corners == NULL) {
             return imgOut;
         }
 
         if(imgOut == NULL) {
-            if(lum == NULL) {
-                return imgOut;
+            if((width < 1) || (height < 1)){
+                return NULL;
             }
 
-            imgOut = lum->AllocateSimilarOne();
-
-        } else {
-            if(!imgOut->SimilarType(lum)) {
-                return imgOut;
-            }
+            imgOut = new Image(width, height, 1);
         }
 
         imgOut->SetZero();
@@ -94,6 +88,7 @@ public:
         for(unsigned int i = 0; i < corners->size(); i++) {
             int x = int((*corners)[i][0]);
             int y = int((*corners)[i][1]);
+
             if(bColor) {
                 (*imgOut)(x, y)[0] = 1.0f;
             } else {
@@ -133,7 +128,7 @@ public:
 
         printf("\n");
 
-        Image *img_corners = gcd->getCornersImage(&corners);
+        Image *img_corners = gcd->getCornersImage(&corners, NULL, 512, 512, true);
         img_corners->Write("general_corner_test_image.hdr");
     }
 };

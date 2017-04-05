@@ -39,10 +39,25 @@ class SusanCornerDetector: public GeneralCornerDetector
 {
 protected:
     Image *lum_flt;
-    bool      bComputeThreshold;
+    bool  bComputeThreshold;
 
-    float     sigma, threshold;
-    int       radius, radius_maxima;
+    float sigma, threshold;
+    int   radius, radius_maxima;
+
+    void Destroy()
+    {
+        if(lum != NULL) {
+            delete lum;
+        }
+
+        lum = NULL;
+
+        if(lum_flt != NULL) {
+            delete lum_flt;
+        }
+
+        lum_flt = NULL;
+    }
 
 public:
     /**
@@ -58,13 +73,7 @@ public:
 
     ~SusanCornerDetector()
     {
-        if(bLum) {
-            delete lum;
-        }
-
-        if(lum_flt != NULL) {
-            delete lum_flt;
-        }
+        Destroy();
     }
 
     /**
@@ -126,7 +135,7 @@ public:
 
         corners->clear();
 
-        //Filtering the image
+        //filter the input image
         FilterGaussian2D flt(sigma);
         lum_flt = flt.ProcessP(Single(lum), NULL);
 
@@ -184,6 +193,8 @@ public:
             }
         }
 
+        //non-maximal supression
+
         int side = radius_maxima * 2 + 1;
         int *indices = new int [side * side];
 
@@ -224,7 +235,7 @@ public:
 
                 //are other corners near-by?
                 if(counter > 1) {
-                    //finding the maximum value
+                    //find the maximum value
                     float R_value = R.data[indices[0]];
                     int index = 0;
 
@@ -244,7 +255,6 @@ public:
             }
         }
     }
-\
 };
 
 #endif

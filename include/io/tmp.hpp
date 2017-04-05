@@ -94,7 +94,7 @@ PIC_INLINE float *ReadTMP(std::string nameFile, float *data, int &width,
  * @param bHeader
  * @return
  */
-PIC_INLINE bool WriteTMP(std::string nameFile, const float *data, int &width,
+PIC_INLINE bool WriteTMP(std::string nameFile, float *data, int &width,
                          int &height, int &channels, int &frames, bool bHeader = true)
 {
 

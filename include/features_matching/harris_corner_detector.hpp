@@ -43,7 +43,7 @@ class HarrisCornerDetector: public GeneralCornerDetector
 protected:
     Image *Ix, *Iy, *Ixy, *ret;
     Image *Ix2_flt, *Iy2_flt, *Ixy_flt;
-    Image *filtered;
+    Image *ret_flt;
 
     //Harris Corners detector parameters
     float sigma, threshold;
@@ -93,11 +93,11 @@ protected:
 
         Ixy_flt = NULL;
 
-        if(filtered != NULL) {
-            delete filtered;
+        if(ret_flt != NULL) {
+            delete ret_flt;
         }
 
-        filtered = NULL;
+        ret_flt = NULL;
 
         if(ret != NULL) {
             delete ret;
@@ -120,7 +120,7 @@ protected:
         Ix2_flt = NULL;
         Iy2_flt = NULL;
         Ixy_flt = NULL;
-        filtered = NULL;
+        ret_flt = NULL;
         ret = NULL;
     }
 
@@ -206,7 +206,7 @@ public:
 
         float kernel[] = { -1.0f, 0.0f, 1.0f};
 
-        //Gradients
+        //compute gradients
         Ix = FilterConv1D::Execute(lum, Ix, kernel, 3, true);
         Iy = FilterConv1D::Execute(lum, Iy, kernel, 3, false);
 
@@ -223,20 +223,40 @@ public:
 
         float eps = 2.2204e-16f;
 
-        //Filtering the values
+        //filter gradient values
         FilterGaussian2D flt(sigma);
         Ix2_flt = flt.ProcessP(Single(Ix), Ix2_flt);
         Iy2_flt = flt.ProcessP(Single(Iy), Iy2_flt);
         Ixy_flt = flt.ProcessP(Single(Ixy), Ixy_flt);
 
         //ret = (Ix2.*Iy2 - Ixy.^2)./(Ix2 + Iy2 + eps);
+
+        if(ret == NULL) {
+            ret = lum->AllocateSimilarOne();
+        }
+
+        for(int i = 0; i < height; i++) {
+            for(int j = 0; j < width; j++) {
+                float *data_ret = (*ret)(j, i);
+
+                float x2 = (*Ix2_flt)(j, i)[0];
+                float y2 = (*Iy2_flt)(j, i)[0];
+                float xy = (*Ixy_flt)(j, i)[0];
+
+                data_ret[0] =  (x2 * y2 - xy * xy) / (x2 + y2 + eps);
+            }
+        }
+
+        /*
         *Ixy_flt *= *Ixy_flt; //Ixy.^2
+
 
         if(ret == NULL) {
             ret = Ix2_flt->Clone();
         } else {
             *ret = *Ix2_flt;
         }
+
 
         *ret *= *Iy2_flt; //Ix2.*Iy2
         *ret -= *Ixy_flt;
@@ -245,9 +265,11 @@ public:
         *Ix2_flt += eps;
 
         *ret /= *Ix2_flt;
+        */
 
-        //Maximal supression
-        filtered = FilterMax::Execute(ret, filtered, radius * 2 + 1);
+
+        //non-maximal supression
+        ret_flt = FilterMax::Execute(ret, ret_flt, radius * 2 + 1);
 
         float w = 1.0f;
 
@@ -260,32 +282,32 @@ public:
             threshold = ret->dataTMP[n - 1 - bestPoints];
         }
 
-        int width = lum->width;
-        int height = lum->height;
-        float *data = ret->data;
-
-        for(int i = 1; i < (height - 1); i++) {
-            int tmp = i * width;
-
+        for(int i = 0; i < height; i++) {
             float i_f = float(i);
             float cx, cy, ax, ay, bx, by, x, y;
 
-            for(int j = 1; j < (width - 1); j++) {
-                int ind = tmp + j;
+            for(int j = 0; j < width; j++) {
 
-                if((data[ind] == filtered->data[ind]) && (data[ind] > threshold)) {
+                float R = (*ret)(j, i)[0];
+                float R_flt = (*ret_flt)(j, i)[0];
 
-                    cx = data[ind];
-                    ax = (data[ind - 1] + data[ind + 1]) / 2.0f - cx;
-                    bx = ax + cx - data[ind - 1];
+                if((R == R_flt) && (R > threshold)) {
+                    float Rr = (*ret)(j, i + 1)[0];
+                    float Rl = (*ret)(j, i - 1)[0];
+                    float Ru = (*ret)(j + 1, i)[0];
+                    float Rd = (*ret)(j - 1, i)[0];
+
+                    cx = R;
+                    ax = (Rl + Rr) / 2.0f - cx;
+                    bx = ax + cx - Rl;
                     x = -w * bx / (2.0f * ax);
 
-                    cy = data[ind];
-                    ay = (data[ind - width] + data[ind + width]) / 2.0f - cy;
-                    by = ay + cy - data[ind - width];
+                    cy = R;
+                    ay = (Rd + Ru) / 2.0f - cy;
+                    by = ay + cy - Rd;
                     y = -w * by / (2.0f * ay);
 
-                    corners->push_back(Eigen::Vector3f(float(j) + x, i_f + y, data[ind]));
+                    corners->push_back(Eigen::Vector3f(float(j) + x, i_f + y, R));
                 }
             }
         }

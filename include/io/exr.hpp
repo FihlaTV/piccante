@@ -275,7 +275,7 @@ PIC_INLINE float *ReadEXR(std::string nameFile, float *data, int &width, int &he
  * @param channels
  * @return
  */
-PIC_INLINE bool WriteEXR(std::string nameFile, const float *data, int width,
+PIC_INLINE bool WriteEXR(std::string nameFile, float *data, int width,
                          int height, int channels = 3)
 {
     EXRImage image;

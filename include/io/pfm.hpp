@@ -145,7 +145,7 @@ PIC_INLINE float *ReadPFM(std::string nameFile, float *data, int &width,
  * @param channels
  * @return
  */
-PIC_INLINE bool WritePFM(std::string nameFile, const float *data, int width,
+PIC_INLINE bool WritePFM(std::string nameFile, float *data, int width,
                          int height, int channels = 3)
 {
     if((data == NULL) || (height < 1) || (width < 1) || (channels < 1)) {
