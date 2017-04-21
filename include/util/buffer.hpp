@@ -508,6 +508,24 @@ PIC_INLINE T *BufferBGRtoRGB(T *buffer, int width, int height,
     return buffer;
 }
 
+/**This function change from RGB RGB RGB... to RRR... GGG... BBB...*/
+template<class T>
+PIC_INLINE T *BufferFromLayerToIntervaleaved(T *bufferOut, T *bufferIn, int n, int channels)
+{
+    #pragma omp parallel for
+    for(int i = 0; i < n; i++) {
+
+            for(int k = 0; k < channels; k++) {
+
+                int iIn  = k * n + i;
+                int iOut = i * channels + k;
+
+                bufferOut[iOut] = bufferIn[iIn];
+            }
+
+    }
+}
+
 } // end namespace pic
 
 #endif /* PIC_UTIL_BUFFER_HPP */

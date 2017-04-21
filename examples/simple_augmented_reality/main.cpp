@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
 
     pic::Image *img0 = new pic::Image();
     img0->Read("../data/input/features/balcony_0.png", pic::LT_NOR);
+    img0->Write("test.png");
 
     pic::Image *img1 = new pic::Image();
     img1->Read("../data/input/augmented_reality/desk.png", pic::LT_NOR);
@@ -98,28 +99,10 @@ int main(int argc, char *argv[])
 
         int n = b_desc.getDescriptorSize();
 
+        pic::BinaryFeatureBruteForceMatcher bfm(&descs1, n);
+
         printf("Descriptor size: %d\n", n);
-
-        for(unsigned int i = 0; i < descs0.size(); i++) {
-
-            unsigned int dist = 0;
-
-            int matched_j = -1;
-
-            for(unsigned int j =0; j<descs1.size(); j++) {
-
-                unsigned int tmp_dist = pic::BRIEFDescriptor::match(descs0.at(i), descs1.at(j), n);
-
-                if(tmp_dist > dist) {
-                    dist = tmp_dist;
-                    matched_j = j;
-                }
-            }
-
-            if(matched_j != -1) {
-                matches.push_back(Eigen::Vector3i(i, matched_j, dist));
-            }
-        }
+        bfm.getAllMatches(&descs0, matches);
 
         printf("Matches:\n");
         std::vector< Eigen::Vector2f > m0, m0f, m1, m1f;
@@ -150,10 +133,9 @@ int main(int argc, char *argv[])
         pic::filterInliers(m0, inliers, m0f);
         pic::filterInliers(m1, inliers, m1f);
 
-        float *H_array = pic::getLinearArrayFromMatrix(H);
         pic::NelderMeadOptHomography nmoh(m0, m1, inliers);
+        float *H_array = pic::getLinearArrayFromMatrix(H);
         nmoh.run(H_array, 8, 1e-5f, 10000, H_array);
-
         H = pic::getMatrix3dFromLinearArray(H_array);
 
         Eigen::Matrix34d cam = pic::getCameraMatrixFromHomography(H, K);

@@ -36,26 +36,49 @@ namespace pic {
 class FastCornerDetector: public GeneralCornerDetector
 {
 protected:
-    Image *lum_flt;
+    Image     *lum_flt;
     bool      bComputeThreshold;
 
     float     sigma, threshold;
     int       radius;
 
 public:
+    /**
+     * @brief FastCornerDetector
+     * @param sigma
+     * @param radius
+     * @param threshold
+     */
     FastCornerDetector(float sigma = 1.0f, int radius = 1, float threshold = 0.001f) : GeneralCornerDetector()
     {
         bComputeThreshold = true;
+
+        lum_flt = NULL;
+
         Update(sigma, radius, threshold);
     }
 
     ~FastCornerDetector()
     {
-        if(bLum) {
+        if(lum != NULL) {
             delete lum;
         }
+
+        lum = NULL;
+
+        if(lum_flt != NULL) {
+            delete lum_flt;
+        }
+
+        lum_flt = NULL;
     }
 
+    /**
+     * @brief Update
+     * @param sigma
+     * @param radius
+     * @param threshold
+     */
     void Update(float sigma = 1.0f, int radius = 1, float threshold = 0.001f)
     {
         if(sigma > 0.0f) {
@@ -77,6 +100,11 @@ public:
         }
     }
 
+    /**
+     * @brief Compute
+     * @param img
+     * @param corners
+     */
     void Compute(Image *img, std::vector< Eigen::Vector3f > *corners)
     {
         if(img == NULL) {
@@ -97,9 +125,9 @@ public:
 
         corners->clear();
 
-        //Filtering the image
+        //filter the input image
         FilterGaussian2D flt(sigma);
-        lum_flt = flt.ProcessP(Single(lum), NULL);
+        lum_flt = flt.ProcessP(Single(lum), lum_flt);
 
         int x[] = {0, 1, 2, 3, 3,  3,  2,  1,  0, -1, -2, -3, -3, -3, -2, -1};
         int y[] = {3, 3, 2, 1, 0, -1, -2, -3, -3, -3, -2, -1,  0,  1,  2,  3};
@@ -201,7 +229,7 @@ public:
             }
         }
 
-        //Maximal supression
+        //non-maximal supression
         int side = radius * 2 + 1;
         int *indices = new int[side * side];
 
@@ -260,7 +288,6 @@ public:
             }
         }
     }
-\
 };
 
 #endif

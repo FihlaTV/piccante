@@ -38,8 +38,8 @@ namespace pic {
 
 /**
  * @brief triangulationLonguetHiggins computes triangulation using Longuet-Higgins equations.
- * @param point_0 is the point from the first view which matches point_1
- * @param point_1 is the point from the second view which matches point_0
+ * @param point_0 is the point from the first view that matches point_1
+ * @param point_1 is the point from the second view that matches point_0
  * @param R is the rotation matrix between the two views.
  * @param t is the translation matrix between the two views.
  * @return

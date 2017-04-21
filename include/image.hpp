@@ -625,36 +625,6 @@ public:
      */
     Image *Clone() const;
 
-    //QImage interop
-#ifdef PIC_QT
-    /**
-     * @brief ConvertFromQImage converts a QImage into an Image.
-     * @param img is a QImage.
-     * @param typeLoad is a converting option for LDR images:
-     * LT_NOR means that the input image values will be normalized in [0,1].
-     * LT_NOR_GAMMA means that the input image values will be normalized in [0,1], and
-     * gamma correction 2.2 will be removed.
-     * LT_NONE means that image values are not modified.
-     * @param readerCounter.
-     */
-    void ConvertFromQImage(const QImage *img, LDR_type typeLoad, int readerCounter);
-
-    /**
-     * @brief ConvertToQImage
-     * @param image
-     * @param typeLoad is an option for LDR images only:
-     * LT_NOR means that the input image values will be normalized in [0,1].
-     * LT_NOR_GAMMA means that the input image values will be normalized in [0,1], and
-     * gamma correction 2.2 will be removed.
-     * LT_NONE means that image values are not modified.
-     * @param writerCounter.
-     * @param gamma.
-     * @return
-     */
-    QImage *ConvertToQImage(QImage *image, LDR_type type, int writerCounter,
-                            float gamma);
-#endif
-
     /**
      * @brief Read opens an Image from a file on the disk.
      * @param nameFile is the file name.
@@ -1633,145 +1603,6 @@ PIC_INLINE bool *Image::ConvertToMask(float *color = NULL, float threshold = 0.5
     return mask;
 }
 
-
-#ifdef PIC_QT
-PIC_INLINE void Image::ConvertFromQImage(const QImage *img,
-        LDR_type typeLoad = LT_NONE, int readerCounter = 0)
-{
-    bool bAlpha = img->hasAlphaChannel();
-
-    if(img->depth() == 1) {
-        channels = 1;
-    } else {
-        channels = img->depth() / 8;
-    }
-
-    if(bAlpha) { //check for alpha
-        Allocate(img->width(), img->height(), channels, 1);
-        alpha = channels;
-    } else {
-        if(img->depth() == 32 ) {
-            Allocate(img->width(), img->height(), 3, 1);
-        } else {
-            Allocate(img->width(), img->height(), channels, 1);
-        }
-    }
-
-    int tmpInd = tstride * (readerCounter % frames);
-
-    if(dataUC != NULL) {
-        delete[] dataUC;
-    }
-
-    unsigned int n = width * height * channels;
-    dataUC = new unsigned char[n];
-
-    //NOTE: this code works but it is slow!
-    int shiftG = 0;
-    int shiftB = 0;
-    int shiftA = 1;
-
-    if(channels == 3 || channels == 4) {
-        shiftG = 1;
-        shiftB = 2;
-        shiftA = 3;
-    }
-
-    for(int i = 0; i < height; i++) {
-        for(int j = 0; j < width; j++) {
-            QRgb col = img->pixel(j, i);
-
-            int A = (col & 0xFF000000) >> 24;
-            int R = (col & 0x00FF0000) >> 16;
-            int G = (col & 0x0000FF00) >> 8;
-            int B = (col & 0x000000FF);
-            int ind = tmpInd + i * ystride + j * xstride;
-
-            dataUC[ind         ] = R;
-            dataUC[ind + shiftG] = G;
-            dataUC[ind + shiftB] = B;
-
-            if(bAlpha) {
-                dataUC[ind + shiftA] = A;
-            }
-        }
-     }
-
-
-    /*
-    const unsigned char *tmp = img->bits();
-    for(int i=0; i<n; i+=channels) {
-        int j = (i * 4) / channels;
-
-        dataUC[i    ] = tmp[j + 2];
-        dataUC[i + 1] = tmp[j + 1];
-        dataUC[i + 2] = tmp[j    ];
-
-        if(bAlpha) {
-            dataUC[i + 3] = tmp[j + 3];
-        }
-    }*/
-
-    ConvertLDR2HDR(dataUC, &data[tmpInd], width * height * channels, typeLoad);
-}
-
-PIC_INLINE QImage *Image::ConvertToQImage(QImage *image = NULL,
-        LDR_type type = LT_NOR_GAMMA, int writerCoutner = 0, float gamma = 2.2f)
-{
-
-    QImage *ret = NULL;
-    bool bAllocate = false;
-
-    if(image != NULL) {
-        bAllocate = (image->width() != width || image->height() != height);
-    } else {
-        bAllocate = true;
-    }
-
-    if(bAllocate) {
-        ret = new QImage(width, height, QImage::Format_ARGB32);
-    } else {
-        ret = image;
-    }
-
-    float *tmpData = &data[writerCoutner % frames];
-
-    dataUC = ConvertHDR2LDR(tmpData, dataUC, width * height * channels, type, gamma);
-
-    int shifter[2];
-    shifter[0] = 1;
-    shifter[1] = 2;
-
-    switch(channels) {
-    case 1: {
-        shifter[0] = 0;
-        shifter[1] = 0;
-    }
-    break;
-
-    case 2: {
-        shifter[0] = 1;
-        shifter[1] = 1;
-    }
-    break;
-    }
-
-    #pragma omp parallel for
-
-    for(int i = 0; i < height; i++) {
-        int ind = i * width;
-
-        for(int j = 0; j < width; j++) {
-            int c = (ind + j) * channels;
-            ret->setPixel(j, i, qRgb(dataUC[c], dataUC[c + shifter[0]],
-                                     dataUC[c + shifter[1]]));
-        }
-    }
-
-    return ret;
-}
-#endif
-
 PIC_INLINE bool Image::Read(std::string nameFile,
                                LDR_type typeLoad = LT_NOR_GAMMA)
 {
@@ -1783,7 +1614,7 @@ PIC_INLINE bool Image::Read(std::string nameFile,
 
     bool bReturn = false;
 
-    //Reading an HDR format
+    //read the image in an HDR format
     label = getLabelHDRExtension(nameFile);
 
     if(label != IO_NULL) {
@@ -1846,7 +1677,7 @@ PIC_INLINE bool Image::Read(std::string nameFile,
             bReturn = false;
         }
     } else {
-        //Reading an LDR format
+        //read the image using an LDR codec
         label = getLabelLDRExtension(nameFile);
         unsigned char *dataReader = NULL;
         unsigned char *tmp = NULL;
@@ -1885,52 +1716,41 @@ PIC_INLINE bool Image::Read(std::string nameFile,
             tmp = NULL;
         }
 
-        if(bExt) { //External reader
-#ifdef PIC_QT
-            QImage tmpImg;
-            bool ret = tmpImg.load(nameFile.c_str());
+         if(bExt) {
+             return false;
+         }
 
-            if(!ret) {
-                bReturn = false;
-            } else {
-                ConvertFromQImage(&tmpImg, typeLoad);
-                bReturn = true;
-            }
-#else
-            bReturn = false;
-#endif
-        } else {
-            if(tmp != NULL) { //move the handle where it's trackable
-                if(dataUC == NULL) {
-                    dataUC = tmp;
-                }
-            }
+         if(tmp != NULL) { //move the handle where it's trackable
+             if(dataUC == NULL) {
+                 dataUC = tmp;
+             }
+         }
 
-            float *tmpFloat = NULL;
+         float *tmpFloat = NULL;
 
-            if(data != NULL) {
-                tmpFloat = &data[tstride * readerCounter];
-            }
+         if(data != NULL) {
+             tmpFloat = &data[tstride * readerCounter];
+         }
 
-            float *tmpConv = ConvertLDR2HDR(tmp, tmpFloat, width * height * channels,
-                                            typeLoad);
+         float *tmpConv = ConvertLDR2HDR(tmp, tmpFloat, width * height * channels,
+                                         typeLoad);
 
-            if(tmpConv != NULL) {
-                if(data == NULL) {
-                    data = tmpConv;
+         if(tmpConv != NULL) {
+             if(data == NULL) {
+                 data = tmpConv;
 
-                    if(frames <= 0) {
-                        frames = 1;
-                    }
+                 if(frames <= 0) {
+                     frames = 1;
+                 }
 
-                    AllocateAux();
-                }
+                 AllocateAux();
+             }
 
-                bReturn = true;
-            } else {
-                bReturn = false;
-            }
-        }
+             bReturn = true;
+         } else {
+             bReturn = false;
+         }
+
     }
 
     readerCounter = (readerCounter + 1) % frames;
@@ -1993,24 +1813,13 @@ PIC_INLINE bool Image::Write(std::string nameFile, LDR_type typeWrite = LT_NOR_G
 
         return ret;
     } else {
-        //Writing an LDR format
+        //write the image into an LDR format
         label = getLabelLDRExtension(nameFile);
 
         bool bExt = (label == IO_JPG) || (label == IO_PNG);
 
         if(bExt) {
-#ifdef PIC_QT
-            QImage *tmpImg = ConvertToQImage(NULL, typeWrite);
-            tmpImg->save(nameFile.c_str());
-
-            if(tmpImg != NULL) {
-                delete tmpImg;
-            }
-
-            return true;
-#else
             return false;
-#endif
         } else {
             float *dataWriter = NULL;
 

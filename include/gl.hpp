@@ -28,12 +28,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #else /* PIC_MAC_OS_X or PIC_UNIX */
 
-#ifdef PIC_QT
-#include <QtGui/QOpenGLFunctions>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QOpenGLPaintDevice>
-#endif
-
 #ifdef PIC_MAC_OS_X
     #include <OpenGL/OpenGL.h>
 #else

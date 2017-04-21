@@ -204,9 +204,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #pragma comment( lib, "vfw32" )
 #endif
 
-// Qt stuff
-#include "qt.hpp"
-
 // base stuff
 #include "base.hpp"
 #include "image.hpp"
