@@ -19,6 +19,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #define PIC_COMPUTER_VISION_NELDER_MEAD_OPT_FUNDAMENTAL_HPP
 
 #include "util/eigen_util.hpp"
+#include "util/std_util.hpp"
 #include "util/matrix_3_x_3.hpp"
 #include "util/nelder_mead_opt_base.hpp"
 

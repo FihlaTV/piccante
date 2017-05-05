@@ -141,6 +141,20 @@ void printfMat(Eigen::Matrix3f &mat)
         printf("\n");
     }
 }
+    
+    /**
+     * @brief printf
+     * @param mat
+     */
+    void printfMat34d(Eigen::Matrix34d &mat)
+    {
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j < 4; j++){
+                printf("%.9f ", mat(i, j));
+            }
+            printf("\n");
+        }
+    }
 
 /**
  * @brief fprintf
@@ -151,7 +165,7 @@ void fprintfMat(Eigen::MatrixXd &mat, std::string name)
     FILE *file = fopen(name.c_str(), "w");
     for(int i = 0; i < mat.rows(); i++){
         for(int j = 0; j < mat.cols(); j++){
-            fprintf(file, "%f ", mat(i, j));
+            fprintf(file, "%.9f ", mat(i, j));
         }
         fprintf(file, "\n");
     }

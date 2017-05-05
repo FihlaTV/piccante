@@ -24,6 +24,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "util/math.hpp"
 
+#include "computer_vision/nelder_mead_opt_fundamental.hpp"
+
 #ifndef PIC_DISABLE_EIGEN
 #include "externals/Eigen/Dense"
 #include "externals/Eigen/SVD"
@@ -208,6 +210,33 @@ Eigen::Matrix3d estimateFundamentalRansac(std::vector< Eigen::Vector2f > points0
 
     return F;
 }
+    
+/**
+ * @brief estimateFundamentalWithNonLinearRefinement
+ * @param F
+ * @return
+ */
+    Eigen::Matrix3d estimateFundamentalWithNonLinearRefinement(std::vector< Eigen::Vector2f > points0,
+                                                               std::vector< Eigen::Vector2f > points1,
+                                                               std::vector< unsigned int > &inliers,
+                                                               unsigned int maxIterationsRansac = 100,
+                                                               double thresholdRansac = 0.01,
+                                                               unsigned int seed = 1,
+                                                               unsigned int maxIterationsNonLinear = 10000,
+                                                               float thresholdNonLinear = 1e-4f
+                                                               )
+    {
+        Eigen::Matrix3d F = pic::estimateFundamentalRansac(points0, points1, inliers, maxIterationsRansac, thresholdRansac, seed);
+        
+        //non-linear refinement using Nelder-Mead
+        NelderMeadOptFundamental nmf(points0, points1, inliers);
+        
+        float F_data_opt[9];
+        nmf.run(getLinearArrayFromMatrix(F), 9, thresholdNonLinear, maxIterationsNonLinear, &F_data_opt[0]);
+        F = pic::getMatrixdFromLinearArray(F_data_opt, 3, 3);
+        
+        return F;
+    }
 
 /**
  * @brief noramalizeFundamentalMatrix
@@ -272,7 +301,7 @@ Eigen::Matrix3d extractFundamentalMatrix(Eigen::Matrix34d &M0, Eigen::Matrix34d 
     double norm = MAX(Df[0], MAX(Df[1], Df[2]));
     return F / norm;
 }
-
+    
 #endif // PIC_DISABLE_EIGEN
 
 } // end namespace pic

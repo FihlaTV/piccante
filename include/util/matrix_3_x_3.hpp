@@ -360,9 +360,9 @@ public:
      */
     void print(){
         printf("\n");
-        printf("%f %f %f\n", data[0], data[1], data[2]);
-        printf("%f %f %f\n", data[3], data[4], data[5]);
-        printf("%f %f %f\n", data[6], data[7], data[8]);
+        printf("%.9f %.9f %.9f\n", data[0], data[1], data[2]);
+        printf("%.9f %.9f %.9f\n", data[3], data[4], data[5]);
+        printf("%.9f %.9f %.9f\n", data[6], data[7], data[8]);
     }
 };
 

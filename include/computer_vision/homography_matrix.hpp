@@ -32,6 +32,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "util/eigen_util.hpp"
 #endif
 
+#include "computer_vision/nelder_mead_opt_homography.hpp"
+
 namespace pic {
 
 #ifndef PIC_DISABLE_EIGEN
@@ -203,6 +205,35 @@ Eigen::Matrix3d estimateHomographyRansac(std::vector< Eigen::Vector2f > points0,
         H = estimateHomography(sub_points0, sub_points1);
     }
 
+    return H;
+}
+    
+    /**
+     * @brief estimateHomographyRansac computes the homography such that: points1 = H * points0
+     * @param points0
+     * @param points1
+     * @param inliers
+     * @param maxIterations
+     * @return
+     */
+Eigen::Matrix3d estimateHomographyWithNonLinearRefinement(std::vector< Eigen::Vector2f > points0,
+                                         std::vector< Eigen::Vector2f > points1,
+                                         std::vector< unsigned int > &inliers,
+                                         unsigned int maxIterationsRansac = 100,
+                                         double thresholdRansac = 4.0,
+                                         unsigned int seedRansac = 1,
+                                         unsigned int maxIterationsNonLinear = 10000,
+                                         float thresholdNonLinear = 1e-5f
+                                                          ) {
+    
+    Eigen::Matrix3d H = estimateHomographyRansac(points0, points1, inliers,
+                                                 maxIterationsRansac, thresholdRansac,
+                                                 seedRansac);
+    
+    NelderMeadOptHomography nmoh(points0, points1, inliers);
+    float *H_array = getLinearArrayFromMatrix(H);
+    nmoh.run(H_array, 8, thresholdNonLinear, maxIterationsNonLinear, H_array);
+    H = getMatrix3dFromLinearArray(H_array);
     return H;
 }
 
