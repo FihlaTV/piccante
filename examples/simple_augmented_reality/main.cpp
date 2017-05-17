@@ -1,19 +1,28 @@
 /*
 
-PICCANTE
-The hottest HDR imaging library!
-http://piccantelib.net
+PICCANTE Examples
+The hottest examples of Piccante:
+http://vcg.isti.cnr.it/piccante
 
 Copyright (C) 2014
 Visual Computing Laboratory - ISTI CNR
 http://vcg.isti.cnr.it
 First author: Francesco Banterle
 
-This Source Code Form is subject to the terms of the Mozilla Public
-License, v. 2.0. If a copy of the MPL was not distributed with this
-file, You can obtain one at http://mozilla.org/MPL/2.0/.
+This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3.0 of the License, or
+    (at your option) any later version.
 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    See the GNU Lesser General Public License
+    ( http://www.gnu.org/licenses/lgpl-3.0.html ) for more details.
 */
+
 
 //This means that OpenGL acceleration layer is disabled
 #define PIC_DISABLE_OPENGL
@@ -22,31 +31,30 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
+#include "../common_code/image_qimage_interop.hpp"
+
 #include "piccante.hpp"
 
 int main(int argc, char *argv[])
 {
-    Q_UNUSED(argc);
-    Q_UNUSED(argv);
+    std::string img0_str, img1_str;
 
-    printf("Reading LDR images...");
+    if(argc == 3) {
+        img0_str = argv[1];
+        img1_str = argv[2];
+    } else {
+        img0_str = "../data/input/features/balcony_0.png";
+        img1_str = "../data/input/augmented_reality/desk.png";
+    }
 
     //computing K matrix from manufacturer data
     double fx = pic::getFocalLengthPixels(3.3, 3.8, 2592.0);
     double fy = pic::getFocalLengthPixels(3.3, 2.9, 1936.0);
     Eigen::Matrix3d K = pic::getIntrinsicsMatrix(fx, fy, 2592.0 / 2.0, 1936.0 / 2.0);
 
-    Q_UNUSED(argc);
-    Q_UNUSED(argv);
-
-    printf("Reading an LDR images...");
-
-    pic::Image *img0 = new pic::Image();
-    img0->Read("../data/input/features/balcony_0.png", pic::LT_NOR);
-    img0->Write("test.png");
-
-    pic::Image *img1 = new pic::Image();
-    img1->Read("../data/input/augmented_reality/desk.png", pic::LT_NOR);
+    printf("Reading LDR images...");
+    pic::Image *img0 = ImageRead(img0_str, NULL, pic::LT_NOR);
+    pic::Image *img1 = ImageRead(img1_str, NULL, pic::LT_NOR);
 
     printf("Ok\n");
 
@@ -95,48 +103,26 @@ int main(int argc, char *argv[])
         }
 
         printf("Matching ORB descriptors...\n");
-        std::vector< Eigen::Vector3i > matches;
-
         int n = b_desc.getDescriptorSize();
 
         pic::BinaryFeatureBruteForceMatcher bfm(&descs1, n);
 
         printf("Descriptor size: %d\n", n);
-        bfm.getAllMatches(&descs0, matches);
 
-        printf("Matches:\n");
-        std::vector< Eigen::Vector2f > m0, m0f, m1, m1f;
+        printf("Matching...");
+        std::vector< Eigen::Vector3i > matches;
+        bfm.getAllMatches(descs0, matches);
+        printf("Ok\n");
 
-        for(unsigned int i=0; i<matches.size(); i++) {
-            int I0 = matches[i][0];
-            int I1 = matches[i][1];
-
-            Eigen::Vector2f x, y;
-
-            x[0] = corners_from_img0[I0][0];
-            x[1] = corners_from_img0[I0][1];
-
-            y[0] = corners_from_img1[I1][0];
-            y[1] = corners_from_img1[I1][1];
-
-            m0.push_back(x);
-            m1.push_back(y);
-
-            printf("I1: %d (%d %d) -- I2: %d (%d %d) -- Score: %d\n", I0, int(x[0]), int(x[1]), I1, int(y[0]), int(y[1]), matches[i][2]);
-        }
+        printf("Filtering...");
+        std::vector< Eigen::Vector2f > m0, m1;
+        pic::BinaryFeatureMatcher::filterMatches(corners_from_img0, corners_from_img1, matches, m0, m1);
+        printf("Ok\n");
 
         printf("Estimating a homography matrix H from the matches...");
+
         std::vector< unsigned int > inliers;
-        Eigen::Matrix3d H = pic::estimateHomographyRansac(m0, m1, inliers, 10000, 2.5f);
-        printf("Ok.\n");
-
-        pic::filterInliers(m0, inliers, m0f);
-        pic::filterInliers(m1, inliers, m1f);
-
-        pic::NelderMeadOptHomography nmoh(m0, m1, inliers);
-        float *H_array = pic::getLinearArrayFromMatrix(H);
-        nmoh.run(H_array, 8, 1e-5f, 10000, H_array);
-        H = pic::getMatrix3dFromLinearArray(H_array);
+        Eigen::Matrix3d H = pic::estimateHomographyWithNonLinearRefinement(m0, m1, inliers, 10000, 2.5f, 1, 10000, 1e-5f);
 
         Eigen::Matrix34d cam = pic::getCameraMatrixFromHomography(H, K);
 
@@ -174,14 +160,12 @@ int main(int argc, char *argv[])
         Eigen::Vector4d p3(0.0, 0.0, 0.2, 1.0);
         Eigen::Vector2i coord3 = pic::cameraMatrixProject(cam, p3);
 
-
         float color[]={0.25f, 1.0f, 0.25f};
         DrawLine(img1, pic::Vec<2, int>(coord0[0], coord0[1]), pic::Vec<2, int>(coord1[0], coord1[1]), color);
         DrawLine(img1, pic::Vec<2, int>(coord0[0], coord0[1]), pic::Vec<2, int>(coord2[0], coord2[1]), color);
         DrawLine(img1, pic::Vec<2, int>(coord0[0], coord0[1]), pic::Vec<2, int>(coord3[0], coord3[1]), color);
 
-
-        img1->Write("../data/output/simple_augmented_reality.png", pic::LT_NOR);
+        ImageWrite(img1, "../data/output/simple_augmented_reality.png", pic::LT_NOR);
 
     } else {
         printf("No, there is at least an invalid file!\n");

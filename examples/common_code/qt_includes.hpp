@@ -1,7 +1,7 @@
 /*
 
-PICCANTE
-The hottest HDR imaging library!
+PICCANTE Examples
+The hottest examples of Piccante:
 http://vcg.isti.cnr.it/piccante
 
 Copyright (C) 2014
@@ -11,7 +11,7 @@ First author: Francesco Banterle
 
 This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Foundation, either version 3.0 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -19,9 +19,10 @@ This program is free software: you can redistribute it and/or modify
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    See the GNU Lesser General Public License
+    ( http://www.gnu.org/licenses/lgpl-3.0.html ) for more details.
 */
+
 
 /**
   Check if QT is not disabled, and includes the necessary headers.
@@ -30,8 +31,6 @@ This program is free software: you can redistribute it and/or modify
 
 #ifndef PIC_QT_HPP
 #define PIC_QT_HPP
-
-#ifndef PIC_DISABLE_QT
 
 
 #include <QtCore/QtGlobal>
@@ -83,8 +82,6 @@ This program is free software: you can redistribute it and/or modify
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QOpenGLPaintDevice>
 #endif
-
-#endif /* PIC_DISABLE_QT */
 
 #endif /* PIC_QT_HPP */
 

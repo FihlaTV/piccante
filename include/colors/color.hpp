@@ -479,17 +479,6 @@ public:
     }
 
     /**
-     * @brief scan
-     * @param file
-     *
-    void scan(FILE *file)
-    {
-        fscanf(file, "%f", &x);
-        fscanf(file, "%f", &y);
-        fscanf(file, "%f", &z);
-    }
-
-    /**
      * @brief isGreaterThanZero
      * @return
      */
@@ -536,13 +525,18 @@ public:
      * @param e
      * @param channel
      * @param pdf
-     *
+     */
     void importanceSampling(float e, int &channel, float &pdf)
     {
-        float sum = x + y + z;
+        float sum = 0.0f;
+        for(unsigned int i=0; i<N; i++) {
+            sum += data[i];
+        }
 
         if(sum > 0.0f) {
-            float CDF[3];
+            //TOBEFIXED
+            /*
+            float CDF[N];
             CDF[0] =  x   / sum;
             CDF[1] = (x + y) / sum;
             CDF[2] =  1.0f;
@@ -559,9 +553,10 @@ public:
                     pdf = z / sum;
                 }
             }
+            */
         } else {
-            channel = int(e * 2.0f);
-            pdf = 1.0f / 3.0f;
+            channel = int(e * float(N - 1));
+            pdf = 1.0f / float(N);
         }
     }
 

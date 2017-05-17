@@ -44,7 +44,8 @@ namespace pic {
  * @param points1 is an array of points computed from image 2.
  * @return It returns the homography matrix H.
  */
-Eigen::Matrix3d estimateHomography(std::vector< Eigen::Vector2f > points0, std::vector< Eigen::Vector2f > points1)
+Eigen::Matrix3d estimateHomography(std::vector< Eigen::Vector2f > &points0,
+                                   std::vector< Eigen::Vector2f > &points1)
 {
     Eigen::Matrix3d  H;
 
@@ -62,9 +63,9 @@ Eigen::Matrix3d estimateHomography(std::vector< Eigen::Vector2f > points0, std::
     unsigned int n = points0.size();
     Eigen::MatrixXd A(n * 2, 9);
 
-    //setting up the linear system
+    //set up the linear system
     for(unsigned int i = 0; i < n; i++) {
-        //transforming coordinates for increasing stability of the system
+        //transform coordinates for increasing stability of the system
         Eigen::Vector2f p0 = points0[i];
         Eigen::Vector2f p1 = points1[i];
 
@@ -98,13 +99,13 @@ Eigen::Matrix3d estimateHomography(std::vector< Eigen::Vector2f > points0, std::
         A(j, 8) = -p1[0];
     }
 
-    //Solving the linear system
+    //solve the linear system
     Eigen::JacobiSVD< Eigen::MatrixXd > svd(A, Eigen::ComputeFullV);
     Eigen::MatrixXd V = svd.matrixV();
 
     n = V.cols() - 1;
 
-    //assigning + transposing
+    //assign and transpose
     H(0, 0) = V(0, n);
     H(0, 1) = V(1, n);
     H(0, 2) = V(2, n);
@@ -129,8 +130,11 @@ Eigen::Matrix3d estimateHomography(std::vector< Eigen::Vector2f > points0, std::
  * @param maxIterations
  * @return
  */
-Eigen::Matrix3d estimateHomographyRansac(std::vector< Eigen::Vector2f > points0, std::vector< Eigen::Vector2f > points1,
-                                         std::vector< unsigned int > &inliers, unsigned int maxIterations = 100, double threshold = 4.0,
+Eigen::Matrix3d estimateHomographyRansac(std::vector< Eigen::Vector2f > &points0,
+                                         std::vector< Eigen::Vector2f > &points1,
+                                         std::vector< unsigned int > &inliers,
+                                         unsigned int maxIterations = 100,
+                                         double threshold = 4.0,
                                          unsigned int seed = 1)
 {
     if(points0.size() < 5) {
@@ -179,7 +183,7 @@ Eigen::Matrix3d estimateHomographyRansac(std::vector< Eigen::Vector2f > points0,
             }
         }
 
-        //getting the inliers
+        //get the inliers
         if(tmp_inliers.size() > inliers.size()) {
             H = tmpH;
             inliers.clear();
@@ -187,9 +191,8 @@ Eigen::Matrix3d estimateHomographyRansac(std::vector< Eigen::Vector2f > points0,
         }
     }
 
-    //improving estimate with inliers only
+    //improve estimate with inliers only
     if(inliers.size() > 3) {
-
         #ifdef PIC_DEBUG
             printf("Better estimate using inliers only.\n");
         #endif
@@ -216,11 +219,12 @@ Eigen::Matrix3d estimateHomographyRansac(std::vector< Eigen::Vector2f > points0,
      * @param maxIterations
      * @return
      */
-Eigen::Matrix3d estimateHomographyWithNonLinearRefinement(std::vector< Eigen::Vector2f > points0,
-                                         std::vector< Eigen::Vector2f > points1,
+Eigen::Matrix3d estimateHomographyWithNonLinearRefinement(
+                                         std::vector< Eigen::Vector2f > &points0,
+                                         std::vector< Eigen::Vector2f > &points1,
                                          std::vector< unsigned int > &inliers,
-                                         unsigned int maxIterationsRansac = 100,
-                                         double thresholdRansac = 4.0,
+                                         unsigned int maxIterationsRansac = 10000,
+                                         double thresholdRansac = 2.5,
                                          unsigned int seedRansac = 1,
                                          unsigned int maxIterationsNonLinear = 10000,
                                          float thresholdNonLinear = 1e-5f
@@ -229,7 +233,7 @@ Eigen::Matrix3d estimateHomographyWithNonLinearRefinement(std::vector< Eigen::Ve
     Eigen::Matrix3d H = estimateHomographyRansac(points0, points1, inliers,
                                                  maxIterationsRansac, thresholdRansac,
                                                  seedRansac);
-    
+
     NelderMeadOptHomography nmoh(points0, points1, inliers);
     float *H_array = getLinearArrayFromMatrix(H);
     nmoh.run(H_array, 8, thresholdNonLinear, maxIterationsNonLinear, H_array);

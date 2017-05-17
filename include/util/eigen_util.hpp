@@ -142,19 +142,19 @@ void printfMat(Eigen::Matrix3f &mat)
     }
 }
     
-    /**
-     * @brief printf
-     * @param mat
-     */
-    void printfMat34d(Eigen::Matrix34d &mat)
-    {
-        for(int i = 0; i < 3; i++){
-            for(int j = 0; j < 4; j++){
-                printf("%.9f ", mat(i, j));
-            }
-            printf("\n");
+/**
+  * @brief printf
+  * @param mat
+  */
+void printfMat34d(Eigen::Matrix34d &mat)
+{
+    for(int i = 0; i < 3; i++){
+        for(int j = 0; j < 4; j++){
+            printf("%.9f ", mat(i, j));
         }
+        printf("\n");
     }
+}
 
 /**
  * @brief fprintf

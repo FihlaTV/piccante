@@ -59,19 +59,57 @@ public:
     }
 
 #ifndef PIC_DISABLE_EIGEN
-    void getAllMatches(std::vector<unsigned int *> *descs0, std::vector< Eigen::Vector3i > &matches)
+    void getAllMatches(std::vector<unsigned int *> &descs0, std::vector< Eigen::Vector3i > &matches)
     {
         matches.clear();
 
-        for(unsigned int i = 0; i< descs0->size(); i++) {
+        for(unsigned int i = 0; i< descs0.size(); i++) {
             int matched_j;
             unsigned int dist_1;
 
-            if(getMatch(descs0->at(i), matched_j, dist_1)) {
+            if(getMatch(descs0.at(i), matched_j, dist_1)) {
                 matches.push_back(Eigen::Vector3i(i, matched_j, dist_1));
             }
         }
     }
+
+    /**
+     * @brief filterMatches
+     * @param c0
+     * @param c1
+     * @param matches
+     * @param p0
+     * @param p1
+     */
+    static void filterMatches(  std::vector< Eigen::Vector3f > &c0,
+                                std::vector< Eigen::Vector3f > &c1,
+                                std::vector< Eigen::Vector3i > &matches,
+                                std::vector< Eigen::Vector2f > &p0,
+                                std::vector< Eigen::Vector2f > &p1)
+    {
+        p0.clear();
+        p1.clear();
+
+        for(unsigned int i=0; i<matches.size(); i++) {
+            int I0 = matches[i][0];
+            int I1 = matches[i][1];
+
+            Eigen::Vector2f x, y;
+
+            x[0] = c0[I0][0];
+            x[1] = c0[I0][1];
+
+            y[0] = c1[I1][0];
+            y[1] = c1[I1][1];
+
+            p0.push_back(x);
+            p1.push_back(y);
+
+            printf("I1: %d (%d %d) -- I2: %d (%d %d) -- Score: %d\n",
+                   I0, int(x[0]), int(x[1]), I1, int(y[0]), int(y[1]), matches[i][2]);
+        }
+    }
+
 #endif
 };
 

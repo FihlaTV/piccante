@@ -1,18 +1,26 @@
 /*
 
-PICCANTE
-The hottest HDR imaging library!
-http://piccantelib.net
+PICCANTE Examples
+The hottest examples of Piccante:
+http://vcg.isti.cnr.it/piccante
 
 Copyright (C) 2014
 Visual Computing Laboratory - ISTI CNR
 http://vcg.isti.cnr.it
 First author: Francesco Banterle
 
-This Source Code Form is subject to the terms of the Mozilla Public
-License, v. 2.0. If a copy of the MPL was not distributed with this
-file, You can obtain one at http://mozilla.org/MPL/2.0/.
+This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3.0 of the License, or
+    (at your option) any later version.
 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    See the GNU Lesser General Public License
+    ( http://www.gnu.org/licenses/lgpl-3.0.html ) for more details.
 */
 
 #include <QCoreApplication>
@@ -20,33 +28,37 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 //This means that OpenGL acceleration layer is disabled
 #define PIC_DISABLE_OPENGL
 
+#include "../common_code/image_qimage_interop.hpp"
+
 #include "piccante.hpp"
 
 int main(int argc, char *argv[])
 {
-    Q_UNUSED(argc);
-    Q_UNUSED(argv);
+    std::string img_str;
+
+    if(argc == 3) {
+        img_str = argv[1];
+    } else {
+        img_str = "../data/input/features/balcony_0.png";
+    }
 
     printf("Reading an LDR file...");
 
-    pic::Image img;
-    img.Read("../data/input/features/balcony_1.png", pic::LT_NOR);
+    pic::Image *img = ImageRead(img_str, NULL, pic::LT_NOR);
 
     printf("Ok\n");
 
     printf("Is it valid? ");
-    if(img.isValid()) {
+    if(img->isValid()) {
         printf("OK\n");
 
         bool bWritten = true;
 
-
-/*
         //FAST corners
         std::vector< Eigen::Vector3f > corners_fast;
         pic::FastCornerDetector fcd;
         fcd.Update(1.0f, 5);
-        fcd.Compute(&img, &corners_fast);
+        fcd.Compute(img, &corners_fast);
 
         printf("\nFAST Corner Detector Test:\n");
         for(unsigned int i = 0; i < corners_fast.size(); i++) {
@@ -55,17 +67,15 @@ int main(int argc, char *argv[])
 
         printf("\n");
 
-        pic::Image *imgCorners = fcd.getCornersImage(&corners_fast, NULL, img.width, img.height, true);
+        pic::Image *imgCorners_fast = fcd.getCornersImage(&corners_fast, NULL, img->width, img->height, true);
 
-        bWritten = imgCorners->Write("../data/output/corner_fast_output.png");
-
-*/
+        bWritten = ImageWrite(imgCorners_fast, "../data/output/corner_fast_output.png", pic::LT_NOR);
 
         //Harris corners
         std::vector< Eigen::Vector3f > corners_harris;
         pic::HarrisCornerDetector hcd;
         hcd.Update(1.0f, 5);
-        hcd.Compute(&img, &corners_harris);
+        hcd.Compute(img, &corners_harris);
 
         printf("\nHarris Corner Detector Test:\n");
         for(unsigned int i = 0; i < corners_harris.size(); i++) {
@@ -73,15 +83,13 @@ int main(int argc, char *argv[])
         }
         printf("\n");
 
-        pic::Image *imgCorners_harris = hcd.getCornersImage(&corners_harris, NULL, img.width, img.height, true);
-        bWritten = imgCorners_harris->Write("../data/output/corner_harris_output.png");
+        pic::Image *imgCorners_harris = hcd.getCornersImage(&corners_harris, NULL, img->width, img->height, true);
+        bWritten = ImageWrite(imgCorners_harris, "../data/output/corner_harris_output.png", pic::LT_NOR);
 
-
-/*
         //SUSAN corners
         std::vector< Eigen::Vector3f > corners_susan;
         pic::SusanCornerDetector scd;
-        scd.Compute(&img, &corners_susan);
+        scd.Compute(img, &corners_susan);
 
         printf("\nSUSAN Corner Detector Test:\n");
         for(unsigned int i = 0; i < corners_susan.size(); i++) {
@@ -89,9 +97,8 @@ int main(int argc, char *argv[])
         }
         printf("\n");
 
-        pic::Image *imgCorners_susan = scd.getCornersImage(&corners_susan, NULL, img.width, img.height, true);
-
-        bWritten = imgCorners_susan->Write("../data/output/corner_susan_output.png");
+        pic::Image *imgCorners_susan = scd.getCornersImage(&corners_susan, NULL, img->width, img->height, true);
+        bWritten = ImageWrite(imgCorners_susan, "../data/output/corner_susan_output.png", pic::LT_NOR);
 
         printf("\n");
 
@@ -100,7 +107,6 @@ int main(int argc, char *argv[])
         } else {
             printf("Writing had some issues!\n");
         }
-*/
     } else {
         printf("No, the file is not valid!\n");
     }

@@ -44,7 +44,8 @@ namespace pic {
  * @param points1 is an array of points computed from image 2.
  * @return It returns the fundamental matrix, F_{1,2}.
  */
-Eigen::Matrix3d estimateFundamental(std::vector< Eigen::Vector2f > points0, std::vector< Eigen::Vector2f > points1)
+Eigen::Matrix3d estimateFundamental(std::vector< Eigen::Vector2f > &points0,
+                                    std::vector< Eigen::Vector2f > &points1)
 {
     Eigen::Matrix3d F;
 
@@ -129,8 +130,11 @@ Eigen::Matrix3d estimateFundamental(std::vector< Eigen::Vector2f > points0, std:
  * @param maxIterations
  * @return
  */
-Eigen::Matrix3d estimateFundamentalRansac(std::vector< Eigen::Vector2f > points0, std::vector< Eigen::Vector2f > points1,
-                                          std::vector< unsigned int > &inliers, unsigned int maxIterations = 100, double threshold = 0.01,
+Eigen::Matrix3d estimateFundamentalRansac(std::vector< Eigen::Vector2f > &points0,
+                                          std::vector< Eigen::Vector2f > &points1,
+                                          std::vector< unsigned int > &inliers,
+                                          unsigned int maxIterations = 100,
+                                          double threshold = 0.01,
                                           unsigned int seed = 1)
 {
     if(points0.size() < 9) {
@@ -182,7 +186,7 @@ Eigen::Matrix3d estimateFundamentalRansac(std::vector< Eigen::Vector2f > points0
             }
         }
 
-        //getting the inliers
+        //get the inliers
         if(tmp_inliers.size() > inliers.size()) {
             F = tmpF;
             inliers.clear();
@@ -190,7 +194,7 @@ Eigen::Matrix3d estimateFundamentalRansac(std::vector< Eigen::Vector2f > points0
         }
     }
 
-    //improving estimate with inliers only
+    //improve estimate with inliers only
     if(inliers.size() > 7) {
 
         #ifdef PIC_DEBUG
@@ -216,27 +220,27 @@ Eigen::Matrix3d estimateFundamentalRansac(std::vector< Eigen::Vector2f > points0
  * @param F
  * @return
  */
-    Eigen::Matrix3d estimateFundamentalWithNonLinearRefinement(std::vector< Eigen::Vector2f > points0,
-                                                               std::vector< Eigen::Vector2f > points1,
-                                                               std::vector< unsigned int > &inliers,
-                                                               unsigned int maxIterationsRansac = 100,
-                                                               double thresholdRansac = 0.01,
-                                                               unsigned int seed = 1,
-                                                               unsigned int maxIterationsNonLinear = 10000,
-                                                               float thresholdNonLinear = 1e-4f
-                                                               )
-    {
-        Eigen::Matrix3d F = pic::estimateFundamentalRansac(points0, points1, inliers, maxIterationsRansac, thresholdRansac, seed);
+Eigen::Matrix3d estimateFundamentalWithNonLinearRefinement(std::vector< Eigen::Vector2f > &points0,
+                                                           std::vector< Eigen::Vector2f > &points1,
+                                                           std::vector< unsigned int >    &inliers,
+                                                           unsigned int maxIterationsRansac = 100,
+                                                           double thresholdRansac = 0.01,
+                                                           unsigned int seed = 1,
+                                                           unsigned int maxIterationsNonLinear = 10000,
+                                                           float thresholdNonLinear = 1e-4f
+                                                           )
+{
+    Eigen::Matrix3d F = estimateFundamentalRansac(points0, points1, inliers, maxIterationsRansac, thresholdRansac, seed);
+
+    //non-linear refinement using Nelder-Mead
+    NelderMeadOptFundamental nmf(points0, points1, inliers);
         
-        //non-linear refinement using Nelder-Mead
-        NelderMeadOptFundamental nmf(points0, points1, inliers);
-        
-        float F_data_opt[9];
-        nmf.run(getLinearArrayFromMatrix(F), 9, thresholdNonLinear, maxIterationsNonLinear, &F_data_opt[0]);
-        F = pic::getMatrixdFromLinearArray(F_data_opt, 3, 3);
-        
-        return F;
-    }
+    float F_data_opt[9];
+    nmf.run(getLinearArrayFromMatrix(F), 9, thresholdNonLinear, maxIterationsNonLinear, &F_data_opt[0]);
+    F = getMatrixdFromLinearArray(F_data_opt, 3, 3);
+
+    return F;
+}
 
 /**
  * @brief noramalizeFundamentalMatrix

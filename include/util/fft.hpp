@@ -2,7 +2,7 @@
 
 PICCANTE
 The hottest HDR imaging library!
-http://piccantelib.net
+http://vcg.isti.cnr.it/piccante
 
 Copyright (C) 2014
 Visual Computing Laboratory - ISTI CNR
@@ -15,24 +15,52 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 */
 
-//This means that OpenGL acceleration layer is disabled
-#define PIC_DISABLE_OPENGL
+#ifndef PIC_UTIL_FFT_HPP
+#define PIC_UTIL_FFT_HPP
 
-#define PIC_DEBUG
-
+#include <string.h>
 #include <complex>
-#include "piccante.hpp"
 
+#include "base.hpp"
+#include "util/math.hpp"
+
+namespace pic {
+
+/**
+ * @brief RE
+ * @param x
+ * @return
+ */
 unsigned int RE(unsigned int x) {
     return x << 1;
 }
 
-typedef std::complex<float> complexf;
-
+/**
+ * @brief IM
+ * @param x
+ * @return
+ */
 unsigned int IM(unsigned int x) {
     return (x << 1) + 1;
 }
 
+/**
+ * @brief complexf
+ */
+typedef std::complex<float> complexf;
+
+/**
+ * @brief complexd
+ */
+typedef std::complex<double> complexd;
+
+/**
+ * @brief DFT1D
+ * @param in
+ * @param n
+ * @param out
+ * @return
+ */
 float *DFT1D(float *in, unsigned int n, float *out = NULL)
 {
     if(out == NULL) {
@@ -60,7 +88,12 @@ float *DFT1D(float *in, unsigned int n, float *out = NULL)
     return out;
 }
 
-
+/**
+ * @brief bitReversal
+ * @param n
+ * @param nbit
+ * @return
+ */
 unsigned int bitReversal(unsigned int n, unsigned int nbit)
 {
     unsigned int out = 0;
@@ -75,8 +108,8 @@ unsigned int bitReversal(unsigned int n, unsigned int nbit)
 /**
  * @brief FFTIterative1D
  * @param in
- * @param out
  * @param n
+ * @param out
  * @return
  */
 float *FFTIterative1D(float *in, unsigned int n, float *out = NULL)
@@ -126,7 +159,10 @@ float *FFTIterative1D(float *in, unsigned int n, float *out = NULL)
     return out;
 }
 
-int main(int argc, char *argv[])
+/**
+ * @brief fftTest
+ */
+void fftTest()
 {
     int n = 16;
     float *values = new float[n];
@@ -152,6 +188,9 @@ int main(int argc, char *argv[])
     for(int i=0;i<n;i++) {
         printf("%3.3f %3.3f\n", values_dft[RE(i)], values_dft[IM(i)]);
     }
-
-    return 0;
 }
+
+} // end namespace pic
+
+#endif /* PIC_UTIL_FFT_HPP */
+
