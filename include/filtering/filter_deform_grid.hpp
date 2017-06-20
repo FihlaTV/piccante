@@ -55,7 +55,7 @@ protected:
                 float vDiff[3];
                 isb.SampleImage(&grid_diff, x, y, vDiff);
 
-                isb_lin.SampleImage(src[0], x + vDiff[0], y + vDiff[1] , tmp_dst);
+                isb.SampleImage(src[0], x + vDiff[0], y + vDiff[1] , tmp_dst);
             }
         }
     }

@@ -42,7 +42,7 @@ This program is free software: you can redistribute it and/or modify
  * @param readerCounter.
  */
 pic::Image *ImageConvertFromQImage(QImage *imgIn,
-                                   pic::Image *imgOut = NULL,
+                                   pic::Image *imgOut,
                                    pic::LDR_type typeLoad = pic::LT_NONE,
                                    int readerCounter = 0)
 {
@@ -69,6 +69,8 @@ pic::Image *ImageConvertFromQImage(QImage *imgIn,
                 imgOut = new pic::Image(width, height, channels);
             }
         }
+    } else {
+        imgOut->Allocate(width, height, channels, 1);
     }
 
     int frames = imgOut->frames;
@@ -202,20 +204,26 @@ QImage *ImageConvertToQImage(pic::Image *imgIn,
  * @param typeWrite
  * @return
  */
-bool ImageWrite(pic::Image *imgIn, std::string nameFile, pic::LDR_type typeWrite)
+bool ImageWrite(pic::Image *imgIn, std::string nameFile, pic::LDR_type typeWrite = pic::LT_NOR_GAMMA)
 {
     if(imgIn == NULL) {
         return false;
     }
 
-    QImage *tmpImg = ImageConvertToQImage(imgIn, NULL, typeWrite);
-    tmpImg->save(nameFile.c_str());
+    bool bWrite = imgIn->Write(nameFile, typeWrite, 0);
 
-    if(tmpImg != NULL) {
-        delete tmpImg;
+    if(!bWrite) {
+        QImage *tmpImg = ImageConvertToQImage(imgIn, NULL, typeWrite);
+        tmpImg->save(nameFile.c_str());
+
+        if(tmpImg != NULL) {
+            delete tmpImg;
+        }
+
+        return true;
+    } else {
+        return bWrite;
     }
-
-    return true;
 }
 
 /**
@@ -224,12 +232,20 @@ bool ImageWrite(pic::Image *imgIn, std::string nameFile, pic::LDR_type typeWrite
  * @param typeLoad
  * @return
  */
-pic::Image *ImageRead(std::string nameFile, pic::Image *imgOut = NULL, pic::LDR_type typeLoad = pic::LT_NOR_GAMMA)
+pic::Image *ImageRead(std::string nameFile, pic::Image *imgOut, pic::LDR_type typeLoad = pic::LT_NOR_GAMMA)
 {
-    QImage imgIn;
-    imgIn.load(nameFile.c_str());
-    imgOut = ImageConvertFromQImage(&imgIn, imgOut, typeLoad);
-    return imgOut;
+    if(imgOut != NULL) {
+        bool bRead = imgOut->Read(nameFile, typeLoad);
+
+        if(!bRead) {
+            QImage imgIn;
+            imgIn.load(nameFile.c_str());
+            imgOut = ImageConvertFromQImage(&imgIn, imgOut, typeLoad);
+            return imgOut;
+        }
+    } else {
+        return imgOut;
+    }
 }
 
 #endif /* PIC_QT */

@@ -63,15 +63,6 @@ protected:
     void Destroy();
 
     /**
-     * @brief Allocate allocates memory for the pixel buffer.
-     * @param width is the number of horizontal pixels.
-     * @param height is the number of vertical pixels.
-     * @param channels is the number of color channels.
-     * @param frames is the number of temporal pixels.
-     */
-    void Allocate(int width, int height, int channels, int frames);
-
-    /**
      * @brief AllocateAux computes extra information after allocation;
      * e.g. strides.
      */
@@ -183,6 +174,15 @@ public:
     * @brief Image destructor. This deallocates: data, dataUC, dataRGBE, dataTMP,
     */
     ~Image();
+
+    /**
+     * @brief Allocate allocates memory for the pixel buffer.
+     * @param width is the number of horizontal pixels.
+     * @param height is the number of vertical pixels.
+     * @param channels is the number of color channels.
+     * @param frames is the number of temporal pixels.
+     */
+    void Allocate(int width, int height, int channels, int frames);
 
     /**
      * @brief CopySubImage copies imgIn in the current image.

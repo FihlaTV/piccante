@@ -1,36 +1,55 @@
 /*
 
-PICCANTE
-The hottest HDR imaging library!
-http://piccantelib.net
+PICCANTE Examples
+The hottest examples of Piccante:
+http://vcg.isti.cnr.it/piccante
 
 Copyright (C) 2014
 Visual Computing Laboratory - ISTI CNR
 http://vcg.isti.cnr.it
 First author: Francesco Banterle
 
-This Source Code Form is subject to the terms of the Mozilla Public
-License, v. 2.0. If a copy of the MPL was not distributed with this
-file, You can obtain one at http://mozilla.org/MPL/2.0/.
+This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3.0 of the License, or
+    (at your option) any later version.
 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    See the GNU Lesser General Public License
+    ( http://www.gnu.org/licenses/lgpl-3.0.html ) for more details.
 */
 
 //This means that OpenGL acceleration layer is disabled
 #define PIC_DISABLE_OPENGL
 
+#include "../common_code/image_qimage_interop.hpp"
+
 #include "piccante.hpp"
 
 int main(int argc, char *argv[])
 {
-    Q_UNUSED(argc);
-    Q_UNUSED(argv);
+    std::string img0_str, img1_str, img2_str;
+
+    if(argc == 4) {
+        img0_str = argv[1];
+        img1_str = argv[2];
+        img2_str = argv[3];
+    } else {
+        img0_str = "../data/input/poisson/target.png";
+        img1_str = "../data/input/poisson/source.png";
+        img2_str = "../data/input/poisson/mask.png";
+    }
 
     printf("Reading images...");
 
     pic::Image img_target, img_source, mask_source;
-    img_target.Read("../data/input/poisson/target.png", pic::LT_NOR);
-    img_source.Read("../data/input/poisson/source.png", pic::LT_NOR);
-    mask_source.Read("../data/input/poisson/mask.png", pic::LT_NOR);
+    ImageRead(img0_str, &img_target, pic::LT_NOR);
+    ImageRead(img1_str, &img_source, pic::LT_NOR);
+    ImageRead(img2_str, &mask_source, pic::LT_NOR);
 
     printf("Ok\n");
 
@@ -42,9 +61,8 @@ int main(int argc, char *argv[])
         bool *mask = mask_source.ConvertToMask(color, 0.1f, false);
 
         pic::Image *imgOut = PoissonImageEditing(&img_source, &img_target, mask);
-        imgOut->Write("../data/output/poisson_blending_result.png", pic::LT_NOR);
 
-
+        ImageWrite(imgOut, "../data/output/poisson_blending_result.png", pic::LT_NOR);
     } else {
         printf("Images are not valid!\n");
     }
