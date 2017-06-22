@@ -1,30 +1,40 @@
 /*
 
-PICCANTE
-The hottest HDR imaging library!
-http://piccantelib.net
+PICCANTE Examples
+The hottest examples of Piccante:
+http://vcg.isti.cnr.it/piccante
 
 Copyright (C) 2014
 Visual Computing Laboratory - ISTI CNR
 http://vcg.isti.cnr.it
 First author: Francesco Banterle
 
-This Source Code Form is subject to the terms of the Mozilla Public
-License, v. 2.0. If a copy of the MPL was not distributed with this
-file, You can obtain one at http://mozilla.org/MPL/2.0/.
+This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3.0 of the License, or
+    (at your option) any later version.
 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    See the GNU Lesser General Public License
+    ( http://www.gnu.org/licenses/lgpl-3.0.html ) for more details.
 */
 
 //This means that OpenGL acceleration layer is disabled
 #define PIC_DISABLE_OPENGL
 
+#include "../common_code/image_qimage_interop.hpp"
+
 #include "piccante.hpp"
 
 int main(int argc, char *argv[])
 {
+
     Q_UNUSED(argc);
     Q_UNUSED(argv);
-
 
     std::vector< pic::Vec<2, float> > point;
     int n = 1000;
@@ -52,7 +62,7 @@ int main(int argc, char *argv[])
             float g = colors[i * 3 + 1];
             float b = colors[i * 3 + 2];
 
-            printf("Label size: %d\n", labels[i]->size());
+            printf("Label size: %ld\n", labels[i]->size());
 
             for (std::set<unsigned int>::iterator it=labels[i]->begin(); it!=labels[i]->end(); it++) {
                 unsigned int index = *it;
@@ -64,7 +74,8 @@ int main(int argc, char *argv[])
                 data[2] = b;
             }
         }
-        img.Write("../data/output/kmeans.bmp");
+
+        ImageWrite(&img, "../data/output/kmeans.bmp");
     }
 
     return 0;

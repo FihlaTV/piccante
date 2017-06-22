@@ -198,6 +198,7 @@ PIC_INLINE Image *FilterNPasses::SetupAuxNSame(ImageVec imgIn,
     if(imgAllocated != NULL) {
         delete imgAllocated;
     }
+
     imgAllocated = imgOut->AllocateSimilarOne();
 
     //Bug:

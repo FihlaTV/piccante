@@ -42,13 +42,14 @@ int main(int argc, char *argv[])
         img1_str = "../data/input/features/balcony_1.png";
     }
 
-    pic::Image *img0 = ImageRead(img0_str, NULL, pic::LT_NOR);
-    pic::Image *img1 = ImageRead(img1_str, NULL, pic::LT_NOR);
+    pic::Image img0, img1;
+    ImageRead(img0_str, &img0, pic::LT_NOR);
+    ImageRead(img1_str, &img1, pic::LT_NOR);
 
     printf("Ok\n");
 
     printf("Are they both valid? ");
-    if(img0->isValid() && img1->isValid()) {
+    if(img0.isValid() && img1.isValid()) {
         printf("OK\n");
 
         //output corners
@@ -56,8 +57,8 @@ int main(int argc, char *argv[])
         std::vector< Eigen::Vector3f > corners_from_img1;
 
         //computing the luminance images
-        pic::Image *L0 = pic::FilterLuminance::Execute(img0, NULL, pic::LT_CIE_LUMINANCE);
-        pic::Image *L1 = pic::FilterLuminance::Execute(img1, NULL, pic::LT_CIE_LUMINANCE);
+        pic::Image *L0 = pic::FilterLuminance::Execute(&img0, NULL, pic::LT_CIE_LUMINANCE);
+        pic::Image *L1 = pic::FilterLuminance::Execute(&img1, NULL, pic::LT_CIE_LUMINANCE);
 
         //getting corners
         printf("Extracting corners...\n");
@@ -105,22 +106,11 @@ int main(int argc, char *argv[])
         std::vector< unsigned int > inliers;
         Eigen::Matrix3d H = pic::estimateHomographyWithNonLinearRefinement(m0, m1, inliers, 10000, 2.5f, 1, 10000, 1e-5f);
 
-        /*
-        //output to a file
-        FILE *file = fopen("../data/output/simple_matching_matches.txt", "w");
-
-        for(unsigned int i = 0; i < m0f.size(); i++) {
-            fprintf(file, "%f %f %f %f\n", m0f[i][0], m0f[i][1], m1f[i][0], m1f[i][1]);
-        }
-
-        fclose(file);
-        */
-
         printf("\nHomography matrix:\n");
         pic::printfMat(H);
 
         printf("Applying H to the first image..");
-        pic::Image *img0_H = pic::FilterWarp2D::Execute(img0, NULL, pic::MatrixConvert(H), true, false);
+        pic::Image *img0_H = pic::FilterWarp2D::Execute(&img0, NULL, pic::MatrixConvert(H), true, false);
         ImageWrite(img0_H, "../data/output/simple_matching_img_0_H_applied.png", pic::LT_NOR);
         printf("Ok.\n");
 
