@@ -26,6 +26,23 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 namespace pic {
 
+/**
+ * @brief polynomialVal
+ * @param poly
+ * @param x
+ * @return
+ */
+float polynomialVal(std::vector< float > & poly, float x)
+{
+    float val = 0.f;
+    float M = 1.f;
+    for (const float &c : poly) {
+        val += c * M;
+        M *= x;
+    }
+    return val;
+}
+
 #ifndef PIC_DISABLE_EIGEN
 
 /**
@@ -73,24 +90,29 @@ std::vector<float> polynomialFit(std::vector<float> &x, std::vector<float> &y, u
     return poly;
 }
 
-#endif
-
 /**
- * @brief polynomialVal
- * @param poly
- * @param x
- * @return
+ * @brief polynomialTest
  */
-float polynomialVal(std::vector< float > & poly, float x)
+void polynomialTest()
 {
-    float val = 0.f;
-    float M = 1.f;
-    for (const float &c : poly) {
-        val += c * M;
-        M *= x;
+    std::vector<float> x, y;
+
+    for(int i=0;i<10;i++) {
+        x.push_back(i);
+        y.push_back(i * i);
     }
-    return val;
+
+    std::vector< float > tmp = polynomialFit(x, y, 2);
+
+    for(int i=0;i<3;i++) {
+        printf("%f ", tmp[i]);
+    }
+
+    float y_2 = polynomialVal(tmp, 4.0f);
+    printf("\n %f\n", y_2);
 }
+
+#endif
 
 } // end namespace pic
 

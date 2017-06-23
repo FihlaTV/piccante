@@ -23,8 +23,6 @@ This program is free software: you can redistribute it and/or modify
     ( http://www.gnu.org/licenses/lgpl-3.0.html ) for more details.
 */
 
-#include <QCoreApplication>
-
 //This means that OpenGL acceleration layer is disabled
 #define PIC_DISABLE_OPENGL
 
@@ -36,7 +34,7 @@ int main(int argc, char *argv[])
 {
     std::string img_str;
 
-    if(argc == 3) {
+    if(argc == 2) {
         img_str = argv[1];
     } else {
         img_str = "../data/input/features/balcony_0.png";
@@ -44,12 +42,14 @@ int main(int argc, char *argv[])
 
     printf("Reading an LDR file...");
 
-    pic::Image *img = ImageRead(img_str, NULL, pic::LT_NOR);
+    pic::Image img;
+
+    ImageRead(img_str, &img, pic::LT_NOR);
 
     printf("Ok\n");
 
     printf("Is it valid? ");
-    if(img->isValid()) {
+    if(img.isValid()) {
         printf("OK\n");
 
         bool bWritten = true;
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
         std::vector< Eigen::Vector3f > corners_fast;
         pic::FastCornerDetector fcd;
         fcd.Update(1.0f, 5);
-        fcd.Compute(img, &corners_fast);
+        fcd.Compute(&img, &corners_fast);
 
         printf("\nFAST Corner Detector Test:\n");
         for(unsigned int i = 0; i < corners_fast.size(); i++) {
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 
         printf("\n");
 
-        pic::Image *imgCorners_fast = fcd.getCornersImage(&corners_fast, NULL, img->width, img->height, true);
+        pic::Image *imgCorners_fast = fcd.getCornersImage(&corners_fast, NULL, img.width, img.height, true);
 
         bWritten = ImageWrite(imgCorners_fast, "../data/output/corner_fast_output.png", pic::LT_NOR);
 
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
         std::vector< Eigen::Vector3f > corners_harris;
         pic::HarrisCornerDetector hcd;
         hcd.Update(1.0f, 5);
-        hcd.Compute(img, &corners_harris);
+        hcd.Compute(&img, &corners_harris);
 
         printf("\nHarris Corner Detector Test:\n");
         for(unsigned int i = 0; i < corners_harris.size(); i++) {
@@ -83,13 +83,13 @@ int main(int argc, char *argv[])
         }
         printf("\n");
 
-        pic::Image *imgCorners_harris = hcd.getCornersImage(&corners_harris, NULL, img->width, img->height, true);
+        pic::Image *imgCorners_harris = hcd.getCornersImage(&corners_harris, NULL, img.width, img.height, true);
         bWritten = ImageWrite(imgCorners_harris, "../data/output/corner_harris_output.png", pic::LT_NOR);
 
         //SUSAN corners
         std::vector< Eigen::Vector3f > corners_susan;
         pic::SusanCornerDetector scd;
-        scd.Compute(img, &corners_susan);
+        scd.Compute(&img, &corners_susan);
 
         printf("\nSUSAN Corner Detector Test:\n");
         for(unsigned int i = 0; i < corners_susan.size(); i++) {
@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
         }
         printf("\n");
 
-        pic::Image *imgCorners_susan = scd.getCornersImage(&corners_susan, NULL, img->width, img->height, true);
+        pic::Image *imgCorners_susan = scd.getCornersImage(&corners_susan, NULL, img.width, img.height, true);
         bWritten = ImageWrite(imgCorners_susan, "../data/output/corner_susan_output.png", pic::LT_NOR);
 
         printf("\n");
