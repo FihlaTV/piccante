@@ -68,75 +68,89 @@ protected:
             }
         }        
 
-        float *max_val_saturation = new float[channels];
+        float channelsf = float(channels);
+
+        float *acc = new float[channels];
+        float *totWeight = new float[channels];
 
         for(int j = box->y0; j < box->y1; j++) {
             int ind = j * width;
 
             for(int i = box->x0; i < box->x1; i++) {
-
-                //Assembling kernel
                 int c = (ind + i) * channels;
 
-                bool bSaturated = false;
-
                 for(int k = 0; k < channels; k++) {
-                    float weight_norm = 0.0f;
-                    float acc = 0.0f;
+                    acc[k] = 0.0f;
+                    totWeight[k] = 0.0f;
+                }
 
-                    //for each exposure...
-                    for(unsigned int l = 0; l < n; l++) {
-                        float x = src[l]->data[c + k];
+                float max_val_saturation = 1.0f;
 
-                        float weight = WeightFunction(x, weight_type);
+                //for each exposure...
+                for(unsigned int l = 0; l < n; l++) {
 
-                        float x_lin = crf->Remove(x, k);
+                    float x = 0.0f;
+                    for(int k = 0; k < channels; k++) {
+                        x += src[l]->data[c + k];
+                    }
+                    x /= channelsf;
 
-                        if(l == index) {
-                            max_val_saturation[k] = x_lin / src[l]->exposure;
-                        }
 
-                        //HDR assembling
+                    if(l == index) {
+                        max_val_saturation = x / t_min;
+                    }
+
+                    float weight = WeightFunction(x, weight_type);
+
+                    if(domain == HRD_SQ) {
+                        weight *= (src[l]->exposure * src[l]->exposure);
+                    }
+
+                    for(int k = 0; k < channels; k++) {
+                        float x_lin = crf->Remove(src[l]->data[c + k], k);
+
+                        //merge HDR pixels
                         switch(domain) {
                             case HRD_LIN: {
-                                acc += (weight * x_lin) / src[l]->exposure;
+                                acc[k] += (weight * x_lin) / src[l]->exposure;
                             } break;
 
                             case HRD_LOG: {
-                                acc += weight * (logf(x_lin + delta_value) - logf(src[l]->exposure));
+                                acc[k] += weight * (logf(x_lin + delta_value) - logf(src[l]->exposure));
                             } break;
 
                             case HRD_SQ: {
-                                acc += (weight * x_lin) * src[l]->exposure;
-                                weight *= (src[l]->exposure * src[l]->exposure);
+                                acc[k] += (weight * x_lin) * src[l]->exposure;
                             } break;
                         }
 
-                        weight_norm += weight;
-                    }
-
-                    //do we have pixels saturate?
-                    if(weight_norm > 1e-4f) {
-                        acc /= weight_norm;
-                        if(domain == HRD_LOG) {
-                            acc = expf(acc);
-                        }
-                        dst->data[c + k] = acc;
-
-                    } else {
-                        bSaturated = true;
+                        totWeight[k] += weight;
                     }
                 }
 
-                if(bSaturated) {
+                bool bSaturated = false;
+                for(int k = 0; k < channels; k++) {
+                    bSaturated = bSaturated || (totWeight[k] < 1e-4f);
+                }
+
+                if(!bSaturated) {
                     for(int k = 0; k < channels; k++) {
-                        dst->data[c + k] = max_val_saturation[k];
+                        acc[k] /= totWeight[k];
+                        if(domain == HRD_LOG) {
+                            acc[k] = expf(acc[k]);
+                        }
+                        dst->data[c + k] = acc[k];
+                    }
+                } else {
+                    for(int k = 0; k < channels; k++) {
+                        dst->data[c + k] = max_val_saturation;
                     }
                 }
             }
         }
 
-        delete[] max_val_saturation;
+        delete[] totWeight;
+        delete[] acc;
     }
 
 public:
@@ -147,7 +161,7 @@ public:
      * @param linearization_type
      * @param icrf
      */
-    FilterAssembleHDR(CameraResponseFunction *crf, CRF_WEIGHT weight_type = CW_ROBERTSON, HDR_REC_DOMAIN domain = HRD_LOG)
+    FilterAssembleHDR(CameraResponseFunction *crf, CRF_WEIGHT weight_type = CW_DEB97, HDR_REC_DOMAIN domain = HRD_LOG)
     {        
         this->crf = crf;
 

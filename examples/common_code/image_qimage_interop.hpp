@@ -59,16 +59,15 @@ pic::Image *ImageConvertFromQImage(QImage *imgIn,
     int width = imgIn->width();
     int height = imgIn->height();
 
-    if(imgOut == NULL) {
-        if(bAlpha) { //check for alpha
-            imgOut = new pic::Image(width, height, channels);
-        } else {
-            if(imgIn->depth() == 32 ) {
-                imgOut = new pic::Image(width, height, 3);
-            } else {
-                imgOut = new pic::Image(width, height, channels);
-            }
+    //determine channels
+    if(!bAlpha) {
+        if(imgIn->depth() == 32 ) {
+            channels = 3;
         }
+    }
+
+    if(imgOut == NULL) {
+        imgOut = new pic::Image(width, height, channels);
     } else {
         imgOut->Allocate(width, height, channels, 1);
     }
@@ -241,11 +240,10 @@ pic::Image *ImageRead(std::string nameFile, pic::Image *imgOut, pic::LDR_type ty
             QImage imgIn;
             imgIn.load(nameFile.c_str());
             imgOut = ImageConvertFromQImage(&imgIn, imgOut, typeLoad);
-            return imgOut;
         }
-    } else {
-        return imgOut;
     }
+
+    return imgOut;
 }
 
 #endif /* PIC_QT */

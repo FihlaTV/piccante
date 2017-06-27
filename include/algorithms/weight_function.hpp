@@ -71,9 +71,9 @@ inline float WeightFunction(float x, CRF_WEIGHT type)
         float tr = (Zmin + Zmax) / 2.0f;
 
         if(x <= tr) {
-            return x - Zmin;
+            return CLAMPi(x - Zmin, 0.0f, 1.0f);
         } else {
-            return Zmax - x;
+            return CLAMPi(Zmax - x, 0.0f, 1.0f);
         }
     }
 

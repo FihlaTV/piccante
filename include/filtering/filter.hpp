@@ -160,8 +160,8 @@ public:
      * @param imgOut
      * @param tiles
      */
-    virtual void	  ProcessPAux(ImageVec imgIn, Image *imgOut,
-                                  TileList *tiles);
+    virtual void ProcessPAux(ImageVec imgIn, Image *imgOut,
+                             TileList *tiles);
 
     /**
      * @brief ProcessP
@@ -281,7 +281,7 @@ PIC_INLINE Image *Filter::ProcessP(ImageVec imgIn, Image *imgOut)
         return imgOut;
     }
 
-    //Creating threads
+    //Create threads
     int numCores = std::thread::hardware_concurrency();
 
     std::thread **thrd = new std::thread*[numCores];

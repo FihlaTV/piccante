@@ -113,7 +113,7 @@ PIC_INLINE void ImaveVecGetExposureTimesAsArray(ImageVec &stack, std::vector<flo
     output.clear();
 
     for(unsigned int i = 0; i < stack.size(); i++) {
-        float tmp = bLog ? log(stack[i]->exposure) : stack[i]->exposure;
+        float tmp = bLog ? logf(stack[i]->exposure) : stack[i]->exposure;
         output.push_back(tmp);
     }
 }
