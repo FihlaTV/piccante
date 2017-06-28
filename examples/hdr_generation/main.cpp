@@ -23,8 +23,6 @@ This program is free software: you can redistribute it and/or modify
     ( http://www.gnu.org/licenses/lgpl-3.0.html ) for more details.
 */
 
-#include <QCoreApplication>
-
 //This means that OpenGL acceleration layer is disabled
 #define PIC_DISABLE_OPENGL
 
@@ -65,12 +63,8 @@ int main(int argc, char *argv[])
 
         pic::CameraResponseFunction crf;
 
-        //Estimating the camera response function
         printf("Estimating the camera response function... ");
-
-     //   crf.DebevecMalik(stack_vec);
-
-        crf.setCRFtoGamma2_2();
+        crf.DebevecMalik(stack_vec);
         printf("Ok\n");
 
         printf("Assembling the different exposure images... ");
@@ -81,16 +75,13 @@ int main(int argc, char *argv[])
 
         if(imgOut != NULL) {
             ImageWrite(imgOut, "../data/output/hdr_generation_image_log.hdr");
-         //   pic::Image *imgToneMapped_reinhard = pic::ReinhardTMO(imgOut);
-        //    ImageWrite(imgToneMapped_reinhard, "../data/output/image_debevec_crf_tone_mapped.png", pic::LT_NOR_GAMMA);
-         //   delete imgToneMapped_reinhard;
-         //   delete imgOut;
+            pic::Image *imgToneMapped_reinhard = pic::ReinhardTMO(imgOut);
+            ImageWrite(imgToneMapped_reinhard, "../data/output/image_debevec_crf_tone_mapped.png", pic::LT_NOR_GAMMA);
+       //     delete imgToneMapped_reinhard;
+        //    delete imgOut;
         }
 
-        /*
-        //Estimating the polynomial camera response function
         printf("Estimating the polynomial camera response function... ");
-        fflush(stdout);
 
         bool ok = crf.MitsunagaNayar(stack_vec, -6, 256, true, 0.08f, true);
 
@@ -105,19 +96,18 @@ int main(int argc, char *argv[])
             printf("Ok\n");
 
             if(imgOut != NULL) {
-                imgOut->Write("../data/output/hdr_generation_image_poly.hdr");
+                ImageWrite(imgOut, "../data/output/hdr_generation_image_poly.hdr");
 
                 pic::Image *imgToneMapped_reinhard = pic::ReinhardTMO(imgOut);
-                imgToneMapped_reinhard->Write("../data/output/image_mitusunaga_crf_tone_mapped.png", pic::LT_NOR_GAMMA);
-                delete imgToneMapped_reinhard;
+                ImageWrite(imgToneMapped_reinhard, "../data/output/image_mitusunaga_crf_tone_mapped.png", pic::LT_NOR_GAMMA);
 
+                delete imgToneMapped_reinhard;
                 delete imgOut;
             }
         } else {
             printf("Camera Respose Function not computed.\n");
         }
 
-        */
     } else {
         printf("No, the files are not valid!\n");
     }

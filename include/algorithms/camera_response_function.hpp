@@ -122,7 +122,9 @@ protected:
             if(icrf[i] != NULL) {
                 delete[] icrf[i];
             }
+        }
 
+        for(unsigned int i = 0; i < crf.size(); i++) {
             if(crf[i] != NULL) {
                 delete[] crf[i];
             }
