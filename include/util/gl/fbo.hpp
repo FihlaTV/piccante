@@ -45,6 +45,11 @@ public:
     int width, height, frames;  // width and height of the framebuffer
     bool bDepth;                // do we have a depth buffer?
 
+    //MRT
+    GLuint       *texMRT;
+    unsigned int nMRT;
+    GLuint      *attachmentsMRT;
+
     Fbo();
 
     /**
@@ -56,7 +61,25 @@ public:
      * @param tex
      * @return
      */
+    bool create(int width, int height, bool bDepth);
+
+    /**
+     * @brief create
+     * @param width
+     * @param height
+     * @param bDepth
+     * @return
+     */
     bool create(int width, int height, int depth, bool bDepth, GLuint tex);
+
+    /**
+     * @brief create
+     * @param width
+     * @param height
+     * @param bDepth
+     * @return
+     */
+    bool createMRT(int width, int height, bool bDepth, unsigned int nMRT);
 
     /**
      * @brief attachColorBuffer
@@ -86,12 +109,6 @@ public:
     void bind();
 
     /**
-     * @brief bind
-     * @param i
-     */
-    void bind(unsigned int i);
-
-    /**
      * @brief unbind
      */
     void unbind();
@@ -110,7 +127,17 @@ public:
     void unbindSimple()
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    }
+    }  
+
+    /**
+     * @brief bindMRT
+     */
+    void bindMRT();
+
+    /**
+     * @brief unbind
+     */
+    void unbindMRT();
 
     /**
      * @brief clone
@@ -184,6 +211,11 @@ Fbo *Fbo::clone()
     return ret;
 }
 
+bool Fbo::create(int width, int height, bool bDepth)
+{
+    return create(width, height, 1, bDepth, 0);
+}
+
 bool Fbo::create(int width, int height, int frames, bool bDepth, GLuint tex)
 {
     this->width = width;
@@ -244,6 +276,75 @@ bool Fbo::create(int width, int height, int frames, bool bDepth, GLuint tex)
         glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_3D,
                                this->tex, 0, 0);
     }
+
+    // attach depth buffer (renderbuffer)
+    if(bDepth) {
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER,
+                                  depth);
+    }
+
+#ifdef PIC_DEBUG_GL
+    // check framebuffer status
+    GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+
+    if(fboStatus != GL_FRAMEBUFFER_COMPLETE) {
+        checkStatus(fboStatus);
+        glDeleteFramebuffers(1, &fbo);
+        fbo = 0;
+    }
+
+#endif
+
+    // unbind framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    return fbo != 0;
+}
+
+bool Fbo::createMRT(int width, int height, bool bDepth, unsigned int nMRT)
+{
+    this->width = width;
+    this->height = height;
+    this->frames = frames;
+    this->bDepth = bDepth;
+    this->nMRT = nMRT;
+
+    texMRT = new GLuint[nMRT];
+    attachmentsMRT = new GLuint[nMRT];
+
+    for(unsigned int i=0; i<nMRT; i++) {
+        texMRT[i] = 0;
+        glGenTextures(1, &texMRT[i]);
+        glBindTexture(GL_TEXTURE_2D, texMRT[i]);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, 0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    if(bDepth) {
+        glGenRenderbuffers(1, &depth);
+        glBindRenderbuffer(GL_RENDERBUFFER, depth);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    }
+
+    // setup FBO
+    if(fbo == 0) {
+        glGenFramebuffers(1, &fbo);
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+    // attach color buffer (texture)
+    for(unsigned int i=0; i<nMRT; i++) {
+        attachmentsMRT[i] = GL_COLOR_ATTACHMENT0 + i;
+
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D,
+                               texMRT[i], 0);
+    }
+
 
     // attach depth buffer (renderbuffer)
     if(bDepth) {
@@ -349,6 +450,27 @@ void Fbo::unbind()
     glDrawBuffer(GL_BACK);
     glReadBuffer(GL_BACK);
 }
+
+void Fbo::bindMRT()
+{
+    if(!fbo) {
+        return;
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+    glDrawBuffers(nMRT, attachmentsMRT);
+}
+
+void Fbo::unbindMRT()
+{
+    if(!fbo) {
+        return;
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 
 } // end namespace pic
 
