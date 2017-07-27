@@ -298,7 +298,6 @@ void ReduxGL::InitShaders()
 
 GLuint ReduxGL::Process(GLuint texIn, int width, int height, int channels, GLuint texOut)
 {
-
     if(texIn == 0) {
         return texOut;
     }
@@ -311,34 +310,34 @@ GLuint ReduxGL::Process(GLuint texIn, int width, int height, int channels, GLuin
         return texOut;
     }
 
-    //Fbo
+    //check the fbo
     if(fbo == NULL) {
         fbo = new Fbo();
     }
 
     fbo->create(width, height, 1, false, texOut);
 
-    //Rendering
+    //bind the fbo
     fbo->bind();
     glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 
-    //Shaders
+    //bind shaders
     techinques[counter].bind();
 
-    //Textures
+    //bind textures
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texIn);
 
-    //Rendering aligned quad
+    //render an aligned quad
     quad->Render();
 
-    //Fbo
+    //unbind the fbo
     fbo->unbind();
 
-    //Shaders
+    //unbind shaders
     techinques[counter].unbind();
 
-    //Textures
+    //unbind textures
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
 

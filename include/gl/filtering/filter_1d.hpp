@@ -198,7 +198,7 @@ ImageGL *FilterGL1D::Process(ImageGLVec imgIn, ImageGL *imgOut)
 
     ImageGL *base = imgIn[0];
 
-    //Textures
+    //bind textures
     glActiveTexture(GL_TEXTURE0);
     base->bindTexture();
 
@@ -209,13 +209,13 @@ ImageGL *FilterGL1D::Process(ImageGLVec imgIn, ImageGL *imgOut)
 
     glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 
-    //Shaders
+    //bind shaders
     technique.bind();
 
-    //Rendering
-    fbo->bind2();
+    //bind the fbo
+    fbo->bindSimple();
 
-    //Rendering aligned quad
+    //render an aligned quad
     for(int z = 0; z < f; z++) {
         setSlice2(z);
         fbo->attachColorBuffer2(0, target, z);
@@ -223,13 +223,13 @@ ImageGL *FilterGL1D::Process(ImageGLVec imgIn, ImageGL *imgOut)
         quad->Render();
     }
 
-    //Fbo
-    fbo->unbind2();
+    //unbind the fbo
+    fbo->unbindSimple();
 
-    //Shaders
+    //unbingd shaders
     technique.unbind();
 
-    //Textures
+    //unbind textures
     if(weights != NULL) {
         glActiveTexture(GL_TEXTURE1);
         weights->unBindTexture();

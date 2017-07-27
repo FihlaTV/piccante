@@ -28,6 +28,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #define PIC_DEBUG
 
+#include "../common_code/image_qimage_interop.hpp"
+
 #include "piccante.hpp"
 
 #include <QKeyEvent>
@@ -45,7 +47,7 @@ protected:
     pic::FilterGLSimpleTMO *tmo;
     pic::FilterGLBilateral2DG *fltBilG;
 
-    pic::ImageGL img, *img_flt, *img_flt_tmo;
+    pic::ImageGL *img, *img_flt, *img_flt_tmo;
     pic::TechniqueGL technique;
 
     int method;
@@ -66,8 +68,9 @@ protected:
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f );
 
         //reading an input image
-        img.Read("../data/input/yellow_flowers.png");
-        img.generateTextureGL();
+        img = new pic::ImageGL();
+        ImageRead("../data/input/yellow_flowers.png", (pic::Image*) img);
+        img->generateTextureGL();
 
         //creating a screen aligned quad
         pic::QuadGL::getTechnique(technique,
@@ -107,13 +110,13 @@ protected:
 
         if(method == 0) {
             //applying the bilateral filter
-            img_flt = fltBilG->Process(SingleGL(&img), img_flt);
+            img_flt = fltBilG->Process(SingleGL(img), img_flt);
 
             //simple tone mapping: gamma + exposure correction
             img_flt_tmo = tmo->Process(SingleGL(img_flt), img_flt_tmo);
         } else {
             //simple tone mapping: gamma + exposure correction
-            img_flt_tmo = tmo->Process(SingleGL(&img), img_flt_tmo);
+            img_flt_tmo = tmo->Process(SingleGL(img), img_flt_tmo);
         }
 
         //visualization

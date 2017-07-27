@@ -184,27 +184,27 @@ ImageGL *FilterGLChannel::Process(ImageGLVec imgIn, ImageGL *imgOut)
 
     fbo->create(w, h, 1, false, imgOut->getTexture());
 
-    //Rendering
+    //bind the fbo
     fbo->bind();
     glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 
-    //Shaders
+    //bind shaders
     technique.bind();
 
-    //Textures
+    //bind textures
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, imgIn[0]->getTexture());
 
-    //Rendering aligned quad
+    //render an aligned quad
     quad->Render();
 
-    //Fbo
+    //unbind the fbo
     fbo->unbind();
 
-    //Shaders
+    //unbind shaders
     technique.unbind();
 
-    //Textures
+    //unbind textures
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
 

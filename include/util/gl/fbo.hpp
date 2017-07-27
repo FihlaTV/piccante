@@ -31,7 +31,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 namespace pic {
 
-using namespace std;
+//NOTE: this class needs to be used with an active OpenGL context!
 
 /**
  * @brief The Fbo class
@@ -39,24 +39,13 @@ using namespace std;
 class Fbo
 {
 public:
-    GLuint fbo;           // framebuffer object
-    GLuint tex;           // we render to this texture
-    GLuint depth;         // and to this depth buffer
-    int width, height, frames;             // width and height of the framebuffer
-    bool bDepth;
+    GLuint fbo;                 // framebuffer object
+    GLuint tex;                 // we render into this texture
+    GLuint depth;               // and to this depth buffer
+    int width, height, frames;  // width and height of the framebuffer
+    bool bDepth;                // do we have a depth buffer?
 
     Fbo();
-
-    //all this functions must be called with an active OpenGL context!
-
-    /**
-     * @brief create
-     * @param width
-     * @param height
-     * @param bDepth
-     * @return
-     */
-    bool create(int width, int height, bool bDepth);
 
     /**
      * @brief create
@@ -69,6 +58,12 @@ public:
      */
     bool create(int width, int height, int depth, bool bDepth, GLuint tex);
 
+    /**
+     * @brief attachColorBuffer
+     * @param tex
+     * @param target
+     * @param slice
+     */
     void attachColorBuffer(GLuint tex, GLenum target, int slice = 0);
 
     /**
@@ -80,24 +75,10 @@ public:
     void attachColorBuffer2(GLuint tex, GLenum target, int slice);
 
     /**
-     * @brief attachColorBuffer
-     * @param tex
-     */
-    void attachColorBuffer(GLuint tex);
-
-    /**
      * @brief destroy
      * @return
      */
     bool destroy();
-
-    /**
-     * @brief resize
-     * @param width
-     * @param height
-     * @return
-     */
-    bool resize(int width, int height);
 
     /**
      * @brief bind
@@ -116,17 +97,17 @@ public:
     void unbind();
 
     /**
-     * @brief bind2
+     * @brief bindSimple
      */
-    void bind2()
+    void bindSimple()
     {
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     }
 
     /**
-     * @brief unbind2
+     * @brief unbindSimple
      */
-    void unbind2()
+    void unbindSimple()
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
@@ -145,33 +126,23 @@ public:
     {
         switch(fboStatus) {
         case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-            cerr << "FBO Incomplete: Attachment" << endl;
+            std::cerr << "FBO Incomplete: Attachment" << endl;
             break;
 
         case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-            cerr << "FBO Incomplete: Missing Attachment" << endl;
+            std::cerr << "FBO Incomplete: Missing Attachment" << endl;
             break;
-
-            /*
-        case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
-            cerr << "FBO Incomplete: Dimensions" << endl;
-            break;
-
-        case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
-            cerr << "FBO Incomplete: Formats" << endl;
-            break;
-            */
 
         case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
-            cerr << "FBO Incomplete: Draw Buffer" << endl;
+            std::cerr << "FBO Incomplete: Draw Buffer" << endl;
             break;
 
         case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
-            cerr << "FBO Incomplete: Read Buffer" << endl;
+            std::cerr << "FBO Incomplete: Read Buffer" << endl;
             break;
 
         default:
-            cerr << "Undefined FBO error" << endl;
+            std::cerr << "Undefined FBO error" << endl;
             break;
         }
     }
@@ -186,16 +157,31 @@ Fbo::Fbo()
     width = height = frames = 0;
 }
 
+bool Fbo::destroy()
+{
+    if(tex != 0) {
+        glDeleteTextures(1, &tex);
+        tex = 0;
+    }
+
+    if(depth != 0) {
+        glDeleteRenderbuffers(1, &depth);
+        depth = 0;
+    }
+
+    if(fbo != 0) {
+        glDeleteFramebuffers(1, &fbo);
+        fbo = 0;
+    }
+
+    return true;
+}
+
 Fbo *Fbo::clone()
 {
     Fbo *ret = new Fbo();
     ret->create(width, height, frames, bDepth, 0);
     return ret;
-}
-
-bool Fbo::create(int width, int height, bool bDepth = false)
-{
-    return create(width, height, 1, bDepth, 0);
 }
 
 bool Fbo::create(int width, int height, int frames, bool bDepth, GLuint tex)
@@ -205,8 +191,8 @@ bool Fbo::create(int width, int height, int frames, bool bDepth, GLuint tex)
     this->frames = frames;
     this->bDepth = bDepth;
 
-    // FBO with one COLOR ATTACHMENT
-    // setup texture (render target)
+    //FBO with one COLOR ATTACHMENT
+    //setup texture (render target)
     if(tex == 0) {
         glGenTextures(1, &this->tex);
 
@@ -234,7 +220,7 @@ bool Fbo::create(int width, int height, int frames, bool bDepth, GLuint tex)
         this->tex = tex;
     }
 
-    // setup renderbuffer (depth buffer)
+    //setup renderbuffer (depth buffer)
     //assert(glGenRenderbuffers);
     if(bDepth) {
         glGenRenderbuffers(1, &depth);
@@ -282,7 +268,6 @@ bool Fbo::create(int width, int height, int frames, bool bDepth, GLuint tex)
     return fbo != 0;
 }
 
-//attach a texture in the Fbo as color buffer
 void Fbo::attachColorBuffer(GLuint tex, GLenum target, int slice)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -304,31 +289,6 @@ void Fbo::attachColorBuffer(GLuint tex, GLenum target, int slice)
     }
 
 #ifdef PIC_DEBUG_GL
-    // check framebuffer status
-    GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-
-    if(fboStatus != GL_FRAMEBUFFER_COMPLETE) {
-        checkStatus(fboStatus);
-        glDeleteFramebuffers(1, &fbo);
-        fbo = 0;
-    }
-
-#endif
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void Fbo::attachColorBuffer(GLuint tex)
-{
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
-    if(tex == 0) {
-        glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, this->tex, 0);
-    } else {
-        glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, tex, 0);
-    }
-
-#ifdef DEBUG_GL
     // check framebuffer status
     GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
@@ -368,26 +328,6 @@ void Fbo::attachColorBuffer2(GLuint tex, GLenum target, int slice)
     }
 }
 
-bool Fbo::destroy()
-{
-    if(tex != 0) {
-        glDeleteTextures(1, &tex);
-        tex = 0;
-    }
-
-    if(depth != 0) {
-        glDeleteRenderbuffers(1, &depth);
-        depth = 0;
-    }
-
-    if(fbo != 0) {
-        glDeleteFramebuffers(1, &fbo);
-        fbo = 0;
-    }
-
-    return true;
-}
-
 void Fbo::bind()
 {
     if(!fbo) {
@@ -408,12 +348,6 @@ void Fbo::unbind()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glDrawBuffer(GL_BACK);
     glReadBuffer(GL_BACK);
-}
-
-bool Fbo::resize(int width, int height)
-{
-    destroy();
-    return create(width, height);
 }
 
 } // end namespace pic
