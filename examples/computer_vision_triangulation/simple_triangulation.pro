@@ -2,7 +2,7 @@
 # The hottest HDR imaging library!
 # http://vcg.isti.cnr.it/piccante
 # 
-# Copyright (C) 2014
+# Copyright (C) 2014-17
 # Visual Computing Laboratory - ISTI CNR
 # http://vcg.isti.cnr.it
 # First author: Francesco Banterle
@@ -18,11 +18,11 @@
 # See the GNU Lesser General Public License
 # ( http://www.gnu.org/licenses/lgpl-3.0.html ) for more details.
 
-TARGET = simple_triangulation
+TARGET = computer_vision_triangulation
 
 QT       += core
-TEMPLATE = app
-CONFIG   += console
+#TEMPLATE = app
+#CONFIG   += console
 CONFIG   -= app_bundle
 CONFIG   += C++11
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7

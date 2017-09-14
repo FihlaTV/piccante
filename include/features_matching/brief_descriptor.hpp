@@ -24,6 +24,10 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "util/math.hpp"
 #include "image.hpp"
 
+#ifndef PIC_DISABLE_EIGEN
+    #include "externals/Eigen/Dense"
+#endif
+
 namespace pic {
 
 /**
@@ -212,16 +216,27 @@ public:
         return getAux(img, x0, y0, x, y, desc);
     }
 
-    /*
-    void getAll(std::vector< unsigned int *> descs, std::vector< Eigen::Vec3f >)
-    std::vector< unsigned int *> descs1;
-    for(unsigned int i=0; i<corners_from_img1.size(); i++) {
-        int x = corners_from_img1[i][0];
-        int y = corners_from_img1[i][1];
+    #ifndef PIC_DISABLE_EIGEN
+    /**
+     * @brief getAll
+     * @param descs
+     * @param corners
+     * @param img
+     */
+    void getAll(Image *img,
+                std::vector< Eigen::Vector3f > &corners,
+                std::vector< unsigned int *> &descs)
+    {
+        descs.clear();
 
-        descs.push_back(get(L, x, y));
+        for(unsigned int i = 0; i < corners.size(); i++) {
+            int x0 = int(corners[i][0]);
+            int y0 = int(corners[i][1]);
+            descs.push_back(get(img, x0, y0));
+        }
     }
-*/
+    #endif
+
     /**
      * @brief getDescriptorSize returns the descriptor size.
      * @return the descriptor size.

@@ -86,18 +86,18 @@ int main(int argc, char *argv[])
         std::vector< Eigen::Vector3f > corners_from_img0;
         std::vector< Eigen::Vector3f > corners_from_img1;
         
-        //computing the luminance images
+        //compute the luminance images
         pic::Image *L0 = pic::FilterLuminance::Execute(&img0, NULL, pic::LT_CIE_LUMINANCE);
         pic::Image *L1 = pic::FilterLuminance::Execute(&img1, NULL, pic::LT_CIE_LUMINANCE);
         
-        //getting corners
+        //get corners
         printf("Extracting corners...\n");
         pic::HarrisCornerDetector hcd(2.5f, 5);
         hcd.Compute(L0, &corners_from_img0);
         hcd.Compute(L1, &corners_from_img1);
         
-        //computing ORB descriptors for each corner and image
-        //Computing luminance images
+        //compute ORB descriptors for each corner and image
+        //apply a gaussian filter to luminance images
         pic::Image *L0_flt = pic::FilterGaussian2D::Execute(L0, NULL, 2.5f);
         pic::Image *L1_flt = pic::FilterGaussian2D::Execute(L1, NULL, 2.5f);
         
@@ -106,21 +106,11 @@ int main(int argc, char *argv[])
         pic::ORBDescriptor b_desc(31, 512);
         
         std::vector< unsigned int *> descs0;
-        for(unsigned int i=0; i<corners_from_img0.size(); i++) {
-            int x = corners_from_img0[i][0];
-            int y = corners_from_img0[i][1];
-            
-            descs0.push_back(b_desc.get(L0_flt, x, y));
-        }
-        
+        b_desc.getAll(L0_flt, corners_from_img0, descs0);
+
         std::vector< unsigned int *> descs1;
-        for(unsigned int i=0; i<corners_from_img1.size(); i++) {
-            int x = corners_from_img1[i][0];
-            int y = corners_from_img1[i][1];
-            
-            descs1.push_back(b_desc.get(L1_flt, x, y));
-        }
-        
+        b_desc.getAll(L1_flt, corners_from_img1, descs1);
+
         printf("Matching ORB descriptors...\n");
         std::vector< Eigen::Vector3i > matches;
         
@@ -135,49 +125,32 @@ int main(int argc, char *argv[])
         
         printf("Matches:\n");
         std::vector< Eigen::Vector2f > m0, m1;
-        
-        for(unsigned int i=0; i<matches.size(); i++) {
-            int I0 = matches[i][0];
-            int I1 = matches[i][1];
-            
-            Eigen::Vector2f x, y;
-            x[0] = corners_from_img0[I0][0];
-            x[1] = corners_from_img0[I0][1];
-            
-            y[0] = corners_from_img1[I1][0];
-            y[1] = corners_from_img1[I1][1];
-            
-            m0.push_back(x);
-            m1.push_back(y);
-            
-            printf("I1: %d (%d %d) -- I2: %d (%d %d) -- Score: %d\n", I0, int(x[0]), int(x[1]), I1, int(y[0]), int(y[1]), matches[i][2]);
-        }
-        
+        pic::BinaryFeatureMatcher::filterMatches(corners_from_img0, corners_from_img1, matches, m0, m1);
         printf("\n Total matches: (%lu | %lu)\n", m0.size(), m1.size());
         
         printf("\nEstimating the fundamental matrix F from the matches...");
         
         std::vector< unsigned int > inliers;
-        Eigen::Matrix3d F = pic::estimateFundamentalWithNonLinearRefinement(m0, m1, inliers, 1000000, 0.5, 10000, 1e-4f);
+        Eigen::Matrix3d F = pic::estimateFundamentalWithNonLinearRefinement(m0, m1, inliers, 1000000, 0.5, 1, 10000, 1e-4f);
                 
         printf("Ok.\n");
         
         printf("\nFoundamental matrix: \n");
         pic::MatrixConvert(F).print();
         
-        //Essential matrix decomposition
+        //compute essential matrix decomposition
         Eigen::Matrix3d E = pic::computeEssentialMatrix(F, K);
-        
+                
+        //decompose E into R and t
         std::vector< Eigen::Vector2f > m0f, m1f;
         pic::filterInliers(m0, inliers, m0f);
         pic::filterInliers(m1, inliers, m1f);
-        
-        //Estimating R and t
+
         Eigen::Matrix3d R;
         Eigen::Vector3d t;
         pic::decomposeEssentialMatrixWithConfiguration(E, K, K, m0f, m1f, R, t);
         
-        //Triangulation
+        //triangulation
         pic::Image imgOut0(1, img0.width, img0.height, 3);
         imgOut0.SetZero();
         

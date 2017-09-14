@@ -28,7 +28,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "features_matching/general_corner_detector.hpp"
 
 #ifndef PIC_DISABLE_EIGEN
-#include "externals/Eigen/Dense"
+    #include "externals/Eigen/Dense"
 #endif
 
 namespace pic {
