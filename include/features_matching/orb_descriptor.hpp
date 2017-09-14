@@ -99,7 +99,7 @@ public:
     }
 
     ~ORBDescriptor() {
-        Release();
+        release();
     }
 
     /**

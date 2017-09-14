@@ -50,13 +50,27 @@ protected:
                 float *tmp_dst = (*dst)(i, j);
                 float *tmp_src = (*src[0])(x, y);
 
-                for(int k=0;k<channels;k++)
-                {
+                for(int k = 0; k < channels; k++) {
                     tmp_dst[k] = tmp_src[k];
                 }
             }
         }
     }
+
+
+    Image *SetupAux(ImageVec imgIn, Image *imgOut)
+    {
+        if(imgIn.size() < 2) {
+            return imgOut;
+        }
+
+        if(imgOut == NULL) {
+            imgOut = new Image(1, imgIn[1]->width, imgIn[1]->height, imgIn[0]->channels);
+        }
+
+        return imgOut;
+    }
+
 
 public:
     /**

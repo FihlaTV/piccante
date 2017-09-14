@@ -147,7 +147,7 @@ public:
     }
 
     /**
-     * @brief RGBtoCIELAB
+     * @brief RGBtoCIELAB converts an image from linear RGB color to CIE Lab color space
      * @param imgIn
      * @param imgOut
      * @param bDirect
@@ -168,7 +168,7 @@ public:
     }
 
     /**
-     * @brief ExectueCIELABtoRGB
+     * @brief ExectueCIELABtoRGB converts an image from CIE Lab color space to linear RGB color
      * @param imgIn
      * @param imgOut
      * @param bDirect

@@ -66,18 +66,18 @@ int main(int argc, char *argv[])
         std::vector< Eigen::Vector3f > corners_from_img0;
         std::vector< Eigen::Vector3f > corners_from_img1;
 
-        //computing the luminance images
+        //compute the luminance images
         pic::Image *L0 = pic::FilterLuminance::Execute(img0, NULL, pic::LT_CIE_LUMINANCE);
         pic::Image *L1 = pic::FilterLuminance::Execute(img1, NULL, pic::LT_CIE_LUMINANCE);
 
-        //getting corners
+        //get corners
         printf("Extracting corners...\n");
         pic::HarrisCornerDetector hcd(2.5f, 5);
         hcd.Compute(L0, &corners_from_img0);
         hcd.Compute(L1, &corners_from_img1);
 
-        //computing ORB descriptors for each corner and image
-        //Computing luminance images
+        //compute ORB descriptors for each corner and image
+        //compute luminance images
         pic::Image *L0_flt = pic::FilterGaussian2D::Execute(L0, NULL, 2.5f);
         pic::Image *L1_flt = pic::FilterGaussian2D::Execute(L1, NULL, 2.5f);
 

@@ -32,8 +32,8 @@ namespace pic {
 class BRIEFDescriptor
 {
 protected:
-    int         	S;
-    unsigned int    n;
+    int                 S;
+    unsigned int        n;
     float   		sigma_sq_2, sigma_sq;
     std::mt19937	*m;
 
@@ -166,13 +166,13 @@ public:
 
     ~BRIEFDescriptor()
     {
-        Release();
+        release();
     }
 
     /**
      * @brief Release deallocates memory.
      */
-    void Release()
+    void release()
     {
 
         if(m != NULL) {
@@ -212,13 +212,23 @@ public:
         return getAux(img, x0, y0, x, y, desc);
     }
 
+    /*
+    void getAll(std::vector< unsigned int *> descs, std::vector< Eigen::Vec3f >)
+    std::vector< unsigned int *> descs1;
+    for(unsigned int i=0; i<corners_from_img1.size(); i++) {
+        int x = corners_from_img1[i][0];
+        int y = corners_from_img1[i][1];
+
+        descs.push_back(get(L, x, y));
+    }
+*/
     /**
      * @brief getDescriptorSize returns the descriptor size.
      * @return the descriptor size.
      */
     int getDescriptorSize() {
         return n / (sizeof(unsigned int) * 8);
-    }
+    }  
 
     /**
      * @brief match matches two descriptors. Note: Higher scores means better matching.

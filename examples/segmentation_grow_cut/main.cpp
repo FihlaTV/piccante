@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 
     pic::Image img, strokes;
     img.Read("../data/input/yellow_flowers.png");
-    strokes.Read("../data/input/strokes.png");
+    strokes.Read("../data/input/yellow_flowers_segmentation_strokes.png");
     printf("OK\n");
 
     printf("Are input images valid? ");
