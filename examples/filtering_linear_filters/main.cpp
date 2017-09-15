@@ -46,12 +46,15 @@ int main(int argc, char *argv[])
         bool bWritten = output->Write("../data/output/filtered_gaussian_4_0.hdr");
 
         printf("Filtering the image with a LoG filter with sigma_s = 1.0...");
-        output = pic::FilterLoG2D::Execute(&img, output, 1.0f);
+        output = pic::FilterLoG2D::Execute(&img, output, 4.0f);
 
         printf("Ok!\n");
 
         printf("Writing the file to disk...");
         bWritten = output->Write("../data/output/filtered_log_1_0.hdr");
+
+        pic::Image *edges = pic::FilterZeroCrossing::Execute(output, NULL);
+        bWritten = edges->Write("../data/output/filtered_log_1_0_edges.hdr");
 
         if(bWritten) {
             printf("Ok\n");
