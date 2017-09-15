@@ -52,30 +52,12 @@ protected:
                 float *data_src0 = (*src_p)(j, i + 1);
                 float *data_src1 = (*src_p)(j + 1, i);
 
-
                 for(int k = 0; k < channels; k++) {
-                    value = 0.0f;
-
-                    if(data_src[k] == 0.0f) {
-                        value = 1.0f;
-                    }
-
-                    if(data_src[k] > 0.0f && data_src0[k] < 0.0f) {
-                        value = 1.0f;
-                    }
-
-                    if(data_src[k] < 0.0f && data_src0[k] > 0.0f) {
-                        value = 1.0f;
-                    }
-
-                    if(data_src[k] > 0.0f && data_src1[k] < 0.0f) {
-                        value = 1.0f;
-                    }
-
-                    if(data_src[k] < 0.0f && data_src1[k] > 0.0f) {
-                        value = 1.0f;
-                    }
-
+                    value = (data_src[k] == 0.0f) ? 1.0f : 0.0f;
+                    value = (data_src[k] > 0.0f && data_src0[k] < 0.0f) ? 1.0f : value;
+                    value = (data_src[k] < 0.0f && data_src0[k] > 0.0f) ? 1.0f : value;
+                    value = (data_src[k] > 0.0f && data_src1[k] < 0.0f) ? 1.0f : value;
+                    value = (data_src[k] < 0.0f && data_src1[k] > 0.0f) ? 1.0f : value;
                     data_dst[k] = value;
                 }
             }

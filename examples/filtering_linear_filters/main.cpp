@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     if(img.isValid()) {
         printf("Ok\n");
 
-        printf("Filtering the image with a Gaussian filter with sigma_s = 4.0...");
+        printf("Filtering the image with a Gaussian filter with sigma = 4.0...");
 
         pic::Image *output = pic::FilterGaussian2D::Execute(&img, NULL, 4.0f);
 
@@ -45,16 +45,17 @@ int main(int argc, char *argv[])
         printf("Writing the file to disk...");
         bool bWritten = output->Write("../data/output/filtered_gaussian_4_0.hdr");
 
-        printf("Filtering the image with a LoG filter with sigma_s = 1.0...");
-        output = pic::FilterLoG2D::Execute(&img, output, 4.0f);
+        printf("Filtering the image with a LoG filter with sigma = 2.0...");
+        pic::Image *L = pic::FilterLuminance::Execute(&img, NULL, pic::LT_CIE_LUMINANCE);
+        pic::Image *L_log = pic::FilterLoG2D::Execute(L, NULL, 4.0f);
 
         printf("Ok!\n");
 
         printf("Writing the file to disk...");
-        bWritten = output->Write("../data/output/filtered_log_1_0.hdr");
+        bWritten = output->Write("../data/output/filtered_log_2_0.hdr");
 
-        pic::Image *edges = pic::FilterZeroCrossing::Execute(output, NULL);
-        bWritten = edges->Write("../data/output/filtered_log_1_0_edges.hdr");
+        pic::Image *edges = pic::FilterZeroCrossing::Execute(L_log, NULL);
+        bWritten = edges->Write("../data/output/filtered_log_2_0_edges.hdr");
 
         if(bWritten) {
             printf("Ok\n");
