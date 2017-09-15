@@ -21,7 +21,7 @@
 #    ( http://www.gnu.org/licenses/lgpl-3.0.html ) for more details.
 #
 
-TARGET = push_pull
+TARGET = blending_poisson
 
 QT       += core
 #TEMPLATE = app
@@ -41,6 +41,7 @@ win32-msvc*{
 win32{
 	DEFINES += NOMINMAX
 }
+
 
 linux-g++*{
     QMAKE_CXXFLAGS += -fopenmp -pthread

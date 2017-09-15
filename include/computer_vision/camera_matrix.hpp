@@ -206,6 +206,43 @@ Eigen::Vector2i cameraMatrixProject(Eigen::Matrix34d &M, Eigen::Vector3d &p)
     return cameraMatrixProject(M, p4d);
 }
 
+/**
+ * @brief cameraMatrixProjection
+ * @param M
+ * @param p
+ * @param cx
+ * @param cy
+ * @param fx
+ * @param fy
+ * @param lambda
+ * @return
+ */
+Eigen::Vector2i cameraMatrixProjection(Eigen::Matrix34d &M, Eigen::Vector3d &p, double cx, double cy, double fx, double fy, double lambda)
+{
+    Eigen::Vector4d p_t = Eigen::Vector4d(p[0], p[1], p[2], 1.0);
+    Eigen::Vector2i out;
+    Eigen::Vector3d proj = M * p_t;
+    proj[0] /= proj[2];
+    proj[1] /= proj[2];
+
+    double x_cx =  (proj[0] - cx);
+    double y_cy =  (proj[1] - cy);
+
+    double dx = x_cx / fx;
+    double dy = y_cy / fy;
+    double rho_sq = dx * dx + dy * dy;
+
+    double factor = 1.0 / (1.0 + rho_sq * lambda);
+
+    proj[0] = x_cx * factor + cx;
+    proj[1] = y_cy * factor + cy;
+
+    out[0] = int(proj[0]);
+    out[1] = int(proj[1]);
+
+    return out;
+}
+
 #endif // PIC_DISABLE_EIGEN
 
 } // end namespace pic

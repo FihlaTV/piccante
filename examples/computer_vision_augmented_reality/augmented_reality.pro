@@ -21,11 +21,11 @@
 #    ( http://www.gnu.org/licenses/lgpl-3.0.html ) for more details.
 #
 
-TARGET = simple_matching
+TARGET = augmented_reality
 
 QT       += core
-TEMPLATE = app
-CONFIG   += console
+#TEMPLATE = app
+#CONFIG   += console
 CONFIG   -= app_bundle
 CONFIG   += C++11
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7

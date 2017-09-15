@@ -24,8 +24,8 @@
 TARGET = corners_extraction
 
 QT       += core
-TEMPLATE = app
-CONFIG   += console
+#TEMPLATE = app
+#CONFIG   += console
 CONFIG   -= app_bundle
 CONFIG   += C++11
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7

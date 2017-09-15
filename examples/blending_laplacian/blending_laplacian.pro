@@ -1,13 +1,13 @@
-#PICCANTE Examples
-#The hottest examples of Piccante:
-#http://vcg.isti.cnr.it/piccante
+# PICCANTE Examples
+# The hottest examples of Piccante:
+# http://vcg.isti.cnr.it/piccante
 #
-#Copyright (C) 2014
-#Visual Computing Laboratory - ISTI CNR
-#http://vcg.isti.cnr.it
-#First author: Francesco Banterle
+# Copyright (C) 2014
+# Visual Computing Laboratory - ISTI CNR
+# http://vcg.isti.cnr.it
+# First author: Francesco Banterle
 #
-#This program is free software: you can redistribute it and/or modify
+# This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation, either version 3.0 of the License, or
 #    (at your option) any later version.
@@ -21,12 +21,11 @@
 #    ( http://www.gnu.org/licenses/lgpl-3.0.html ) for more details.
 #
 
-
-TARGET = simple_augmented_reality
+TARGET = blending_laplacian
 
 QT       += core
-TEMPLATE = app
-CONFIG   += console
+#TEMPLATE = app
+#CONFIG   += console
 CONFIG   -= app_bundle
 CONFIG   += C++11
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7

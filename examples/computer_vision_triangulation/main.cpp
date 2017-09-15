@@ -34,32 +34,6 @@ This program is free software: you can redistribute it and/or modify
 
 #include "piccante.hpp"
 
-Eigen::Vector2i Projection(Eigen::Matrix34d &M, Eigen::Vector3d p, double cx, double cy, double fx, double fy, double lambda)
-{
-    Eigen::Vector4d p_t = Eigen::Vector4d(p[0], p[1], p[2], 1.0);
-    Eigen::Vector2i out;
-    Eigen::Vector3d proj = M * p_t;
-    proj[0] /= proj[2];
-    proj[1] /= proj[2];
-    
-    double x_cx =  (proj[0] - cx);
-    double y_cy =  (proj[1] - cy);
-    
-    double dx = x_cx / fx;
-    double dy = y_cy / fy;
-    double rho_sq = dx * dx + dy * dy;
-    
-    double factor = 1.0 / (1.0 + rho_sq * lambda);
-    
-    proj[0] = x_cx * factor + cx;
-    proj[1] = y_cy * factor + cy;
-    
-    out[0] = int(proj[0]);
-    out[1] = int(proj[1]);
-    
-    return out;
-}
-
 int main(int argc, char *argv[])
 {
 //    Q_UNUSED(argc);
@@ -150,13 +124,7 @@ int main(int argc, char *argv[])
         Eigen::Vector3d t;
         pic::decomposeEssentialMatrixWithConfiguration(E, K, K, m0f, m1f, R, t);
         
-        //triangulation
-        pic::Image imgOut0(1, img0.width, img0.height, 3);
-        imgOut0.SetZero();
-        
-        pic::Image imgOut1(1, img1.width, img1.height, 3);
-        imgOut1.SetZero();
-        
+        //triangulation        
         std::vector<Eigen::Vector3d> points_3d;
         
         Eigen::Matrix34d M0 = pic::getCameraMatrixIdentity(K);
@@ -174,7 +142,7 @@ int main(int argc, char *argv[])
             //triangulation
             Eigen::Vector4d point = pic::triangulationHartleySturm(p0, p1, M0, M1);
             
-            //refinement
+            //non-linear refinement
             nmTri.update(m0f[i], m1f[i]);
             float tmpp[] = {float(point[0]), float(point[1]), float(point[2])};
             float out[3];
@@ -190,12 +158,18 @@ int main(int argc, char *argv[])
         nmRD.run(&lambda, 1, 1e-12f, 100000, &lambda_out);
         printf("Radial distortion lambda: %f\n", lambda_out);
         
+        //error images
+        pic::Image imgOut0(1, img0.width, img0.height, 3);
+        imgOut0.SetZero();
+
+        pic::Image imgOut1(1, img1.width, img1.height, 3);
+        imgOut1.SetZero();
+
         double cx = 2592.0 / 2.0;
         double cy = 1728.0 / 2.0;
         for(unsigned int i = 0; i < m0f.size(); i++) {
             //first image
-            Eigen::Vector2i proj0 = Projection(M0, points_3d[i], cx, cy, fx, fy, lambda_out);
-            //Eigen::Vector2i proj0 = pic::cameraMatrixProject(M0, points_3d[i]);
+            Eigen::Vector2i proj0 = pic::cameraMatrixProjection(M0, points_3d[i], cx, cy, fx, fy, lambda_out);
             float *tmp;
             
             tmp = imgOut0(int(m0f[i][0]), int(m0f[i][1]));
@@ -205,8 +179,7 @@ int main(int argc, char *argv[])
             tmp[0] = 1.0f;
             
             //second image
-            Eigen::Vector2i proj1 = Projection(M1, points_3d[i], cx, cy, fx, fy, lambda_out);
-            //Eigen::Vector2i proj1 = pic::cameraMatrixProject(M1, points_3d[i]);
+            Eigen::Vector2i proj1 = pic::cameraMatrixProjection(M1, points_3d[i], cx, cy, fx, fy, lambda_out);
             
             tmp = imgOut1(int(m1f[i][0]), int(m1f[i][1]));
             tmp[1] = 1.0f;
@@ -216,8 +189,8 @@ int main(int argc, char *argv[])
         }
         
         //write reprojection images
-        ImageWrite(&imgOut0, "../data/output/triangulation_reprojection_l.bmp");
-        ImageWrite(&imgOut1, "../data/output/triangulation_reprojection_r.bmp");
+        ImageWrite(&imgOut0, "../data/output/triangulation_reprojection_l.png");
+        ImageWrite(&imgOut1, "../data/output/triangulation_reprojection_r.png");
         
         //write a PLY file
         FILE *file = fopen("../data/output/triangulation_mesh.ply","w");
