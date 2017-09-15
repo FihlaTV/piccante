@@ -47,6 +47,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "filtering/filter_dct_1d.hpp"
 #include "filtering/filter_dct_2d.hpp"
 #include "filtering/filter_diff_gauss_2d.hpp"
+#include "filtering/filter_log_2d.hpp"
 #include "filtering/filter_divergence.hpp"
 #include "filtering/filter_downsampler_2d.hpp"
 #include "filtering/filter_drago_tmo.hpp"

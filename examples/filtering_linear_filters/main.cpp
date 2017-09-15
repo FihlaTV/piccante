@@ -45,6 +45,14 @@ int main(int argc, char *argv[])
         printf("Writing the file to disk...");
         bool bWritten = output->Write("../data/output/filtered_gaussian_4_0.hdr");
 
+        printf("Filtering the image with a LoG filter with sigma_s = 1.0...");
+        output = pic::FilterLoG2D::Execute(&img, output, 1.0f);
+
+        printf("Ok!\n");
+
+        printf("Writing the file to disk...");
+        bWritten = output->Write("../data/output/filtered_log_1_0.hdr");
+
         if(bWritten) {
             printf("Ok\n");
         } else {

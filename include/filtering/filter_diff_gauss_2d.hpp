@@ -19,19 +19,18 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #define PIC_FILTERING_FILTER_DIFF_GAUSS_2D_HPP
 
 #include "filtering/filter.hpp"
-#include "filtering/filter_conv_1d.hpp"
-#include "util/precomputed_difference_of_gaussians.hpp"
+#include "filtering/filter_gaussian_2d.hpp"
 
 namespace pic {
 
 /**
  * @brief The FilterDiffGauss class
  */
-class FilterDiffGauss: public FilterNPasses
+class FilterDiffGauss: public Filter
 {
 protected:
-    FilterConv1D                        *filter;
-    PrecomputedDifferenceOfGaussians    *pdg;
+    FilterGaussian2D *filter_1, *filter_2;
+    Image *tmp;
 
 public:
     /**
@@ -41,27 +40,58 @@ public:
      */
     FilterDiffGauss(float sigma_1, float sigma_2)
     {
-        //Difference of Gaussian filter
-        pdg = new PrecomputedDifferenceOfGaussians(sigma_1, sigma_2);
-
-        filter = new FilterConv1D(pdg->coeff, pdg->kernelSize);
-
-        InsertFilter(filter);
-        InsertFilter(filter);
+        filter_1 = new FilterGaussian2D(sigma_1);
+        filter_2 = new FilterGaussian2D(sigma_2);
+        tmp = NULL;
     }
 
     ~FilterDiffGauss()
     {
-        Destroy();
-
-        if(filter != NULL) {
-            delete filter;
+        if(filter_1 != NULL) {
+            delete filter_1;
         }
 
-        if(pdg != NULL) {
-            delete pdg;
+        if(filter_2 != NULL) {
+            delete filter_2;
+        }
+
+        if(tmp != NULL) {
+            delete tmp;
         }
     }
+
+    /**
+     * @brief Process
+     * @param imgIn
+     * @param imgOut
+     * @return
+     */
+    Image *Process(ImageVec imgIn, Image *imgOut)
+    {
+        imgOut = filter_1->Process(imgIn, imgOut, false);
+
+        //MEMORY-LEAK: to check
+        tmp = filter_2->Process(imgIn, tmp, false);
+        *imgOut -= *tmp;
+        return imgOut;
+    }
+
+    /**
+     * @brief ProcessP
+     * @param imgIn
+     * @param imgOut
+     * @return
+     */
+    Image *ProcessP(ImageVec imgIn, Image *imgOut)
+    {
+        imgOut = filter_1->ProcessP(imgIn, imgOut);
+
+        //MEMORY-LEAK: to check
+        tmp = filter_2->ProcessP(imgIn, tmp);
+        *imgOut = *imgOut - *tmp;
+        return imgOut;
+    }
+
 
     /**
      * @brief Execute

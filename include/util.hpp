@@ -52,7 +52,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "util/matrix_3_x_3.hpp"
 #include "util/eigen_util.hpp"
 #include "util/point_samplers.hpp"
-#include "util/precomputed_difference_of_gaussians.hpp"
 #include "util/precomputed_gaussian.hpp"
 #include "util/raw.hpp"
 #include "util/string.hpp"

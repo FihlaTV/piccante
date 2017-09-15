@@ -18,7 +18,7 @@
 # See the GNU Lesser General Public License
 # ( http://www.gnu.org/licenses/lgpl-3.0.html ) for more details.
 
-TARGET = simple_filtering
+TARGET = linear_filters
 
 QT       += core
 TEMPLATE = app

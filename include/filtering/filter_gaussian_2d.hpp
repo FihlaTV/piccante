@@ -49,7 +49,7 @@ public:
     {
         Destroy();
 
-        if(gaussianFilter!=NULL) {
+        if(gaussianFilter != NULL) {
             delete gaussianFilter;
         }
     }

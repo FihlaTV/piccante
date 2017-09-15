@@ -36,12 +36,12 @@ protected:
         coeff = new float[kernelSize];
 
         float sum = 0.0f;
-        float sigma2 = (2.0f * sigma * sigma);
+        float sigma_sq_2 = (2.0f * sigma * sigma);
 
         for(int i = 0; i < kernelSize; i++) {
             int i_s = i - halfKernelSize;
             i_s *= i_s;
-            coeff[i] = expf(-float(i_s) / sigma2);
+            coeff[i] = expf(-float(i_s) / sigma_sq_2);
             sum += coeff[i];
         }
 
