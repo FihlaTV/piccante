@@ -160,7 +160,9 @@ T* kMeans(T *samples, int nSamples, int nDim,
         }
 
         if(bNoChanges) {
-            printf("Max iterations: %d\n", i);
+            #ifdef PIC_DEBUG
+                printf("Max iterations: %d\n", i);
+            #endif
             return centers;
         } else {
             //clear labels
