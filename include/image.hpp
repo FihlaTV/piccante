@@ -32,7 +32,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "util/bbox.hpp"
 #include "util/buffer.hpp"
 #include "util/low_dynamic_range.hpp"
-
 #include "util/math.hpp"
 
 //IO formats
@@ -430,6 +429,14 @@ public:
     {
         return dataUC;
     }
+
+    /**
+     * @brief getColorSamples
+     * @param samples
+     * @param percentage
+     * @return
+     */
+    float *getColorSamples(float *samples, int &nSamples, float percentage);
 
     /**
      * @brief size computes the number of values.
@@ -1886,6 +1893,36 @@ PIC_INLINE Image *Image::Clone() const
     memcpy(ret->data, data, width * height * channels * sizeof(float));
 
     return ret;
+}
+
+PIC_INLINE float* Image::getColorSamples(float *samples,
+                                         int &nSamples,
+                                         float percentage = 1.0f)
+{    
+    percentage = CLAMPi(percentage, 0.0f, 1.0f);
+
+    int nTot = nPixels();
+    nSamples = int(ceilf(float(nTot) * percentage));
+
+    if(samples == NULL) {
+        samples = new float[nSamples * channels];
+    }
+
+    int shift = 1;
+
+    if(nSamples < nTot) {
+        shift = nTot / nSamples;
+    }
+
+    for(int i = 0; i < nSamples; i++) {
+        int index = i * channels;
+        int index_d = index * shift;
+        for(int j = 0; j < channels; j++) {
+            samples[index + j] = data[index_d + j];
+        }
+    }
+
+    return samples;
 }
 
 PIC_INLINE void Image::operator =(const Image &a)

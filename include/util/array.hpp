@@ -95,12 +95,12 @@ public:
      * @param n
      * @return
      */
-    static inline float distanceSq(float *a0, float *a1, int n)
+    static inline T distanceSq(T *a0, T *a1, int n)
     {
-        float distSq = 0.0f;
+        T distSq = T(0);
 
-        for(int k=0; k<n; k++) {
-            float tmp = a1[k] - a0[k];
+        for(int k = 0; k < n; k++) {
+            T tmp = a0[k] - a1[k];
             distSq += tmp * tmp;
         }
 
@@ -169,6 +169,46 @@ public:
     }
 
     /**
+     * @brief set
+     * @param vec
+     * @param size
+     * @param value
+     */
+    static inline void set(T *a, int size, T value) {
+        for(int i = 0; i < size; i++) {
+            a[i] = value;
+        }
+    }
+
+    /**
+     * @brief add
+     * @param vec0
+     * @param vec1
+     * @param size
+     */
+    static inline T* add(T *a, T *ret, int size)
+    {
+        for(int i = 0; i < size; i++) {
+            ret[i] += a[i];
+        }
+
+        return ret;
+    }
+
+    /**
+     * @brief div
+     * @param a
+     * @param size
+     * @param value
+     */
+    static inline void div(T *a, int size, T value)
+    {
+        for(int i = 0; i < size; i++) {
+            a[i] /= value;
+        }
+    }
+
+    /**
      * @brief sum
      * @param vec
      * @param size
@@ -223,16 +263,22 @@ public:
         return ret;
     }
 
+    static inline T* assign (T* a, T* ret, int size)
+    {
+        memcpy(ret, a, sizeof(T) * size);
+        return ret;
+    }
+
     /**
-     * @brief Apply
+     * @brief apply
      * @param vec
      * @param ret
      * @param size
      * @return
      */
-    static inline T* Apply(T *vec, T *ret, int size, T(*func)(T))
+    static inline T* apply(T *a, T *ret, int size, T(*func)(T))
     {
-        if(vec == NULL) {
+        if(a == NULL) {
             return NULL;
         }
 
@@ -245,7 +291,7 @@ public:
         }
 
         for(int i = 1; i < size; i++) {
-            ret[i] = func(vec[i]);
+            ret[i] = func(a[i]);
         }
 
         return ret;
@@ -258,9 +304,9 @@ public:
      * @param ind
      * @return
      */
-    static inline T getMax(T *vec, int size, int &ind)
+    static inline T getMax(T *a, int size, int &ind)
     {
-        if(vec == NULL) {
+        if(a == NULL) {
             return T(size + 1);
         }
 
@@ -268,12 +314,12 @@ public:
             return T(size + 1);
         }
 
-        T ret = vec[0];
+        T ret = a[0];
         ind = 0;
 
         for(int i = 1; i < size; i++) {
-            if(ret < vec[i]) {
-                ret = vec[i];
+            if(ret < a[i]) {
+                ret = a[i];
                 ind = i;
             }
         }
@@ -288,9 +334,9 @@ public:
      * @param ind
      * @return
      */
-    static inline T getMin(T *vec, int size, int &ind)
+    static inline T getMin(T *a, int size, int &ind)
     {
-        if(vec == NULL) {
+        if(a == NULL) {
             return T(size + 1);
         }
 
@@ -298,12 +344,12 @@ public:
             return T(size + 1);
         }
 
-        T ret = vec[0];
+        T ret = a[0];
         ind = 0;
 
         for(int i = 1; i < size; i++) {
-            if(ret > vec[i]) {
-                ret = vec[i];
+            if(ret > a[i]) {
+                ret = a[i];
                 ind = i;
             }
         }

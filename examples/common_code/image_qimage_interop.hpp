@@ -69,7 +69,6 @@ pic::Image *ImageConvertFromQImage(QImage *imgIn,
     if(imgOut == NULL) {
         imgOut = new pic::Image(width, height, channels);
     } else {
-        printf("Width: %d %d %d", width, height, channels);
         imgOut->Allocate(width, height, channels, 1);
     }
 

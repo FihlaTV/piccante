@@ -20,8 +20,10 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <vector>
 #include <set>
+#include <chrono>
 
-#include "util/vec.hpp"
+#include "util/array.hpp"
+#include "util/math.hpp"
 
 namespace pic{
 
@@ -33,19 +35,17 @@ namespace pic{
  * @param centers
  * @return
  */
-template<unsigned int N, class T>
-unsigned int kMeansAssignLabel( unsigned int j, std::vector< Vec<N, T> > &data,
-                                std::vector<unsigned int> &centers)
+template<class T>
+unsigned int kMeansAssignLabel( T* sample_j, int nDim,
+                                T* centers, int k)
 {
-    Vec<N, T> data_j = data[j];
-
+    T dist = Array<T>::distanceSq(sample_j, &centers[0], nDim);
     unsigned int label = 0;
-    T dist = data_j.distanceSq(data[centers[0]]);
 
-    for(unsigned int i = 1; i < centers.size(); i++) {
-        Vec<N, T> data_i = data[centers[i]];
+    for(unsigned int i = 1; i < k; i++) {
+        T *center_i = &centers[i * nDim];
 
-        T tmp_dist = data_j.distanceSq(data_i);
+        T tmp_dist = Array<T>::distanceSq(sample_j, center_i, nDim);
 
         if(tmp_dist < dist) {
             dist = tmp_dist;
@@ -57,54 +57,28 @@ unsigned int kMeansAssignLabel( unsigned int j, std::vector< Vec<N, T> > &data,
 }
 
 /**
- * @brief kMeansUpdateClusterCenter
- * @param mean
- * @param data
- * @param cluster
- * @return
- */
-template<unsigned int N, class T>
-unsigned int kMeansUpdateClusterCenter( Vec<N, T> mean, std::vector< Vec<N, T> > &data,
-                                  std::set<unsigned int> *cluster)
-{
-    T dist = mean.distanceSq(data[*cluster->begin()]);
-    unsigned int index = 0;
-
-    for (std::set<unsigned int>::iterator it = cluster->begin(); it != cluster->end(); it++) {
-        T tmp_dist = mean.distanceSq(data[*it]);
-
-        if(tmp_dist < dist) {
-            dist = tmp_dist;
-            index = *it;
-        }
-    }
-
-    return index;
-}
-
-/**
   * @brief kMeansComputeMean
   * @param data
   * @param cluster
   * @return
   */
-template<unsigned int N, class T>
-Vec<N, T>  kMeansComputeMean(std::vector< Vec<N, T> > &data, std::set<unsigned int> *cluster)
+template<class T>
+T* kMeansComputeMean(T *samples, T *out, int nDim, std::set<unsigned int> *cluster)
 {
-     Vec<N, T> mean;
-     mean.setZero();
+    Array<T>::set(out, nDim, T(0));
 
-     unsigned int count = 0;
+    int count = 0;
      for (std::set<unsigned int>::iterator it = cluster->begin(); it != cluster->end(); it++) {
-         mean.add(data[*it]);
+         int i = *it;
+         Array<T>::add(&samples[i * nDim], out, nDim);
          count++;
      }
 
      if(count > 0) {
-         mean.div(T(count));
+         Array<T>::div(out, nDim, T(count));
      }
 
-     return mean;
+     return out;
 }
 
 /**
@@ -114,67 +88,96 @@ Vec<N, T>  kMeansComputeMean(std::vector< Vec<N, T> > &data, std::set<unsigned i
  * @param k
  * @param maxIter
  */
-template<unsigned int N, class T>
-bool kMeans(std::vector< Vec<N, T> > &data, unsigned int k, unsigned int maxIter,
-            std::vector<unsigned int> &centers, std::vector< std::set<unsigned int> *> &labels)
-{
-    centers.clear();
-    labels.clear();
-
-    unsigned int n = data.size();
-
-    if(n < k) {
-        return false;
+template<class T>
+T* kMeans(T *samples, int nSamples, int nDim,
+          unsigned int k, T *centers,
+          std::vector< std::set<unsigned int> *> &labels,
+          unsigned int maxIter = 100)
+{    
+    if(nSamples < k) {
+        return NULL;
     }
 
-    std::set<unsigned int> centers_set;
-    while(centers_set.size() < k) {
-        unsigned int value = rand() % n;
-        if(centers_set.find(value) == centers_set.end()) {
-            centers_set.insert(value);
-            centers.push_back(value);
+    labels.clear();
+
+    if(centers == NULL) {
+        centers = new T[k * nDim];
+
+        std::mt19937 m(std::chrono::system_clock::now().time_since_epoch().count());
+
+        T *tMax = new T[nDim];
+        T *tMin = new T[nDim];
+
+        for(int j = 0; j < nDim; j++) {
+            tMax[j] = -FLT_MAX;
+            tMin[j] =  FLT_MAX;
+        }
+
+        for(int i = 0; i < nSamples; i++) {
+            int index = i * nDim;
+            for(int j = 0; j < nDim; j++) {
+                T s = samples[index + j];
+                tMax[j] = MAX(tMax[j], s);
+                tMin[j] = MIN(tMin[j], s);
+            }
+        }
+
+        for(int i = 0; i < k; i++) {
+            for(int j = 0; j < nDim; j++) {
+                 centers[i * nDim + j] = T(Random(m()) * (tMax[j] - tMin[j]) + tMin[j]);
+            }
+
             labels.push_back(new std::set<unsigned int>);
         }
     }
 
-    for(unsigned int i = 0; i < n; i++) {
-        unsigned int label = kMeansAssignLabel(i, data, centers);
+    for(unsigned int i = 0; i < nSamples; i++) {
+        T *sample_i = &samples[i * nDim];
+
+        unsigned int label = kMeansAssignLabel(sample_i, nDim, centers, k);
         labels[label]->insert(i);
     }
+
+    T *mean = new T[k * nDim];
 
     for(unsigned int i = 0; i < maxIter; i++) {
         bool bNoChanges = true;
 
         for(unsigned int j = 0; j < k; j++) {
-            //computing new means
-            Vec<N, T> mean = kMeansComputeMean(data, labels[j]);
+            //compute new means
+            int index = j * nDim;
+            std::set<unsigned int> *tmp = labels.at(j);
+            kMeansComputeMean(samples, &mean[index], nDim, tmp);
 
-            //updating centers
-            unsigned int index = kMeansUpdateClusterCenter(mean, data, labels[j]);
+            //update centers
+            float dist = Array<float>::distanceSq(&centers[index], &mean[index], nDim);
 
-            if(index != centers[j]) {
-                centers[j] = index;
+            Array<float>::assign(&mean[index], &centers[index], nDim);
+
+            if(dist > 1e-6f) {
                 bNoChanges = false;
             }
         }
 
         if(bNoChanges) {
-            return true;
+            printf("Max iterations: %d\n", i);
+            return centers;
         } else {
-            //clearing labels
+            //clear labels
             for(unsigned int j = 0; j < k; j++) {
                 labels[j]->clear();
             }
 
-            //re-assigning labels
-            for(unsigned int j = 0; j < n; j++) {
-                unsigned int label = kMeansAssignLabel(j, data, centers);
+            //re-assign labels
+            for(unsigned int j = 0; j < nSamples; j++) {
+                T *sample_j = &samples[j * nDim];
+                unsigned int label = kMeansAssignLabel(sample_j, nDim, centers, k);
                 labels[label]->insert(j);
             }
         }
     }
 
-    return true;
+    return centers;
 }
 
 }

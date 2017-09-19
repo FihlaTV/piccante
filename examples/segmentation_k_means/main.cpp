@@ -36,21 +36,25 @@ int main(int argc, char *argv[])
     Q_UNUSED(argc);
     Q_UNUSED(argv);
 
-    std::vector< pic::Vec<2, float> > point;
-    int n = 1000;
 
     std::mt19937 m;
 
+    int n = 10000;
+    int nDim = 2;
+    float *points = new float[nDim * n];
     for(int i = 0; i< n; i++) {
-        point.push_back(pic::randomPoint<2>(&m));
+        pic::Vec<2, float> tmp = pic::randomPoint<2>(&m);
+        points[i * 2    ] = tmp[0];
+        points[i * 2 + 1] = tmp[1];
     }
 
-    std::vector<unsigned int> centers;
     std::vector< std::set<unsigned int> *> labels;
 
-    bool bRet = pic::kMeans(point, 3, 1000, centers, labels);
+    int k = 3;
 
-    if(bRet) {
+    float *centers = pic::kMeans<float>(points, n, nDim, k, NULL, labels, 10000);
+
+    if(centers != NULL) {
         printf("K-Means ok!\n");
 
         pic::Image img(512, 512, 3);
@@ -66,8 +70,8 @@ int main(int argc, char *argv[])
 
             for (std::set<unsigned int>::iterator it=labels[i]->begin(); it!=labels[i]->end(); it++) {
                 unsigned int index = *it;
-                int x = point[index][0] * 255 + 256;
-                int y = point[index][1] * 255 + 256;
+                int x = points[index * 2    ] * 255 + 256;
+                int y = points[index * 2 + 1] * 255 + 256;
                 float *data = img(x, y);
                 data[0] = r;
                 data[1] = g;
