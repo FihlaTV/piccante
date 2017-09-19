@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 
     std::mt19937 m;
 
-    int n = 10000;
+    int n = 100000;
     int nDim = 2;
     float *points = new float[nDim * n];
     for(int i = 0; i< n; i++) {
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 
     int k = 3;
 
-    float *centers = pic::kMeans<float>(points, n, nDim, k, NULL, labels, 10000);
+    float *centers = pic::kMeans<float>(points, n, nDim, k, NULL, labels, 100);
 
     if(centers != NULL) {
         printf("K-Means ok!\n");
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        ImageWrite(&img, "../data/output/kmeans.bmp");
+        ImageWrite(&img, "../data/output/kmeans.png");
     }
 
     return 0;
