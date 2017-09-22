@@ -264,7 +264,7 @@ public:
                             tmpAnn[j + 2] = tmpAnn [j - 1];
                         }
 
-                        tmpAnn[i  ] = float(x0);
+                        tmpAnn[i    ] = float(x0);
                         tmpAnn[i + 1] = float(y0);
                         tmpAnn[i + 2] = dist;
                         break;

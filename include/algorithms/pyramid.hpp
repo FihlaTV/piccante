@@ -32,12 +32,12 @@ namespace pic {
 class Pyramid
 {
 protected:
-    bool    lapGauss;
-    int     limitLevel;
+    bool lapGauss;
+    int limitLevel;
 
-    FilterGaussian2D	*flt_gauss;
-    FilterSampler2D		*flt_sampler;
-    FilterSampler2DSub	*flt_sub;
+    FilterGaussian2D    *flt_gauss;
+    FilterSampler2D     *flt_sampler;
+    FilterSampler2DSub  *flt_sub;
     FilterSampler2DAdd  *flt_add;
 
     ImageVec trackerRec, trackerUp;
@@ -172,12 +172,7 @@ Pyramid::Pyramid(int width, int height, int channels, bool lapGauss, int limitLe
     flt_sub = NULL;
     flt_add = NULL;
 
-//    Image *img = new Image(1, width, height, channels);
-//    *img = 0.0f;
-
     Create(NULL, width, height, channels, lapGauss, limitLevel);
-
-//    delete img;
 }
 
 Pyramid::~Pyramid()

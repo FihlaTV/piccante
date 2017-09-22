@@ -29,10 +29,10 @@ namespace pic{
 
 /**
  * @brief kMeansAssignLabel
- * @param j
- * @param data
- * @param nData
+ * @param sample_j
+ * @param nDim
  * @param centers
+ * @param k
  * @return
  */
 template<class T>
@@ -57,11 +57,13 @@ unsigned int kMeansAssignLabel( T* sample_j, int nDim,
 }
 
 /**
-  * @brief kMeansComputeMean
-  * @param data
-  * @param cluster
-  * @return
-  */
+ * @brief kMeansComputeMean
+ * @param samples
+ * @param out
+ * @param nDim
+ * @param cluster
+ * @return
+ */
 template<class T>
 T* kMeansComputeMean(T *samples, T *out, int nDim, std::set<unsigned int> *cluster)
 {
@@ -82,26 +84,21 @@ T* kMeansComputeMean(T *samples, T *out, int nDim, std::set<unsigned int> *clust
 }
 
 /**
- * @brief KMeans
- * @param data
- * @param nData
- * @param k
- * @param maxIter
+ * @brief kMeanscomputeRandomCenters
+ * @param samples
+ * @param nSamples
+ * @param nDim
+ * @param centers
+ * @return
  */
 template<class T>
-T* kMeans(T *samples, int nSamples, int nDim,
-          unsigned int k, T *centers,
-          std::vector< std::set<unsigned int> *> &labels,
-          unsigned int maxIter = 100)
-{    
-    if(nSamples < k) {
-        return NULL;
+T* kMeanscomputeRandomCenters(T *samples, int nSamples, int nDim, int k, T* centers)
+{
+    if(centers != NULL) {
+        delete[] centers;
     }
 
-    labels.clear();
-
-    if(centers == NULL) {
-        centers = new T[k * nDim];
+    centers = new T[k * nDim];
 
         std::mt19937 m(std::chrono::system_clock::now().time_since_epoch().count());
 
@@ -126,9 +123,36 @@ T* kMeans(T *samples, int nSamples, int nDim,
             for(int j = 0; j < nDim; j++) {
                  centers[i * nDim + j] = T(Random(m()) * (tMax[j] - tMin[j]) + tMin[j]);
             }
-
-            labels.push_back(new std::set<unsigned int>);
         }
+
+    return centers;
+}
+
+
+/**
+ * @brief KMeans
+ * @param data
+ * @param nData
+ * @param k
+ * @param maxIter
+ */
+template<class T>
+T* kMeans(T *samples, int nSamples, int nDim,
+          unsigned int k, T *centers,
+          std::vector< std::set<unsigned int> *> &labels,
+          unsigned int maxIter = 100)
+{    
+    if(nSamples < k) {
+        return NULL;
+    }
+
+    labels.clear();
+    for(unsigned int i = 0; i < k; i++) {
+        labels.push_back(new std::set<unsigned int>);
+    }
+
+    if(centers == NULL) {
+        centers = kMeanscomputeRandomCenters<T>(samples, nSamples, nDim, k, NULL);
     }
 
     for(unsigned int i = 0; i < nSamples; i++) {
@@ -181,6 +205,69 @@ T* kMeans(T *samples, int nSamples, int nDim,
 
     return centers;
 }
+
+/**
+ * @brief kMeansSelect
+ * @param samples
+ * @param nSamples
+ * @param nDim
+ * @param k
+ * @param labels
+ * @param threshold
+ * @param maxIter
+ * @return
+ */
+template<class T>
+T* kMeansSelect(T *samples, int nSamples, int nDim,
+                unsigned int &k,
+                std::vector< std::set<unsigned int> *> &labels,
+                float threshold = 1e-2f,
+                unsigned int maxIter = 100)
+{
+
+    T *centers = NULL;
+
+    k = 1;
+    T prevErr;
+    bool bFlag = true;
+    while(bFlag) {
+        k++;
+        printf("k: %d\n", k);
+        labels.clear();
+        if(centers != NULL) {
+            delete[] centers;
+        }
+
+        centers = kMeans<T>(samples, nSamples, nDim, k, NULL, labels, maxIter);
+
+        T err = T(0);
+        for(int i = 0; i < labels.size(); i++) {
+            T *center_i = &centers[i * nDim];
+
+            std::set<unsigned int> * cluster = labels.at(i);
+            for (std::set<unsigned int>::iterator it = cluster->begin(); it != cluster->end(); it++) {
+                int i = *it;
+                err += Array<T>::distanceSq(&samples[i * nDim], center_i, nDim);
+            }
+
+        }
+
+        if(k > 2) {
+            float relErr = fabsf(float(err - prevErr)) / float(prevErr);
+            printf("%f %f %f\n", err, prevErr, relErr);
+            if(relErr < threshold) {
+                bFlag = false;
+            }
+        }
+
+        prevErr = err;
+    }
+
+    return centers;
+}
+
+
+
 
 }
 
