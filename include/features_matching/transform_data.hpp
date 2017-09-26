@@ -26,15 +26,17 @@ namespace pic {
 class TransformData
 {
 public:
-    int		x, y;
-    float	angle, scale;
-    float	gain, bias;
+    int   x, y;
+    float angle, scale;
+    float gain, bias;
+    float quality;
 
     /**
      * @brief TransformData
      */
     TransformData()
     {
+        this->quality = -1.0f;
     }
 
     /**
@@ -46,6 +48,7 @@ public:
     {
         this->x = x;
         this->y = y;
+        this->quality = -1.0f;
     }
 
     /**
@@ -61,6 +64,38 @@ public:
         this->y = y;
         this->angle = angle;
         this->scale = scale;
+
+        this->quality = -1.0f;
+    }
+
+    /**
+     * @brief set
+     * @param values
+     */
+    void set(float *values)
+    {
+        x = int(values[0]);
+        y = int(values[1]);
+        angle = values[2];
+        scale = values[3];
+        gain  = values[4];
+        bias  = values[5];
+        quality = values[6];
+    }
+
+    /**
+     * @brief set
+     * @param values
+     */
+    void get(float *values)
+    {
+        values[0] = float(x);
+        values[1] = float(y);
+        values[2] = angle;
+        values[3] = scale;
+        values[4] = gain;
+        values[5] = bias;
+        values[6] = quality;
     }
 };
 

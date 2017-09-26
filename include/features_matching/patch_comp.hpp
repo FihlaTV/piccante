@@ -31,16 +31,14 @@ namespace pic {
 class PatchComp
 {
 protected:
-    float					*VALUES_COS;
-    float					*VALUES_SIN;
-
-    ImageSamplerBilinear	isb;
-    Image					*img0, *img1;
-    int						patchSize, halfPatchSize;
+    float *VALUES_COS, *VALUES_SIN;
+    ImageSamplerBilinear isb;
+    Image *img0, *img1;
+    int patchSize, halfPatchSize;
 
     //stereo
-    Image					*lap0, *lap1;
-    float                   gamma_c_2, gamma_l_2;
+    Image *lap0, *lap1;
+    float  gamma_c_2, gamma_l_2;
 
 public:
 
@@ -65,7 +63,7 @@ public:
         VALUES_COS = NULL;
         VALUES_SIN = NULL;
 
-        Init(img0, img1, patchSize);
+        init(img0, img1, patchSize);
     }
 
     /**
@@ -89,7 +87,7 @@ public:
         this->lap0 = lap0;
         this->lap1 = lap1;
 
-        Init(img0, img1, patchSize);
+        init(img0, img1, patchSize);
     }
 
     ~PatchComp()
@@ -104,12 +102,12 @@ public:
     }
 
     /**
-     * @brief Init
+     * @brief init
      * @param img0
      * @param img1
      * @param patchSize
      */
-    void Init(Image *img0, Image *img1, int patchSize)
+    void init(Image *img0, Image *img1, int patchSize)
     {
         this->img0 = img0;
         this->img1 = img1;
@@ -119,6 +117,30 @@ public:
 
         VALUES_SIN = new float[this->patchSize];
         VALUES_COS = new float[this->patchSize];
+    }
+
+    /**
+     * @brief improve
+     * @param x0
+     * @param y0
+     * @param x1
+     * @param y1
+     * @param xb
+     * @param yb
+     * @param db
+     */
+    void improve(int x0, int y0,
+                 int x1, int y1,
+                 int &xb, int &yb, float &db)
+    {
+
+        float dist = getSSD(x0, y0, x1, y1);
+
+        if(dist < db) {
+            xb = x0;
+            yb = y0;
+            db = dist;
+        }
     }
 
     /**
@@ -135,30 +157,6 @@ public:
 
         if(dist < db) {
             xb = x0;
-            db = dist;
-        }
-    }
-
-    /**
-     * @brief improve
-     * @param x0
-     * @param y0
-     * @param x1
-     * @param y1
-     * @param xb
-     * @param yb
-     * @param db
-     */
-    void improve(int x0, int y0,
-                      int x1, int y1,
-                      int &xb, int &yb, float &db)
-    {
-
-        float dist = getSSD(x0, y0, x1, y1);
-
-        if(dist < db) {
-            xb = x0;
-            yb = y0;
             db = dist;
         }
     }
@@ -200,77 +198,18 @@ public:
      * @param tb
      * @param db
      */
-    void improve(TransformData *td0, TransformData *td1, TransformData *tb,
-                 float &db)
+    void improve(TransformData *td0, TransformData *td1, TransformData *tb)
     {
-        float dist = getSSD(td0, td1, db);
+        float dist = getSSD(td0, td1);
 
-        if(dist < db) {
-            tb->x		= td0->x;
-            tb->y		= td0->y;
-            tb->angle	= td0->angle;
-            tb->scale	= td0->scale;
-            tb->gain	= td0->gain;
-            tb->bias	= td0->bias;
-            db			= dist;
-        }
-    }
-
-
-    /**
-     * @brief improve
-     * @param x0
-     * @param y0
-     * @param x1
-     * @param y1
-     * @param xb
-     * @param yb
-     * @param db
-     * @param tmpAnn
-     * @param n
-     */
-    void improve(int x0, int y0,
-                 int x1, int y1,
-                 int &xb, int &yb, float &db,
-                 float *tmpAnn, int n)
-    {
-
-        float dist = getSSD(x0, y0, x1, y1);
-
-        if(dist < db) {
-            for(int i = (n - 3); i > 3; i -= 3) {
-                tmpAnn[i  ] = tmpAnn [i - 3];
-                tmpAnn[i + 1] = tmpAnn [i - 2];
-                tmpAnn[i + 2] = tmpAnn [i - 1];
-            }
-
-            tmpAnn[0] = float(x0);
-            tmpAnn[0] = float(y0);
-            tmpAnn[0] = dist;
-
-            xb = x0;
-            yb = y0;
-            db = dist;
-        } else { //insertion of the value
-            for(int i = 0; i < n; i += 3) {
-                if((x0 == int(tmpAnn[i])) &&
-                   (y0 == int(tmpAnn[i + 1]))) {
-                    break;
-                } else {
-                    if(dist < tmpAnn[i + 2]) { //shift
-                        for(int j = (n - 3); j > i; j -= 3) {
-                            tmpAnn[j  ] = tmpAnn [j - 3];
-                            tmpAnn[j + 1] = tmpAnn [j - 2];
-                            tmpAnn[j + 2] = tmpAnn [j - 1];
-                        }
-
-                        tmpAnn[i    ] = float(x0);
-                        tmpAnn[i + 1] = float(y0);
-                        tmpAnn[i + 2] = dist;
-                        break;
-                    }
-                }
-            }
+        if(dist < tb->quality) {
+            tb->x       = td0->x;
+            tb->y       = td0->y;
+            tb->angle   = td0->angle;
+            tb->scale   = td0->scale;
+            tb->gain    = td0->gain;
+            tb->bias    = td0->bias;
+            tb->quality = dist;
         }
     }
 
@@ -378,14 +317,14 @@ public:
      * @return
      */
     float getSSD(int x0, int y0, float a0, float s0,
-                    int x1, int y1,
-                    float threshold = FLT_MAX) {
+                 int x1, int y1,
+                 float threshold = FLT_MAX) {
 
         float cosAngle = cosf(a0);
         float sinAngle = sinf(a0);
 
         float val = 0.0f;
-        float col[128];
+        float col0[128];
         float x0f, y0f, tmp;
 
         float xf = float(x0);
@@ -401,8 +340,6 @@ public:
             float tmpix = VALUES_SIN[i];//float(i-halfPatchSize)*sinAngle;
             float tmpiy = VALUES_COS[i];//float(i-halfPatchSize)*cosAngle;
 
-            int tmpInd = CLAMP((y1 + i - halfPatchSize), img1->height) * img1->width;
-
             for(int j = 0; j < patchSize; j++) {
                 x0f = xf + (VALUES_COS[j] - tmpix);
                 y0f = yf + (VALUES_SIN[j] + tmpiy);
@@ -410,15 +347,13 @@ public:
                 x0f = CLAMPi(x0f, 0.0f, img0->width1f);
                 y0f = CLAMPi(y0f, 0.0f, img0->height1f);
 
-                isb.SampleImageUC(img0, x0f, y0f, col);
+                isb.SampleImageUC(img0, x0f, y0f, col0);
 
-                int ind = (tmpInd + CLAMP((x1 + j - halfPatchSize),
-                                            img1->width)) * img1->channels;
+                float *col1 = (*img1)(x1 + j - halfPatchSize, y1 + i - halfPatchSize);
 
                 for(int k = 0; k < img1->channels; k++) {
-                    tmp = img1->data[ind] - col[k];
+                    tmp = col1[k] - col0[k];
                     val += tmp * tmp;
-                    ind++;
                 }
 
                 if(val > threshold) {
@@ -443,14 +378,14 @@ public:
         float sinAngle = sinf(td0->angle);
 
         float val = 0.0f;
-        float col[128];
+        float col0[128];
         float x0f, y0f, tmp;
 
         float xf = float(td0->x);
         float yf = float(td0->y);
 
         for(int i = 0; i < patchSize; i++) {
-            float val = float(i) * td0->scale;
+            float val = float(i - halfPatchSize) * td0->scale;
             VALUES_COS[i] = val * cosAngle;
             VALUES_SIN[i] = val * sinAngle;
         }
@@ -459,8 +394,6 @@ public:
             float tmpix = VALUES_SIN[i];//float(i-halfPatchSize)*sinAngle;
             float tmpiy = VALUES_COS[i];//float(i-halfPatchSize)*cosAngle;
 
-            int tmpInd = CLAMP((td1->y + i - halfPatchSize), img1->height) * img1->width;
-
             for(int j = 0; j < patchSize; j++) {
                 x0f = xf + (VALUES_COS[j] - tmpix);
                 y0f = yf + (VALUES_SIN[j] + tmpiy);
@@ -468,17 +401,14 @@ public:
                 x0f = CLAMPi(x0f, 0.0f, img0->width1f);
                 y0f = CLAMPi(y0f, 0.0f, img0->height1f);
 
-                isb.SampleImageUC(img0, x0f, y0f, col);
+                isb.SampleImageUC(img0, x0f, y0f, col0);
 
-                int ind = (tmpInd + CLAMP((td1->x + j - halfPatchSize),
-                                            img1->width)) * img1->channels;
+                float *col1 = (*img1)(td1->x + j - halfPatchSize, td1->y + i - halfPatchSize);
 
                 for(int k = 0; k < img1->channels; k++) {
                     //apply gain+bias
-                    float col_k = CLAMPi((col[k] * td0->gain + td0->bias), 0.0f, 1.0f);
-                    tmp = img1->data[ind] - col_k;
+                    tmp = col1[k] - (col0[k] * td0->gain + td0->bias);
                     val += tmp * tmp;
-                    ind++;
                 }
 
                 if(val > threshold) {
