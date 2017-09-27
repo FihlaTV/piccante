@@ -419,6 +419,52 @@ public:
 
         return val;
     }
+
+    /**
+     * @brief distance computes the distance between two transformations.
+     * @param x0 is the x coordinate of point p0 = (x0, y0)
+     * @param y0 is the y coordinate of point p0 = (x0, y0)
+     * @param d0 is the transformation of p0
+     * @param x1 is the x coordinate of point p1 = (x1, y1)
+     * @param y1 is the y coordinate of point p1 = (x1, y1)
+     * @param d1 is the transformation of p1
+     * @param width is the width of the target image
+     * @param height is the height of the target image
+     * @return
+     */
+    static float distance(float x0, float y0, TransformData *d0,
+                          float x1, float y1, TransformData *d1,
+                          float width, float height)
+    {
+        float tx, ty, dist, div;
+
+        //float dx0 = float(d0->x) - x0) / width;
+        //float dy0 = float(d0->y) - y0) / height;
+
+        float dx1 = float(d1->x - x1) / width;
+        float dy1 = float(d1->y - y1) / height;
+
+        float x0d1 = x0 + dx1;
+        float y0d1 = y0 + dy1;
+
+        tx = d0->x - x0d1;
+        ty = d0->y - y0d1;
+
+        dist = (tx * tx + ty * ty);
+
+        tx = d1->x - x0d1;
+        ty = d1->y - y0d1;
+
+        div = (tx * tx + ty * ty);
+
+        if(div > 0.0f) {
+            dist /= div;
+        } else {
+            dist = FLT_MAX;
+        }
+
+        return dist;
+    }
 };
 
 } // end namespace pic
