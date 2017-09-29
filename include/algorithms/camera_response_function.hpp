@@ -152,10 +152,10 @@ protected:
 
         icrf.clear();
 
-        for(int i=0; i<poly.size(); i++) {
+        for(int i=0; i < poly.size(); i++) {
             float *tmp = new float[256];
 
-            for(int j=0; j<256; j++) {
+            for(int j = 0; j < 256; j++) {
                 float x = float(j) / 255.0f;
 
                 tmp[j] = polynomialVal(poly[i], x);

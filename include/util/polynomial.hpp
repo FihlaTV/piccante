@@ -97,19 +97,25 @@ void polynomialTest()
 {
     std::vector<float> x, y;
 
-    for(int i=0;i<10;i++) {
-        x.push_back(i);
-        y.push_back(i * i);
+    for(int i = 0; i < 10; i++) {
+        float p_x = float(i);
+        float p_y = 3.0f * p_x * p_x +
+                    2.0f * p_x +
+                    1.0f;
+
+        x.push_back(p_x);
+        y.push_back(p_y);
     }
 
     std::vector< float > tmp = polynomialFit(x, y, 2);
 
-    for(int i=0;i<3;i++) {
+    printf("poly: ");
+    for(int i = 0; i < 3; i++) {
         printf("%f ", tmp[i]);
     }
 
     float y_2 = polynomialVal(tmp, 4.0f);
-    printf("\n %f\n", y_2);
+    printf("\n p(4.0f) = %f\n", y_2);
 }
 
 #endif
