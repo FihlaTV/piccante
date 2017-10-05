@@ -62,10 +62,10 @@ protected:
     void Destroy();
 
     /**
-     * @brief AllocateAux computes extra information after allocation;
+     * @brief allocateAux computes extra information after allocation;
      * e.g. strides.
      */
-    void AllocateAux();
+    void allocateAux();
 
     /**
      * @brief setNULL sets buffers values to NULL.
@@ -175,13 +175,13 @@ public:
     ~Image();
 
     /**
-     * @brief Allocate allocates memory for the pixel buffer.
+     * @brief allocate allocates memory for the pixel buffer.
      * @param width is the number of horizontal pixels.
      * @param height is the number of vertical pixels.
      * @param channels is the number of color channels.
      * @param frames is the number of temporal pixels.
      */
-    void Allocate(int width, int height, int channels, int frames);
+    void allocate(int width, int height, int channels, int frames);
 
     /**
      * @brief copySubImage copies imgIn in the current image.
@@ -193,10 +193,10 @@ public:
     void copySubImage(Image *imgIn, int startX, int startY);
 
     /**
-     * @brief ScaleCosine multiplies the current image by the vertical cosine
+     * @brief scaleCosine multiplies the current image by the vertical cosine
      * assuming a longitude-latitude image.
      */
-    void ScaleCosine();
+    void scaleCosine();
 
     /**
      * @brief FlipH flips horizontally the current image.
@@ -238,7 +238,7 @@ public:
     void rotate90CCW()
     {
         Buffer<float>::rotate90CCW(data, width, height, channels);
-        AllocateAux();
+        allocateAux();
     }
 
     /**
@@ -247,7 +247,7 @@ public:
     void rotate90CW()
     {
         Buffer<float>::rotate90CW(data, width, height, channels);
-        AllocateAux();
+        allocateAux();
     }
 
     /**
@@ -853,7 +853,7 @@ PIC_INLINE Image::Image(Image *imgIn, bool deepCopy = true)
         flippedEXR = imgIn->flippedEXR;
         typeLoad = imgIn->typeLoad;
 
-        AllocateAux();
+        allocateAux();
     }
 
 }
@@ -861,7 +861,7 @@ PIC_INLINE Image::Image(Image *imgIn, bool deepCopy = true)
 PIC_INLINE Image::Image(int width, int height, int channels = 3)
 {
     setNULL();
-    Allocate(width, height, channels, 1);
+    allocate(width, height, channels, 1);
 }
 
 PIC_INLINE Image::Image(int frames, int width, int height, int channels,
@@ -870,7 +870,7 @@ PIC_INLINE Image::Image(int frames, int width, int height, int channels,
     setNULL();
 
     if(data == NULL) {
-        Allocate(width, height, channels, frames);
+        allocate(width, height, channels, frames);
     } else {
         this->frames   = frames;
         this->channels = channels;
@@ -879,7 +879,7 @@ PIC_INLINE Image::Image(int frames, int width, int height, int channels,
         this->notOwned = true;
         this->data = data;
 
-        AllocateAux();
+        allocateAux();
     }
 }
 
@@ -895,7 +895,7 @@ PIC_INLINE Image::Image(float *color, int channels)
     setNULL();
 
     if(color != NULL) {
-        Allocate(1, 1, channels, 1);
+        allocate(1, 1, channels, 1);
         memcpy(data, color, channels);
     }
 }
@@ -933,7 +933,7 @@ PIC_INLINE void Image::Destroy()
     setNULL();
 }
 
-PIC_INLINE void Image::Allocate(int width, int height, int channels, int frames)
+PIC_INLINE void Image::allocate(int width, int height, int channels, int frames)
 {
     if(width < 1 || height < 1 || channels < 1 || frames < 1) {
         #ifdef PIC_DEBUG
@@ -958,10 +958,10 @@ PIC_INLINE void Image::Allocate(int width, int height, int channels, int frames)
 
     data = new float [height * width * channels * frames];
 
-    AllocateAux();
+    allocateAux();
 }
 
-PIC_INLINE void Image::AllocateAux()
+PIC_INLINE void Image::allocateAux()
 {
     this->fullBox.SetBox(0, width, 0, height, 0, frames, width,
                          height, frames);
@@ -985,7 +985,7 @@ PIC_INLINE void Image::assign(const Image *imgIn)
 
     if(!isSimilarType(imgIn)) {
         Destroy();
-        Allocate(imgIn->width, imgIn->height, imgIn->channels, imgIn->frames);
+        allocate(imgIn->width, imgIn->height, imgIn->channels, imgIn->frames);
     }
 
     exposure = imgIn->exposure;
@@ -1108,7 +1108,7 @@ PIC_INLINE void Image::copySubImage(Image *imgIn, int startX, int startY)
     }
 }
 
-PIC_INLINE void Image::ScaleCosine()
+PIC_INLINE void Image::scaleCosine()
 {
     int half_h = height >> 1;
 
@@ -1547,7 +1547,7 @@ PIC_INLINE void Image::convertFromMask(bool *mask, int width, int height)
         return;
     }
 
-    Allocate(width, height, 1, 1);
+    allocate(width, height, 1, 1);
 
     int size = (width * height);
 
@@ -1677,7 +1677,7 @@ PIC_INLINE bool Image::Read(std::string nameFile,
                 }
             }
 
-            AllocateAux();
+            allocateAux();
             bReturn = true;
         } else {
             bReturn = false;
@@ -1749,7 +1749,7 @@ PIC_INLINE bool Image::Read(std::string nameFile,
                      frames = 1;
                  }
 
-                 AllocateAux();
+                 allocateAux();
              }
 
              bReturn = true;

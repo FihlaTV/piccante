@@ -67,10 +67,10 @@ public:
     }
 
     /**
-     * @brief Black
+     * @brief black
      * @return
      */
-    static Color3 Black()
+    static Color3 black()
     {
         Color3 ret;
         return ret;
@@ -441,7 +441,7 @@ public:
     }
 
     /**
-     * @brief mean
+     * @brief getMean
      * @return
      */
     float getMean()
@@ -584,7 +584,16 @@ public:
         x = powf(x, g);
         y = powf(y, g);
         z = powf(z, g);
+    }
 
+    /**
+     * @brief setZero
+     */
+    void setZero()
+    {
+        x = 0.0f;
+        y = 0.0f;
+        z = 0.0f;
     }
 
     Color3 valOver(float a)
@@ -662,9 +671,9 @@ public:
     }
 
     /**
-     * @brief TestImportanceSamplingColor3 executes a test Importance sampling of class Color3.
+     * @brief testImportanceSamplingColor3 executes a test Importance sampling of class Color3.
      */
-    static void TestImportanceSamplingColor3()
+    static void testImportanceSamplingColor3()
     {
         Color3 col(1.0f, 0.8f, 0.3f);
         float p;
