@@ -212,7 +212,7 @@ Image *FilterBilateral2DG::Splat(Image *base, Image *edge, int channels)
 #endif
     }
 
-    grid->SetZero();
+    grid->setZero();
 
     for(int j = 0; j < base->height; j++) {
         int y = int(lround(float(j) * s_S));

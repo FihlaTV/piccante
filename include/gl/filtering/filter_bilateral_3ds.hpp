@@ -114,13 +114,13 @@ FilterGLBilateral3DS::FilterGLBilateral3DS(float sigma_s, float sigma_r,
 
     int nRand = 32;
     imageRand = new ImageGL(1, 256, 256, 1, IMG_CPU, GL_TEXTURE_2D);
-    imageRand->SetRand();
+    imageRand->setRand();
     imageRand->generateTextureGL(false, GL_TEXTURE_2D);
     *imageRand *= float(nRand - 1);
 
     //Precomputation of the Gaussian Kernel
-    int kernelSizeSpace = PrecomputedGaussian::KernelSize(sigma_s);
-    kernelSizeTime  = PrecomputedGaussian::KernelSize(sigma_t);
+    int kernelSizeSpace = PrecomputedGaussian::getKernelSize(sigma_s);
+    kernelSizeTime  = PrecomputedGaussian::getKernelSize(sigma_t);
 
     int kernelSize = MAX(kernelSizeSpace, kernelSizeTime);
     int halfKernelSize = kernelSize >> 1;
@@ -224,7 +224,7 @@ void FilterGLBilateral3DS::Update(float sigma_s, float sigma_r, float sigma_t)
     if(!flag) {
     }
 
-    int kernelSize = PrecomputedGaussian::KernelSize(this->sigma_s);
+    int kernelSize = PrecomputedGaussian::getKernelSize(this->sigma_s);
     int halfKernelSize = kernelSize >> 1;
 
     ms->updateGL(halfKernelSize, halfKernelSize);

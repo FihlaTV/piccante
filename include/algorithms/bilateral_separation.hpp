@@ -57,15 +57,15 @@ ImageVec* bilateralSeparation(Image *imgIn, float sigma_s = -1.0f, float sigma_r
         sigma_r = 0.4f;
     }
 
-    Image *img_tmp = imgIn->Clone();
+    Image *img_tmp = imgIn->clone();
 
-    img_tmp->ApplyFunction(log10fPlusEpsilon);
+    img_tmp->applyFunction(log10fPlusEpsilon);
 
     Image *img_flt = FilterBilateral2DS::Execute(img_tmp, NULL, sigma_s, sigma_r);
 
-    img_flt->ApplyFunction(powf10fe);
+    img_flt->applyFunction(powf10fe);
 
-    Image *img_detail = imgIn->Clone();
+    Image *img_detail = imgIn->clone();
 
     *img_detail /= *img_flt;
     img_detail->removeSpecials();

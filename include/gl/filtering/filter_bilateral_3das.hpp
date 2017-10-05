@@ -120,15 +120,15 @@ FilterGLBilateral3DAS::FilterGLBilateral3DAS(float sigma_s, float sigma_r,
     int nRand = 32;
 
     Image tmp_imageRand(1, 128, 128, 1);
-    tmp_imageRand.SetRand();
+    tmp_imageRand.setRand();
     tmp_imageRand *= float(nRand - 1);
 
     imageRand = new ImageGL(&tmp_imageRand, true);
     imageRand->generateTextureGL(GL_TEXTURE_2D, GL_INT);
 
     //Precomputation of the Gaussian Kernel
-    int kernelSize = PrecomputedGaussian::KernelSize(sigma_s);
-    int kernelSizeTime  = PrecomputedGaussian::KernelSize(sigma_t);
+    int kernelSize = PrecomputedGaussian::getKernelSize(sigma_s);
+    int kernelSizeTime  = PrecomputedGaussian::getKernelSize(sigma_t);
 
     int halfKernelSize = kernelSize >> 1;
     int halfKernelSizeTime = kernelSizeTime >> 1;
@@ -259,7 +259,7 @@ void FilterGLBilateral3DAS::Update(float sigma_s, float sigma_r, float sigma_t)
     }
 
     //shader update
-    int kernelSize = PrecomputedGaussian::KernelSize(this->sigma_s);
+    int kernelSize = PrecomputedGaussian::getKernelSize(this->sigma_s);
     int halfKernelSize = kernelSize >> 1;
 
     ms->updateGL(halfKernelSize, halfKernelSize);

@@ -53,7 +53,7 @@ Image *ExposureFusion(ImageVec imgIn, float wC = 1.0f, float wE = 1.0f,
     Image *weights = new Image(1, width, height, 1);
     Image *acc     = new Image(1, width, height, 1);
 
-    acc->SetZero();
+    acc->setZero();
 
     FilterLuminance flt_lum;
     FilterExposureFusionWeights flt_weights(wC, wE, wS);

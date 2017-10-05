@@ -27,9 +27,9 @@ class  PrecomputedGaussian
 {
 protected:
     /**
-     * @brief PrecomputeCoefficients precomputes a Gaussian kernel.
+     * @brief precomputeCoefficients precomputes a Gaussian kernel.
      */
-    void PrecomputeCoefficients()
+    void precomputeCoefficients()
     {
         halfKernelSize = kernelSize >> 1;
         kernelSize = (halfKernelSize << 1) + 1;
@@ -74,7 +74,7 @@ public:
      */
     PrecomputedGaussian(float sigma)
     {
-        CalculateKernel(sigma);
+        calculateKernel(sigma);
     }
 
     ~PrecomputedGaussian()
@@ -87,17 +87,17 @@ public:
     }
 
     /**
-     * @brief CalculateKernel computes a Gaussian kernel of size sigma
+     * @brief calculateKernel computes a Gaussian kernel of size sigma
      * @param sigma
      */
-    void CalculateKernel(float sigma)
+    void calculateKernel(float sigma)
     {
         this->sigma = sigma;
         //The sigma for the size of the kernel
-        kernelSize = PrecomputedGaussian::KernelSize(sigma);
+        kernelSize = PrecomputedGaussian::getKernelSize(sigma);
 
         //Precompute Gaussian coefficients
-        PrecomputeCoefficients();
+        precomputeCoefficients();
     }
 
     /**
@@ -105,7 +105,7 @@ public:
      * @param sigma is the sigma value of a Gaussian kernel.
      * @return It returns the size of the kernel in pixels.
      */
-    static int KernelSize(float sigma)
+    static int getKernelSize(float sigma)
     {
         int kernelSize = int(ceilf(sigma * 5.0f));
         return (kernelSize > 3) ? kernelSize : 3;

@@ -130,7 +130,7 @@ PIC_INLINE bool ImageVecCheckSimilarType(ImageVec &stack)
     }
 
     for (size_t i=1; i<stack.size(); i++) {
-        if (!stack[0]->SimilarType(stack[i])) {
+        if (!stack[0]->isSimilarType(stack[i])) {
             return false;
         }
     }

@@ -36,7 +36,7 @@ double logRMSE(Image *ori, Image *cmp)
         return -2.0;
     }
 
-    if(!ori->SimilarType(cmp)) {
+    if(!ori->isSimilarType(cmp)) {
         return -1.0;
     }
 

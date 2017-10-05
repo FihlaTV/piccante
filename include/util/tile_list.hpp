@@ -31,16 +31,16 @@ namespace pic {
 class TileList
 {
 protected:
-    unsigned int			counter;
+    unsigned int    counter;
 
 #ifndef PIC_DISABLE_THREAD
-    std::mutex              mutex;
+    std::mutex      mutex;
 #endif
 
 public:
-    int						width, height;
-    int                     h_tile, w_tile;
-    int                     mod_h, mod_w;
+    int             width, height;
+    int             h_tile, w_tile;
+    int             mod_h, mod_w;
 
     /**
      * @brief tiles a list of tiles
@@ -77,9 +77,9 @@ public:
     unsigned int getNext();
 
     /**
-     * @brief ResetCounter sets the counter to zero.
+     * @brief resetCounter sets the counter to zero.
      */
-    void ResetCounter();
+    void resetCounter();
 
     /**
      * @brief Create creates a list of tiles.
@@ -87,30 +87,30 @@ public:
      * @param width is the horizontal size of the original image in pixels.
      * @param height is the vertical size of the original image in pixels.
      */
-    void Create(int tileSize, int width, int height);
+    void create(int tileSize, int width, int height);
 
     /**
-     * @brief Read loads a TileList from a file.
+     * @brief read loads a TileList from a file.
      * @param name is the file name.
      * @param flag is a boolean value. If it is true, this loads
      * an Image from the tile name. Otherwise, an Image of the tile
      * size is allocated.
      * @return This function returns true if it is successfull.
      */
-    bool Read(std::string name, bool flag);
+    bool read(std::string name, bool flag);
 
     /**
-     * @brief Write saves a TileList into a file.
+     * @brief write saves a TileList into a file.
      * @param name is the file name
      * @return This function returns true if it is successfull.
      */
-    bool Write(std::string name);
+    bool write(std::string name);
 
     /**
-     * @brief WriteIntoMemory copies tiles inside an output image.
+     * @brief writeIntoMemory copies tiles inside an output image.
      * @param output is the Image where tiles will be copied to.
      */
-    void WriteIntoMemory(Image *output);
+    void writeIntoMemory(Image *output);
 };
 
 PIC_INLINE TileList::TileList()
@@ -127,7 +127,7 @@ PIC_INLINE TileList::TileList()
 PIC_INLINE TileList::TileList(int tileSize, int width, int height)
 {
     counter = 0;
-    Create(tileSize, width, height);
+    create(tileSize, width, height);
 }
 
 PIC_INLINE TileList::~TileList()
@@ -165,7 +165,7 @@ PIC_INLINE unsigned int TileList::getNext()
     return ret;
 }
 
-PIC_INLINE void TileList::ResetCounter()
+PIC_INLINE void TileList::resetCounter()
 {
     {
 #ifndef PIC_DISABLE_THREAD
@@ -175,9 +175,9 @@ PIC_INLINE void TileList::ResetCounter()
     }
 }
 
-PIC_INLINE void TileList::Create(int tileSize, int width, int height)
+PIC_INLINE void TileList::create(int tileSize, int width, int height)
 {
-    ResetCounter();
+    resetCounter();
 
     if(tiles.size() > 0) {
         if((tiles[0].width == tileSize) && (this->width == width) &&
@@ -240,7 +240,7 @@ PIC_INLINE void TileList::Create(int tileSize, int width, int height)
     }
 }
 
-PIC_INLINE void TileList::WriteIntoMemory(Image *output)
+PIC_INLINE void TileList::writeIntoMemory(Image *output)
 {
     if(output == NULL) {
         return;
@@ -252,7 +252,7 @@ PIC_INLINE void TileList::WriteIntoMemory(Image *output)
 
     for(unsigned int i = 0; i < tiles.size(); i++) { //for each tile
         if(tiles[i].tile != NULL) {
-            output->CopySubImage(tiles[i].tile, tiles[i].startX, tiles[i].startY);
+            output->copySubImage(tiles[i].tile, tiles[i].startX, tiles[i].startY);
         }
 
         #ifdef PIC_DEBUG
@@ -261,7 +261,7 @@ PIC_INLINE void TileList::WriteIntoMemory(Image *output)
     }
 }
 
-PIC_INLINE bool TileList::Read(std::string name, bool flag)
+PIC_INLINE bool TileList::read(std::string name, bool flag)
 {
     FILE *file = fopen(name.c_str(), "r");
 
@@ -315,7 +315,7 @@ PIC_INLINE bool TileList::Read(std::string name, bool flag)
     return true;
 }
 
-PIC_INLINE bool TileList::Write(std::string name)
+PIC_INLINE bool TileList::write(std::string name)
 {
     FILE *file = fopen(name.c_str(), "w");
 

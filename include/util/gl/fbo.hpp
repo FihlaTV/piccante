@@ -304,7 +304,6 @@ bool Fbo::createMRT(int width, int height, bool bDepth, unsigned int nMRT)
 {
     this->width = width;
     this->height = height;
-    this->frames = frames;
     this->bDepth = bDepth;
     this->nMRT = nMRT;
 

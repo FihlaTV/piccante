@@ -33,11 +33,11 @@ namespace pic {
 inline Image *HistogramTMO(Image *imgOut, Image *imgIn)
 {
     if(imgOut == NULL) {
-        imgOut = imgIn->Clone();
+        imgOut = imgIn->clone();
     }
 
     Image *lum    = FilterLuminance::Execute(imgIn, NULL, LT_CIE_LUMINANCE);	//Luminance
-    Image *lumOld = lum->Clone();
+    Image *lumOld = lum->clone();
     lum->sort();
 
     int size = lum->width * lum->height * lum->frames;

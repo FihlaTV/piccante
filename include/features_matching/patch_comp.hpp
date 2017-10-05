@@ -378,7 +378,6 @@ public:
         float sinAngle = sinf(td0->angle);
 
         float val = 0.0f;
-        float col0[128];
         float x0f, y0f, tmp;
 
         float xf = float(td0->x);
@@ -390,6 +389,59 @@ public:
             VALUES_SIN[i] = val * sinAngle;
         }
 
+        //compute statistics
+        float col0[64];
+        float col0_mu[64];
+        float col0_s[64];
+        float col1_mu[64];
+        float col1_s[64];
+
+        for(int i = 0; i < img0->channels; i++) {
+            col0_mu[i] = 0.0f;
+            col1_mu[i] = 0.0f;
+
+            col0_s[i] = 0.0f;
+            col1_s[i] = 0.0f;
+        }
+
+        for(int i = 0; i < patchSize; i++) {
+            float tmpix = VALUES_SIN[i];//float(i-halfPatchSize)*sinAngle;
+            float tmpiy = VALUES_COS[i];//float(i-halfPatchSize)*cosAngle;
+
+            for(int j = 0; j < patchSize; j++) {
+                x0f = xf + (VALUES_COS[j] - tmpix);
+                y0f = yf + (VALUES_SIN[j] + tmpiy);
+
+                x0f = CLAMPi(x0f, 0.0f, img0->width1f);
+                y0f = CLAMPi(y0f, 0.0f, img0->height1f);
+
+                isb.SampleImageUC(img0, x0f, y0f, col0);
+                float *col1 = (*img1)(td1->x + j - halfPatchSize, td1->y + i - halfPatchSize);
+
+                for(int k = 0; k < img1->channels; k++) {
+                    //apply gain+bias
+                    col0_mu[k] += col0[k];
+                    col1_mu[k] += col1[k];
+
+                    col0_s[k] += col0[k] * col0[k];
+                    col1_s[k] += col1[k] * col1[k];
+                }
+            }
+        }
+
+        float n_sqf = float(patchSize * patchSize);
+        for(int i = 0; i < img0->channels; i++) {
+            col0_mu[i] /= n_sqf;
+            col1_mu[i] /= n_sqf;
+
+            col0_s[i] /= n_sqf;
+            col1_s[i] /= n_sqf;
+
+            col0_s[i] -= (col0_mu[i] * col0_mu[i]);
+            col1_s[i] -= (col1_mu[i] * col1_mu[i]);
+        }
+
+        //perform SSD
         for(int i = 0; i < patchSize; i++) {
             float tmpix = VALUES_SIN[i];//float(i-halfPatchSize)*sinAngle;
             float tmpiy = VALUES_COS[i];//float(i-halfPatchSize)*cosAngle;
@@ -406,8 +458,10 @@ public:
                 float *col1 = (*img1)(td1->x + j - halfPatchSize, td1->y + i - halfPatchSize);
 
                 for(int k = 0; k < img1->channels; k++) {
-                    //apply gain+bias
-                    tmp = col1[k] - (col0[k] * td0->gain + td0->bias);
+                    //apply gain + bias
+                    float gain = col0_s[k] > 0.0f ? (col1_s[k] / col0_s[k]) : 1.0f;
+                    float bias = col0_mu[k] - gain * col1_mu[k];
+                    tmp = col1[k] - (col0[k] * gain + bias);
                     val += tmp * tmp;
                 }
 

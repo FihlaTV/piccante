@@ -78,9 +78,7 @@ public:
         y = int(values[1]);
         angle = values[2];
         scale = values[3];
-        gain  = values[4];
-        bias  = values[5];
-        quality = values[6];
+        quality = values[4];
     }
 
     /**
@@ -93,9 +91,7 @@ public:
         values[1] = float(y);
         values[2] = angle;
         values[3] = scale;
-        values[4] = gain;
-        values[5] = bias;
-        values[6] = quality;
+        values[4] = quality;
     }
 };
 

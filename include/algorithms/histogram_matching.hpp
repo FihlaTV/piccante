@@ -52,8 +52,8 @@ Image *HistogramMatching(Image* img_source, Image* img_target, int nBin = 256, I
     std::vector<int *> lut;
 
     for(int i=0; i<channels; i++) {
-        h_source[i].Calculate(img_source, VS_LIN, nBin, i);
-        h_target[i].Calculate(img_target, VS_LIN, nBin, i);
+        h_source[i].calculate(img_source, VS_LIN, nBin, i);
+        h_target[i].calculate(img_target, VS_LIN, nBin, i);
 
         h_source[i].cumulativef(true);
         h_target[i].cumulativef(true);
@@ -73,7 +73,7 @@ Image *HistogramMatching(Image* img_source, Image* img_target, int nBin = 256, I
     }
 
     if(out == NULL) {
-        out = img_source->Clone();
+        out = img_source->clone();
     }
 
     for(int i=0; i<out->size(); i+=channels) {

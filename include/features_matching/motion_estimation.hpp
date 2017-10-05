@@ -130,7 +130,7 @@ public:
             return;
         }
 
-        if(!img0->SimilarType(img1)) {
+        if(!img0->isSimilarType(img1)) {
             return;
         }
 

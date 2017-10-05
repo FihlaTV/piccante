@@ -64,7 +64,7 @@ Image *ReinhardTMO(Image *imgIn, Image *imgOut = NULL, float alpha = 0.18f,
     }
 
     if(imgOut == NULL) {
-        imgOut = imgIn->Clone();
+        imgOut = imgIn->clone();
     }
 
     //luminance image
@@ -83,7 +83,7 @@ Image *ReinhardTMO(Image *imgIn, Image *imgOut = NULL, float alpha = 0.18f,
     }
 
     //Filtering luminance in the sigmoid-space
-    lum->ApplyFunction(&Sigmoid);
+    lum->applyFunction(&Sigmoid);
 
     float s_max = 8.0f;
     float sigma_s = 0.56f * powf(1.6f, s_max);
@@ -93,9 +93,9 @@ Image *ReinhardTMO(Image *imgIn, Image *imgOut = NULL, float alpha = 0.18f,
     Image *filteredLum = FilterBilateral2DS::Execute(lum, NULL, sigma_s,
                             sigma_r);
 
-    lum->ApplyFunction(&SigmoidInv);
+    lum->applyFunction(&SigmoidInv);
 
-    filteredLum->ApplyFunction(&SigmoidInv);
+    filteredLum->applyFunction(&SigmoidInv);
 
     //Applying a sigmoid filter
     FilterSigmoidTMO flt_sigmoid(SIG_TMO, alpha, whitePoint, LogAverage);

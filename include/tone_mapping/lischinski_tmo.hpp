@@ -69,7 +69,7 @@ Image *LischinskiTMO(Image *imgIn, Image *imgOut = NULL, float alpha = -1.0f,
         return NULL;
     } else {
         if(imgOut == NULL) {
-            imgOut = imgIn->Clone();
+            imgOut = imgIn->clone();
         }
     }
 
@@ -109,7 +109,7 @@ Image *LischinskiTMO(Image *imgIn, Image *imgOut = NULL, float alpha = -1.0f,
     }
 
     //creating the fstop maps
-    lum->ApplyFunction(log2fPlusEpsilon);
+    lum->applyFunction(log2fPlusEpsilon);
 
     Image *fstopMap = lum->AllocateSimilarOne();
 

@@ -161,7 +161,7 @@ FilterGLBilateral2DS::FilterGLBilateral2DS(float sigma_s, float sigma_r,
     this->type = type;
 
     //Precomputation of the Gaussian Kernel
-    int kernelSize = PrecomputedGaussian::KernelSize(sigma_s);//,sigma_r);
+    int kernelSize = PrecomputedGaussian::getKernelSize(sigma_s);//,sigma_r);
     int halfKernelSize = kernelSize >> 1;
 
     //Random numbers
@@ -170,7 +170,7 @@ FilterGLBilateral2DS::FilterGLBilateral2DS(float sigma_s, float sigma_r,
 //    if(BF_CLASSIC) {
 
     imageRand = new ImageGL(1, 128, 128, 1, IMG_CPU, GL_TEXTURE_2D);
-    imageRand->SetRand();
+    imageRand->setRand();
     imageRand->loadFromMemory();
     *imageRand -= 0.5f;
     nSamplers = 1;
@@ -378,7 +378,7 @@ void FilterGLBilateral2DS::Update(float sigma_s, float sigma_r)
         this->sigma_r = sigma_r;
     }
 
-    int kernelSize = PrecomputedGaussian::KernelSize(this->sigma_s);
+    int kernelSize = PrecomputedGaussian::getKernelSize(this->sigma_s);
     int halfKernelSize = kernelSize >> 1;
 
     if(flag) {

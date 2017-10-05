@@ -134,7 +134,7 @@ public:
             imgEdges = lum->AllocateSimilarOne();
         }
 
-        imgEdges->SetZero();
+        imgEdges->setZero();
 
         for(int i=0; i<grad->height; i++) {
             for(int j=0; j<grad->width; j++) {

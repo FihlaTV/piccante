@@ -179,7 +179,7 @@ FilterGLBilateral2DSE::FilterGLBilateral2DSE(float sigma_s, float sigma_p, float
     this->sigma_a = sigma_a;
 
     //Precomputation of the Gaussian Kernel
-    int kernelSize = PrecomputedGaussian::KernelSize(sigma_s);//,sigma_r);
+    int kernelSize = PrecomputedGaussian::getKernelSize(sigma_s);//,sigma_r);
     int halfKernelSize = kernelSize >> 1;
 
     //Random numbers
@@ -187,7 +187,7 @@ FilterGLBilateral2DSE::FilterGLBilateral2DSE(float sigma_s, float sigma_p, float
     int nSamplers;
 
     Image tmp_imageRand(1, 128, 128, 1);
-    tmp_imageRand.SetRand();
+    tmp_imageRand.setRand();
     tmp_imageRand *= float(nRand - 1);
 
     imageRand = new ImageGL(&tmp_imageRand, true);
@@ -309,7 +309,7 @@ void FilterGLBilateral2DSE::Update(float sigma_s, float sigma_p, float sigma_n, 
         this->sigma_a = sigma_a;
     }
 
-    int kernelSize = PrecomputedGaussian::KernelSize(this->sigma_s);
+    int kernelSize = PrecomputedGaussian::getKernelSize(this->sigma_s);
     int halfKernelSize = kernelSize >> 1;
 
     if(flag) {
@@ -325,7 +325,7 @@ void FilterGLBilateral2DSE::Update(float sigma_s, float sigma_p, float sigma_n, 
     technique.bind();
     technique.setUniform("u_tex",       0);
     technique.setUniform("u_poisson",   1);
-    technique.setUniform("u_rand",	    2);
+    technique.setUniform("u_rand",	2);
 
     technique.setUniform("u_edge_pos",  3);
     technique.setUniform("u_edge_nor",  4);

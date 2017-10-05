@@ -203,7 +203,7 @@ void FilterGLBilateral1D::SetUniformAux()
     float sigma_r2 = 2.0f * sigma_r * sigma_r;
 
     //Precomputation of the Gaussian Kernel
-    int halfKernelSize = PrecomputedGaussian::KernelSize(sigma_s) >> 1;
+    int halfKernelSize = PrecomputedGaussian::getKernelSize(sigma_s) >> 1;
 
     technique.bind();
     technique.setUniform("sigma_s2",	sigma_s2);

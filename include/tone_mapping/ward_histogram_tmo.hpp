@@ -51,7 +51,7 @@ inline Image *WardHistogramTMO(Image *imgIn, Image *imgOut = NULL,
     }
 
     if(imgOut == NULL) {
-        imgOut = imgIn->Clone();
+        imgOut = imgIn->clone();
     }
 
     if(LdMax <= 0.0f) {
@@ -85,8 +85,8 @@ inline Image *WardHistogramTMO(Image *imgIn, Image *imgOut = NULL,
     float LldMin = logf(LdMin);
 
     Histogram h;
-    h.Calculate(Lscaled, VS_LOG_E, nBin);
-    h.Ceiling();
+    h.calculate(Lscaled, VS_LOG_E, nBin);
+    h.ceiling();
 
     unsigned int *Pcum = NULL;
     Pcum = Array<unsigned int>::cumsum(h.bin, Pcum, nBin);

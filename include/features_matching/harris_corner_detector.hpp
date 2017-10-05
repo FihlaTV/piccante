@@ -185,7 +185,7 @@ public:
         }
 
         if(img->channels == 1) {
-            lum = img->Clone();
+            lum = img->clone();
         } else {
             lum = FilterLuminance::Execute(img, lum, LT_CIE_LUMINANCE);
         }
@@ -211,7 +211,7 @@ public:
         Iy = FilterConv1D::Execute(lum, Iy, kernel, 3, false);
 
         if(Ixy == NULL) {
-            Ixy = Ix->Clone();
+            Ixy = Ix->clone();
         } else {
             *Ixy = *Ix;
         }

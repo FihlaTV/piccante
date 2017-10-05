@@ -187,7 +187,7 @@ void FilterGLDisp::InitShaders()
 
     float sigma_s2 = 2.0f * sigma_s * sigma_s;
     float sigma_r2 = 2.0f * sigma_r * sigma_r;
-    int halfKernelSize = PrecomputedGaussian::KernelSize(sigma_s) >> 1;
+    int halfKernelSize = PrecomputedGaussian::getKernelSize(sigma_s) >> 1;
 
     technique.bind();
     technique.setUniform("sigma_s2",	sigma_s2);
@@ -210,7 +210,7 @@ void FilterGLDisp::Update(float sigma, float sigma_s, float sigma_r, bool bUse,
     this->sigma_r = sigma_r;
     this->sigma_s = sigma_s;
 
-    int halfKernelSize = PrecomputedGaussian::KernelSize(sigma_s) >> 1;
+    int halfKernelSize = PrecomputedGaussian::getKernelSize(sigma_s) >> 1;
 
     float sigma_s2 = 2.0f * sigma_s * sigma_s;
     float sigma_r2 = 2.0f * sigma_r * sigma_r;

@@ -40,6 +40,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "algorithms/richardson_lucy_deconvolution.hpp"
 #include "algorithms/bilateral_separation.hpp"
 #include "algorithms/grow_cut.hpp"
+#include "algorithms/live_wire.hpp"
 
 #endif /* PIC_ALGORITHMS_HPP */
 

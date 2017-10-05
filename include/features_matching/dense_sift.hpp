@@ -259,7 +259,7 @@ public:
             sift_arr = new Image(1, width, height, num_bins * num_bins * num_angles);
         }
 
-        sift_arr->SetZero();
+        sift_arr->setZero();
 
         for(int i = half_patch_size; i < (height - half_patch_size); i++) {
             for(int j = half_patch_size; j < (width - half_patch_size); j++) {

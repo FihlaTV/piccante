@@ -185,16 +185,16 @@ public:
         }
 
         if(imgTmp != NULL) {
-            if(!imgTmp->SimilarType(imgIn)) {
+            if(!imgTmp->isSimilarType(imgIn)) {
                 CleanUp();
-                imgTmp = imgIn->Clone();
+                imgTmp = imgIn->clone();
             }
         } else {
-            imgTmp = imgIn->Clone();
+            imgTmp = imgIn->clone();
         }
 
         if(imgOut == NULL) {
-            imgOut = imgIn->Clone();
+            imgOut = imgIn->clone();
         } else {
             imgOut->Assign(imgIn);
         }

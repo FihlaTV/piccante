@@ -94,7 +94,7 @@ Image *ConnectedComponents(Image *img, std::vector<LabelOutput> &ret,
         comp = new Image(1, width, height, 1);
     }
 
-    comp->SetZero();
+    comp->setZero();
 
     //First pass: assigning basics labels
     // and generating the list of neighbors

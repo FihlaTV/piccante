@@ -37,7 +37,7 @@ double MAE(Image *ori, Image *cmp, bool bLargeDifferences = false)
         return -2.0;
     }
 
-    if(!ori->SimilarType(cmp)) {
+    if(!ori->isSimilarType(cmp)) {
         return -1.0;
     }
 

@@ -359,7 +359,7 @@ template <unsigned int N>PIC_INLINE void RandomSampler<N>::Write(
     std::string name, int level)
 {
     Image img(1, window[0] * 2 + 1, window[1] * 2 + 1, 1);
-    img.SetZero();
+    img.setZero();
 
     int start, end;
 

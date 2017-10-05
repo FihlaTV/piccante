@@ -83,7 +83,7 @@ public:
             imgOut = new Image(width, height, 1);
         }
 
-        imgOut->SetZero();
+        imgOut->setZero();
 
         for(unsigned int i = 0; i < corners->size(); i++) {
             int x = int((*corners)[i][0]);
@@ -110,12 +110,12 @@ public:
         }
 
         Image full_image(1, 512, 512, 3);
-        full_image.SetZero();
+        full_image.setZero();
 
         Image quad(1, 128, 128, 3);
         quad = 1.0f;
 
-        full_image.CopySubImage(&quad, 192, 192);
+        full_image.copySubImage(&quad, 192, 192);
 
         std::vector< Eigen::Vector3f > corners;
         gcd->Compute(&full_image, &corners);

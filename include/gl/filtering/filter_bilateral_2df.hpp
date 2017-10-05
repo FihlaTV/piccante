@@ -177,7 +177,7 @@ void FilterGLBilateral2DF::Update(float sigma_s, float sigma_r)
     float sigmar2 = 2.0f * this->sigma_r * this->sigma_r;
 
     //Precomputation of the Gaussian Kernel
-    int halfKernelSize = PrecomputedGaussian::KernelSize(this->sigma_s) >> 1;
+    int halfKernelSize = PrecomputedGaussian::getKernelSize(this->sigma_s) >> 1;
 
     technique.bind();
     technique.setUniform("u_tex", 0);

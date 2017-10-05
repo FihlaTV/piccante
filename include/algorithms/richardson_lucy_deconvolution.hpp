@@ -45,8 +45,8 @@ Image *RichardsonLucyDeconvolution(Image *imgIn, Image *psf, int nIterations = 1
         nIterations = 10;
     }
 
-    Image *psf_hat = psf->Clone();
-    psf_hat->FlipHV();
+    Image *psf_hat = psf->clone();
+    psf_hat->flipHV();
 
     *imgOut = 0.5f;
 

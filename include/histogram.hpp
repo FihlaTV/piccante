@@ -34,10 +34,10 @@ class Histogram
 {
 protected:
     float           *bin_c;
-    float			*bin_nor;
-    int				nBin;
-    VALUE_SPACE		type;
-    float			fMin, fMax;
+    float           *bin_nor;
+    int             nBin;
+    VALUE_SPACE     type;
+    float           fMin, fMax;
     float           deltaMaxMin, nBinf;
     float           epsilon;
 
@@ -136,7 +136,7 @@ public:
 
         epsilon = 1e-6f;
 
-        Calculate(imgIn, type, nBin, channel);
+        calculate(imgIn, type, nBin, channel);
     }
 
     /**
@@ -171,7 +171,7 @@ public:
     }   
 
     /**
-     * @brief Calculate computes the histogram of an input image. In the case
+     * @brief calculate computes the histogram of an input image. In the case
      * of LDR images, they are ssumed to be normalized; i.e. with values in [0, 1].
      * This function computes the histogram for a single color channel.
      * @param imgIn is the input image for which the histogram needs to be computed
@@ -183,7 +183,7 @@ public:
      * is 256.
      * @param channel is the color channel for which the Histogram will be computed.
      */
-    void Calculate(Image *imgIn, VALUE_SPACE type, int nBin,
+    void calculate(Image *imgIn, VALUE_SPACE type, int nBin,
                               int channel = 0)
     {
         if(imgIn == NULL) {
@@ -267,10 +267,10 @@ public:
     }
 
     /**
-     * @brief Ceiling limits the maximum value of the histogram using Ward
+     * @brief ceiling limits the maximum value of the histogram using Ward
      * algorithm.
      */
-    void Ceiling()
+    void ceiling()
     {
         float k = 1.0f / float(nBin - 1);
         float tolerance = float(Array<unsigned int>::sum(bin, nBin)) * 0.025f;
@@ -349,11 +349,11 @@ public:
     }
 
     /**
-     * @brief Write saves the Histogram as an Image into a file.
+     * @brief write saves the Histogram as an Image into a file.
      * @param name is the filename where to save the Histogram.
      * @param bNor is a boolean value for normalizing or not the Histogram.
      */
-    void Write(std::string name, bool bNor)
+    void write(std::string name, bool bNor)
     {
         Image img(1, nBin, 1, 1);
 
@@ -370,7 +370,7 @@ public:
     }
 
     /**
-     * @brief ExposureCovering computes the exposure values for fully covering
+     * @brief exposureCovering computes the exposure values for fully covering
      * the dynamic range of the image. This function works only if the histogram
      * was compute usign VS_LOG_2.
      * @param nBits is the number of bit used for storing each output exposure image.
@@ -380,7 +380,7 @@ public:
      * @return It returns an std::vector<float> which contains the exposure values
      * in f-stops for all required exposures for covering information.
      */
-    std::vector< float > ExposureCovering(int nBits = 8, float overlap = 1.0f)
+    std::vector< float > exposureCovering(int nBits = 8, float overlap = 1.0f)
     {
         std::vector< float > ret;
 

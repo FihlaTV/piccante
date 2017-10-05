@@ -148,14 +148,14 @@ FilterGLBilateral2DAS::FilterGLBilateral2DAS(float sigma_s,
     int nRand = 32;
 
     Image tmp_image_rand(1, 128, 128, 1);
-    tmp_image_rand.SetRand();
+    tmp_image_rand.setRand();
     tmp_image_rand *= float(nRand - 1);
 
     imageRand = new ImageGL(&tmp_image_rand, true);
     imageRand->generateTextureGL(GL_TEXTURE_2D, GL_INT);
 
     //Precomputation of the Gaussian Kernel
-    int kernelSize = PrecomputedGaussian::KernelSize(sigma_s);
+    int kernelSize = PrecomputedGaussian::getKernelSize(sigma_s);
     int halfKernelSize = kernelSize >> 1;
 
     //Poisson samples
@@ -274,7 +274,7 @@ void FilterGLBilateral2DAS::Update(float sigma_s, float sigma_r)
     }
 
     //shader update
-    int kernelSize = PrecomputedGaussian::KernelSize(this->sigma_s);
+    int kernelSize = PrecomputedGaussian::getKernelSize(this->sigma_s);
     int halfKernelSize = kernelSize >> 1;
 
     ms->updateGL(halfKernelSize, halfKernelSize);

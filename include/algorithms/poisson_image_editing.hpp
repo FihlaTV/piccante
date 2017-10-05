@@ -44,7 +44,7 @@ Image *PoissonImageEditing(Image *source, Image *target, bool *mask, Image *ret 
 
     //Allocating the output
     if(ret == NULL) {
-        ret = target->Clone();
+        ret = target->clone();
     }
 
     int width  = target->width;

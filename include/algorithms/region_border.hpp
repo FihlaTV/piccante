@@ -23,12 +23,12 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 namespace pic {
 
 /**
- * @brief SetBorder
+ * @brief setBorder
  * @param img
  * @param coordsBorder
  * @return
  */
-std::set<int> *SetBorder(Image *img, std::set<int> *coordsBorder)
+std::set<int> *setBorder(Image *img, std::set<int> *coordsBorder)
 {
     //Second border
     int ind, c, x, y;
@@ -37,30 +37,30 @@ std::set<int> *SetBorder(Image *img, std::set<int> *coordsBorder)
 
     for(it = coordsBorder->begin(); it != coordsBorder->end(); it++) {
         ind = *it;
-        img->ReverseAddress(ind, x, y);
+        img->reverseAddress(ind, x, y);
 
-        c = img->Address(x + 1, y);
-
-        if(img->data[c] > 1.0f &&
-           coordsBorder->find(c) == coordsBorder->end()) {
-            ret->insert(c);
-        }
-
-        c = img->Address(x - 1, y);
+        c = img->getAddress(x + 1, y);
 
         if(img->data[c] > 1.0f &&
            coordsBorder->find(c) == coordsBorder->end()) {
             ret->insert(c);
         }
 
-        c = img->Address(x, y + 1);
+        c = img->getAddress(x - 1, y);
 
         if(img->data[c] > 1.0f &&
            coordsBorder->find(c) == coordsBorder->end()) {
             ret->insert(c);
         }
 
-        c = img->Address(x, y - 1);
+        c = img->getAddress(x, y + 1);
+
+        if(img->data[c] > 1.0f &&
+           coordsBorder->find(c) == coordsBorder->end()) {
+            ret->insert(c);
+        }
+
+        c = img->getAddress(x, y - 1);
 
         if(img->data[c] > 1.0f &&
            coordsBorder->find(c) == coordsBorder->end()) {
@@ -72,13 +72,13 @@ std::set<int> *SetBorder(Image *img, std::set<int> *coordsBorder)
 }
 
 /**
- * @brief SetBorderNth
+ * @brief setBorderNth
  * @param img
  * @param coordsBorder
  * @param widthBorder
  * @return
  */
-std::set<int> *SetBorderNth(Image *img, std::set<int> *coordsBorder,
+std::set<int> *setBorderNth(Image *img, std::set<int> *coordsBorder,
                             int widthBorder)
 {
     std::set<int> *ret = new std::set<int>;
@@ -86,7 +86,7 @@ std::set<int> *SetBorderNth(Image *img, std::set<int> *coordsBorder,
     ret->insert(coordsBorder->begin(), coordsBorder->end());
 
     for(int i = 0; i < widthBorder; i++) {
-        std::set<int> *tmpBorder = SetBorder(img, ret);
+        std::set<int> *tmpBorder = setBorder(img, ret);
         ret->insert(tmpBorder->begin(), tmpBorder->end());
     }
 

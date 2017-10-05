@@ -281,7 +281,7 @@ public:
         for(int i = 0; i < 6; i++) {
             float sigma_s = powf(2.0f, float(i));
 
-            int nSamples = PrecomputedGaussian::KernelSize(sigma_s);
+            int nSamples = PrecomputedGaussian::getKernelSize(sigma_s);
             int nSamplesDiv2  = nSamples / 2;
             int nMaxSamples = nSamplesDiv2 * nSamplesDiv2;
             int oldNSamples = -1;

@@ -140,7 +140,7 @@ public:
         memset(corners_map, 0, sizeof(bool) * width *  height);
 
         Image V(1,width, height, 1);
-        V.SetZero();
+        V.setZero();
 
         for(int i=3; i<(height - 3); i++) {
             for(int j=3; j<(width - 3); j++) {

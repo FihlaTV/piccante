@@ -37,7 +37,7 @@ double MSE(Image *ori, Image *cmp, bool bLargeDifferences=false)
         return -2.0;
     }
 
-    if(!ori->SimilarType(cmp)) {
+    if(!ori->isSimilarType(cmp)) {
         return -1.0;
     }
 
@@ -78,7 +78,7 @@ double MSE(Image *ori, Image *cmp, float gamma = 2.2f, float fstop = 0.0f)
         return -2.0;
     }
 
-    if(!ori->SimilarType(cmp)) {
+    if(!ori->isSimilarType(cmp)) {
         return -1.0;
     }
 

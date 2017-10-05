@@ -308,7 +308,7 @@ void Pyramid::Update(Image *img)
         return;
     }
 
-    if(!stack[0]->SimilarType(img)) {
+    if(!stack[0]->isSimilarType(img)) {
         return;
     }
 

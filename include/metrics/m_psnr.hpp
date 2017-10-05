@@ -46,7 +46,7 @@ double mPSNR(Image *ori, Image *cmp, MULTI_EXPOSURE_TYPE type, int minFstop = 0,
         return -2.0;
     }
 
-    if(!ori->SimilarType(cmp)) {
+    if(!ori->isSimilarType(cmp)) {
         return -1.0;
     }
 

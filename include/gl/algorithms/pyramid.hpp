@@ -316,7 +316,7 @@ void PyramidGL::Update(ImageGL *img)
         return;
     }
 
-    if(!stack[0]->SimilarType(img)) {
+    if(!stack[0]->isSimilarType(img)) {
         return;
     }
 

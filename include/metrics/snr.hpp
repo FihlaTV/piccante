@@ -35,7 +35,7 @@ float SNR(Image *ori, Image *cmp, BBox *box = NULL)
         return -2.0f;
     }
 
-    if(!ori->SimilarType(cmp)) {
+    if(!ori->isSimilarType(cmp)) {
         return -1.0f;
     }
 

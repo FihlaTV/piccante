@@ -68,9 +68,9 @@ protected:
     void AllocateAux();
 
     /**
-     * @brief SetNULL sets buffers values to NULL.
+     * @brief setNULL sets buffers values to NULL.
      */
-    void SetNULL();
+    void setNULL();
 
     //applied rendering values
     bool flippedEXR;
@@ -184,13 +184,13 @@ public:
     void Allocate(int width, int height, int channels, int frames);
 
     /**
-     * @brief CopySubImage copies imgIn in the current image.
+     * @brief copySubImage copies imgIn in the current image.
      * The current image is written from (startX, startY).
      * @param imgIn the image to be copied.
      * @param startX is the horizontal coordinate in pixels.
      * @param startY is the vertical coordinate in pixels.
      */
-    void CopySubImage(Image *imgIn, int startX, int startY);
+    void copySubImage(Image *imgIn, int startX, int startY);
 
     /**
      * @brief ScaleCosine multiplies the current image by the vertical cosine
@@ -201,7 +201,7 @@ public:
     /**
      * @brief FlipH flips horizontally the current image.
      */
-    void FlipH()
+    void flipH()
     {
         BufferFlipH<float>(data, width, height, channels, frames);
     }
@@ -209,57 +209,57 @@ public:
     /**
      * @brief FlipV flips vertically the current image.
      */
-    void FlipV()
+    void flipV()
     {
         BufferFlipV<float>(data, width, height, channels, frames);
     }
 
     /**
-     * @brief FlipHV flips horizontally and vertically the current image.
+     * @brief flipHV flips horizontally and vertically the current image.
      */
-    void FlipHV()
+    void flipHV()
     {
         BufferFlipH<float>(data, width, height, channels, frames);
         BufferFlipV<float>(data, width, height, channels, frames);
     }
 
     /**
-     * @brief FlipVH flips vertically and horizontally the current image.
+     * @brief flipVH flips vertically and horizontally the current image.
      */
-    void FlipVH()
+    void flipVH()
     {
         BufferFlipV<float>(data, width, height, channels, frames);
         BufferFlipH<float>(data, width, height, channels, frames);
     }
 
     /**
-     * @brief Rotate90CCW rotates 90 degrees counter-clockwise the current image.
+     * @brief rotate90CCW rotates 90 degrees counter-clockwise the current image.
      */
-    void Rotate90CCW()
+    void rotate90CCW()
     {
         BufferRotate90CCW<float>(data, width, height, channels);
         AllocateAux();
     }
 
     /**
-     * @brief Rotate90CW rotates 90 degrees clockwise the current image.
+     * @brief rotate90CW rotates 90 degrees clockwise the current image.
      */
-    void Rotate90CW()
+    void rotate90CW()
     {
         BufferRotate90CW<float>(data, width, height, channels);
         AllocateAux();
     }
 
     /**
-     * @brief SetZero sets data to 0.0f.
+     * @brief setZero sets data to 0.0f.
      */
-    void SetZero();
+    void setZero();
 
     /**
-     * @brief SetRand
+     * @brief setRand
      * @param seed
      */
-    void SetRand(unsigned int seed);
+    void setRand(unsigned int seed);
 
     /**
      * @brief isValid checks if the current image is valid, which means if they
@@ -270,13 +270,13 @@ public:
     bool isValid();
 
     /**
-     * @brief SimilarType checks if the current image is similar to img;
+     * @brief isSimilarType checks if the current image is similar to img;
      * i.e. if they have the same width, height, frames, and channels.
      * @param img is an input image
      * @return This function returns true if the two images are similar,
      * otherwise false.
      */
-    bool SimilarType(const Image *img);
+    bool isSimilarType(const Image *img);
 
     /**
      * @brief Assign
@@ -308,10 +308,10 @@ public:
     void Maximum(Image *img);
 
     /**
-     * @brief ApplyFunction is an operator that applies
+     * @brief applyFunction is an operator that applies
      * an input function to all values in data.
      */
-    void ApplyFunction(float(*func)(float));
+    void applyFunction(float(*func)(float));
 
     /**
      * @brief getMaxVal computes the maximum value for the current Image.
@@ -563,26 +563,26 @@ public:
     }
 
     /**
-     * @brief NormalizedCoordinates computes normalized coordinates
+     * @brief getNormalizedCoords computes normalized coordinates
      * (nx, ny) of (x, y).
      * @param x is the horizontal coordinate in pixels
      * @param y is the vertical coordinate in pixels
      * @param nx is the horizontal coordinate in [0, 1]
      * @param ny is the vertical coordinate in [0, 1]
      */
-    void NormalizedCoordinates(int x, int y, float &nx, float &ny)
+    void getNormalizedCoords(int x, int y, float &nx, float &ny)
     {
         nx = float(x) / width1f;
         ny = float(y) / height1f;
     }
 
     /**
-     * @brief Address calculates a memory address from (x, y)
+     * @brief getAddress calculates a memory address from (x, y)
      * @param x is the horizontal coordinate in pixels
      * @param y is the vertical coordinate in pixels
      * @return This function returns the memory address for (x, y)
      */
-    int Address(int x, int y)
+    int getAddress(int x, int y)
     {
         x = CLAMP(x, width);
         y = CLAMP(y, height);
@@ -591,13 +591,13 @@ public:
     }
 
     /**
-     * @brief Address calculates a memory address from (x, y, t)
+     * @brief getAddress calculates a memory address from (x, y, t)
      * @param x is the horizontal coordinate in pixels
      * @param y is the vertical coordinate in pixels
      * @param t is the temporal coordinate in pixels
      * @return This function returns the memory address for (x, y, t)
      */
-    int Address(int x, int y, int t)
+    int getAddress(int x, int y, int t)
     {
         x = CLAMP(x, width);
         y = CLAMP(y, height);
@@ -607,12 +607,12 @@ public:
     }
 
     /**
-     * @brief ReverseAddress computes (x, y) given a memory address
+     * @brief reverseAddress computes (x, y) given a memory address
      * @param ind is the memory input address
      * @param x is the output horizontal coordinate for ind
      * @param y is the output vertical coordinate for ind
      */
-    void ReverseAddress(int ind, int &x, int &y)
+    void reverseAddress(int ind, int &x, int &y)
     {
         ind = ind / channels;
         y   = ind / width;
@@ -630,7 +630,7 @@ public:
      * @brief Clone creates a deep copy of the calling instance.
      * @return This returns a deep copy of the calling instance.
      */
-    Image *Clone() const;
+    Image *clone() const;
 
     /**
      * @brief Read opens an Image from a file on the disk.
@@ -669,10 +669,10 @@ public:
 
 
     /**
-     * @brief ChangeOwnership
+     * @brief changeOwnership
      * @param notOwned
      */
-    void ChangeOwnership(bool notOwned)
+    void changeOwnership(bool notOwned)
     {
         this->notOwned = notOwned;
     }
@@ -794,7 +794,7 @@ public:
     Image operator /(const Image &a) const;
 };
 
-PIC_INLINE void Image::SetNULL()
+PIC_INLINE void Image::setNULL()
 {
     nameFile = "";
     notOwned = false;
@@ -827,12 +827,12 @@ PIC_INLINE void Image::SetNULL()
 
 PIC_INLINE Image::Image()
 {
-    SetNULL();
+    setNULL();
 }
 
 PIC_INLINE Image::Image(Image *imgIn, bool deepCopy = true)
 {
-    SetNULL();
+    setNULL();
     
     if(imgIn == NULL) {
         return;
@@ -860,14 +860,14 @@ PIC_INLINE Image::Image(Image *imgIn, bool deepCopy = true)
 
 PIC_INLINE Image::Image(int width, int height, int channels = 3)
 {
-    SetNULL();
+    setNULL();
     Allocate(width, height, channels, 1);
 }
 
 PIC_INLINE Image::Image(int frames, int width, int height, int channels,
                         float *data = NULL)
 {
-    SetNULL();
+    setNULL();
 
     if(data == NULL) {
         Allocate(width, height, channels, frames);
@@ -885,14 +885,14 @@ PIC_INLINE Image::Image(int frames, int width, int height, int channels,
 
 PIC_INLINE Image::Image(std::string nameFile, LDR_type typeLoad = LT_NOR_GAMMA)
 {
-    SetNULL();
+    setNULL();
     Read(nameFile, typeLoad);
 }
 
 PIC_INLINE Image::Image(float *color, int channels)
 {
     typeLoad = LT_NONE;
-    SetNULL();
+    setNULL();
 
     if(color != NULL) {
         Allocate(1, 1, channels, 1);
@@ -930,7 +930,7 @@ PIC_INLINE void Image::Destroy()
         }
     #endif
 
-    SetNULL();
+    setNULL();
 }
 
 PIC_INLINE void Image::Allocate(int width, int height, int channels, int frames)
@@ -983,7 +983,7 @@ PIC_INLINE void Image::Assign(const Image *imgIn)
         return;
     }
 
-    if(!SimilarType(imgIn)) {
+    if(!isSimilarType(imgIn)) {
         Destroy();
         Allocate(imgIn->width, imgIn->height, imgIn->channels, imgIn->frames);
     }
@@ -1021,7 +1021,7 @@ PIC_INLINE void Image::removeSpecials()
     }
 }
 
-PIC_INLINE bool Image::SimilarType(const Image *img)
+PIC_INLINE bool Image::isSimilarType(const Image *img)
 {
     if(img == NULL) {
         return false;
@@ -1036,7 +1036,7 @@ PIC_INLINE bool Image::SimilarType(const Image *img)
 #ifdef PIC_DEBUG
 
     if(!ret) {
-        printf("\nImage::SimilarType: ERROR The two compared images are not similar.\n");
+        printf("\nImage::isSimilarType: ERROR The two compared images are not similar.\n");
     }
 
 #endif
@@ -1050,7 +1050,7 @@ PIC_INLINE bool Image::isValid()
            (data != NULL);
 }
 
-PIC_INLINE void Image::CopySubImage(Image *imgIn, int startX, int startY)
+PIC_INLINE void Image::copySubImage(Image *imgIn, int startX, int startY)
 {
     if(imgIn == NULL) {
         return;
@@ -1128,7 +1128,7 @@ PIC_INLINE void Image::ScaleCosine()
     }
 }
 
-PIC_INLINE void Image::ApplyFunction(float(*func)(float))
+PIC_INLINE void Image::applyFunction(float(*func)(float))
 {
     if(!isValid()) {
         return;
@@ -1226,7 +1226,7 @@ PIC_INLINE void Image::Blend(Image *img, Image *weight)
 
 PIC_INLINE void Image::Minimum(Image *img)
 {
-    if(!isValid() || !SimilarType(img)) {
+    if(!isValid() || !isSimilarType(img)) {
         return;
     }
 
@@ -1241,7 +1241,7 @@ PIC_INLINE void Image::Minimum(Image *img)
 
 PIC_INLINE void Image::Maximum(Image *img)
 {
-    if(!isValid() || !SimilarType(img)) {
+    if(!isValid() || !isSimilarType(img)) {
         return;
     }
 
@@ -1254,7 +1254,7 @@ PIC_INLINE void Image::Maximum(Image *img)
     }
 }
 
-PIC_INLINE void Image::SetZero()
+PIC_INLINE void Image::setZero()
 {
     if(!isValid()) {
         return;
@@ -1270,7 +1270,7 @@ PIC_INLINE void Image::SetZero()
     }
 }
 
-PIC_INLINE void Image::SetRand(unsigned int seed = 1)
+PIC_INLINE void Image::setRand(unsigned int seed = 1)
 {
     if(!isValid()) {
         return;
@@ -1880,7 +1880,7 @@ PIC_INLINE Image *Image::AllocateSimilarOne()
     return ret;
 }
 
-PIC_INLINE Image *Image::Clone() const
+PIC_INLINE Image *Image::clone() const
 {
     Image *ret = new Image(frames, width, height, channels);
 
@@ -1942,14 +1942,14 @@ PIC_INLINE void Image::operator +=(const float &a)
 
 PIC_INLINE Image Image::operator +(const float &a) const
 {
-    Image *out = this->Clone();
+    Image *out = this->clone();
     *out += a;
     return Image(out, false);
 }
 
 PIC_INLINE void Image::operator +=(const Image &a)
 {
-    if(SimilarType(&a)) {
+    if(isSimilarType(&a)) {
         BufferAdd(data, a.data, size());
     } else {
         if((nPixels() == a.nPixels()) && (a.channels == 1)) {
@@ -1961,7 +1961,7 @@ PIC_INLINE void Image::operator +=(const Image &a)
 
 PIC_INLINE Image Image::operator +(const Image &a) const
 {
-    Image *out = this->Clone();
+    Image *out = this->clone();
     *out += a;
     return Image(out, false);
 }
@@ -1973,14 +1973,14 @@ PIC_INLINE void Image::operator *=(const float &a)
 
 PIC_INLINE Image Image::operator *(const float &a) const
 {
-    Image *out = this->Clone();
+    Image *out = this->clone();
     *out *= a;
     return Image(out, false);
 }
 
 PIC_INLINE void Image::operator *=(const Image &a)
 {
-    if(SimilarType(&a)) {
+    if(isSimilarType(&a)) {
         BufferMul(data, a.data, size());
     } else {
         if((nPixels() == a.nPixels()) && (a.channels == 1)) {
@@ -1991,7 +1991,7 @@ PIC_INLINE void Image::operator *=(const Image &a)
 
 PIC_INLINE Image Image::operator *(const Image &a) const
 {
-    Image *out = this->Clone();
+    Image *out = this->clone();
     *out *= a;
     return Image(out, false);
 }
@@ -2003,14 +2003,14 @@ PIC_INLINE void Image::operator -=(const float &a)
 
 PIC_INLINE Image Image::operator -(const float &a) const
 {
-    Image *out = this->Clone();
+    Image *out = this->clone();
     *out -= a;
     return Image(out, false);
 }
 
 PIC_INLINE void Image::operator -=(const Image &a)
 {
-    if(SimilarType(&a)) {
+    if(isSimilarType(&a)) {
         BufferSub(data, a.data, size());
     } else {
         if((nPixels() == a.nPixels()) && (a.channels == 1)) {
@@ -2021,7 +2021,7 @@ PIC_INLINE void Image::operator -=(const Image &a)
 
 PIC_INLINE Image Image::operator -(const Image &a) const
 {
-    Image *out = this->Clone();
+    Image *out = this->clone();
     *out -= a;
     return Image(out, false);
 }
@@ -2033,14 +2033,14 @@ PIC_INLINE void Image::operator /=(const float &a)
 
 PIC_INLINE Image Image::operator /(const float &a) const
 {
-    Image *out = this->Clone();
+    Image *out = this->clone();
     *out /= a;
     return Image(out, false);
 }
 
 PIC_INLINE void Image::operator /=(const Image &a)
 {
-    if(SimilarType(&a)) {
+    if(isSimilarType(&a)) {
         BufferDiv(data, a.data, size());
     } else {
         if((nPixels() == a.nPixels()) && (a.channels == 1)) {
@@ -2051,7 +2051,7 @@ PIC_INLINE void Image::operator /=(const Image &a)
 
 PIC_INLINE Image Image::operator /(const Image &a) const
 {
-    Image *out = this->Clone();
+    Image *out = this->clone();
     *out /= a;
     return Image(out, false);
 }

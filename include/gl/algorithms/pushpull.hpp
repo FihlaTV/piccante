@@ -78,7 +78,7 @@ public:
         }
 
         if(imgOut == NULL) {
-            imgOut = imgIn->CloneGL();
+            imgOut = imgIn->cloneGL();
         } else {
             *imgOut = *imgIn;
         }

@@ -79,15 +79,15 @@ protected:
 
                     int current = tmp + i;
 
-                    tmpG  = (dataIn[imgIn->Address(i + 1, j)] +
-                             dataIn[imgIn->Address(i - 1, j)] +
-                             dataIn[imgIn->Address(i, j + 1)] +
-                             dataIn[imgIn->Address(i, j - 1)]) * 0.25f;
+                    tmpG  = (dataIn[imgIn->getAddress(i + 1, j)] +
+                             dataIn[imgIn->getAddress(i - 1, j)] +
+                             dataIn[imgIn->getAddress(i, j + 1)] +
+                             dataIn[imgIn->getAddress(i, j - 1)]) * 0.25f;
 
-                    sum  = (dataIn[imgIn->Address(i + 2, j)] +
-                            dataIn[imgIn->Address(i - 2, j)] +
-                            dataIn[imgIn->Address(i, j + 2)] +
-                            dataIn[imgIn->Address(i, j - 2)]);
+                    sum  = (dataIn[imgIn->getAddress(i + 2, j)] +
+                            dataIn[imgIn->getAddress(i - 2, j)] +
+                            dataIn[imgIn->getAddress(i, j + 2)] +
+                            dataIn[imgIn->getAddress(i, j - 2)]);
 
                     Grad = dataIn[current] - sum * 0.25f;
 
@@ -150,15 +150,15 @@ protected:
                 int current = j * width + i;
 
                 tmp =	5.0f *	dataIn[current] +
-                        4.0f * (dataIn[imgIn->Address(i + 1, j)] +	dataIn[imgIn->Address(i - 1,
+                        4.0f * (dataIn[imgIn->getAddress(i + 1, j)] +	dataIn[imgIn->getAddress(i - 1,
                                 j)]) +
-                        0.5f * (dataIn[imgIn->Address(i, j + 2)] +	dataIn[imgIn->Address(i,
+                        0.5f * (dataIn[imgIn->getAddress(i, j + 2)] +	dataIn[imgIn->getAddress(i,
                                 j - 2)]) -
-                        (dataIn[imgIn->Address(i + 1, j + 1)] +	dataIn[imgIn->Address(i + 1,
+                        (dataIn[imgIn->getAddress(i + 1, j + 1)] +	dataIn[imgIn->getAddress(i + 1,
                                 j - 1)] +
-                         dataIn[imgIn->Address(i - 1, j + 1)] +	dataIn[imgIn->Address(i - 1,
+                         dataIn[imgIn->getAddress(i - 1, j + 1)] +	dataIn[imgIn->getAddress(i - 1,
                                  j - 1)] +
-                         dataIn[imgIn->Address(i - 2, j)] +	dataIn[imgIn->Address(i + 2, j)]);
+                         dataIn[imgIn->getAddress(i - 2, j)] +	dataIn[imgIn->getAddress(i + 2, j)]);
                 tmp /= 8.0f;
                 data[current * 3 + shifter] = CLAMPi(tmp, 0.0f, 1.0f);
             }
@@ -190,15 +190,15 @@ protected:
                 int current = j * width + i;
 
                 tmp =	5.0f * dataIn[current] +
-                        4.0f * (dataIn[imgIn->Address(i, j + 1)] +	dataIn[imgIn->Address(i,
+                        4.0f * (dataIn[imgIn->getAddress(i, j + 1)] +	dataIn[imgIn->getAddress(i,
                                 j - 1)]) +
-                        +0.5f * (dataIn[imgIn->Address(i - 2, j)] +	dataIn[imgIn->Address(i + 2,
+                        +0.5f * (dataIn[imgIn->getAddress(i - 2, j)] +	dataIn[imgIn->getAddress(i + 2,
                                  j)]) -
-                        (dataIn[imgIn->Address(i + 1, j + 1)] +	dataIn[imgIn->Address(i + 1,
+                        (dataIn[imgIn->getAddress(i + 1, j + 1)] +	dataIn[imgIn->getAddress(i + 1,
                                 j - 1)] +
-                         dataIn[imgIn->Address(i - 1, j + 1)] +	dataIn[imgIn->Address(i - 1,
+                         dataIn[imgIn->getAddress(i - 1, j + 1)] +	dataIn[imgIn->getAddress(i - 1,
                                  j - 1)] +
-                         dataIn[imgIn->Address(i, j + 2)] +	dataIn[imgIn->Address(i, j - 2)]);
+                         dataIn[imgIn->getAddress(i, j + 2)] +	dataIn[imgIn->getAddress(i, j - 2)]);
 
                 tmp /= 8.0f;
                 data[current * 3 + shifter] = CLAMPi(tmp, 0.0f, 1.0f);
@@ -230,13 +230,13 @@ protected:
                 //
                 int current = j * width + i;
                 tmp =	6.0f *	dataIn[current] +
-                        2.0f * (dataIn[imgIn->Address(i + 1, j + 1)] +	dataIn[imgIn->Address(i + 1,
+                        2.0f * (dataIn[imgIn->getAddress(i + 1, j + 1)] +	dataIn[imgIn->getAddress(i + 1,
                                 j - 1)] +
-                                dataIn[imgIn->Address(i - 1, j + 1)] +	dataIn[imgIn->Address(i - 1,
+                                dataIn[imgIn->getAddress(i - 1, j + 1)] +	dataIn[imgIn->getAddress(i - 1,
                                         j - 1)]) -
-                        1.5f * (dataIn[imgIn->Address(i + 2, j)] +	dataIn[imgIn->Address(i - 2,
+                        1.5f * (dataIn[imgIn->getAddress(i + 2, j)] +	dataIn[imgIn->getAddress(i - 2,
                                 j)] +
-                                dataIn[imgIn->Address(i, j + 2)] +	dataIn[imgIn->Address(i, j - 2)]);
+                                dataIn[imgIn->getAddress(i, j + 2)] +	dataIn[imgIn->getAddress(i, j - 2)]);
 
                 tmp /= 8.0f;
                 data[current * 3 + shifter] = CLAMPi(tmp, 0.0f, 1.0f);

@@ -96,7 +96,7 @@ std::vector<float> getAllExposures(Image *imgIn) {
     Image *lum = FilterLuminance::Execute(imgIn, NULL);
 
     Histogram m(lum, VS_LOG_2, 1024);
-    exposures = m.ExposureCovering();
+    exposures = m.exposureCovering();
 
     delete lum;
 

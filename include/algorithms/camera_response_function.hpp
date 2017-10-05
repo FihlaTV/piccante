@@ -301,7 +301,7 @@ public:
         if((img_raw == NULL) || (img_jpg == NULL))
             return;
 
-        if(!img_raw->SimilarType(img_jpg))
+        if(!img_raw->isSimilarType(img_jpg))
             return;
         
         icrf.clear();

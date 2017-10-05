@@ -40,11 +40,11 @@ enum IMAGESTORE {IMG_GPU_CPU, IMG_CPU_GPU, IMG_CPU, IMG_GPU, IMG_NULL};
 class ImageGL: public Image
 {
 protected:
-    GLuint		texture;
-    GLenum		target;
-    IMAGESTORE	mode;	        //TODO: check if the mode is always correctly updated
-    bool		notOwnedGL;     //do we own the OpenGL texture??    
-    Fbo			*tmpFbo;
+    GLuint      texture;
+    GLenum      target;
+    IMAGESTORE  mode;	        //TODO: check if the mode is always correctly updated
+    bool        notOwnedGL;     //do we own the OpenGL texture??
+    Fbo         *tmpFbo;
 
     //stack for statistics
     std::vector<GLuint> stack;
@@ -52,16 +52,16 @@ protected:
     /**
      * @brief DestroyGL
      */
-    void	DestroyGL();
+    void DestroyGL();
 
     /**
-     * @brief AssignGL assigns an (r, g, b, a) value to an image using glClearColor.
+     * @brief assignGL assigns an (r, g, b, a) value to an image using glClearColor.
      * @param r is the value for the red channel.
      * @param g is the value for the green channel.
      * @param b is the value for the blue channel.
      * @param a is the value for the alpha channel.
      */
-    void AssignGL(float r = 0.0f, float g = 0.0f, float b = 0.0f,
+    void assignGL(float r = 0.0f, float g = 0.0f, float b = 0.0f,
                   float a = 1.0f)
     {
         if(tmpFbo == NULL) {
@@ -233,10 +233,10 @@ public:
     ImageGL *AllocateSimilarOneGL();
 
     /**
-     * @brief CloneGL
+     * @brief cloneGL
      * @return
      */
-    ImageGL *CloneGL();
+    ImageGL *cloneGL();
 
     /**
      * @brief generateTextureGL
@@ -587,7 +587,7 @@ ImageGL::ImageGL(Image *img, GLenum target, bool mipmap, bool transferOwnership 
 {
     if(transferOwnership) {
         notOwned = false;
-        img->ChangeOwnership(true);
+        img->changeOwnership(true);
     } else {
         notOwned = true;
     }
@@ -615,7 +615,7 @@ ImageGL::ImageGL(Image *img, bool transferOwnership = false) : Image()
 {
     if(transferOwnership) {
         notOwned = false;
-        img->ChangeOwnership(true);
+        img->changeOwnership(true);
     } else {
         notOwned = true;
     }
@@ -750,10 +750,10 @@ GLuint ImageGL::generateTextureGL(GLenum target = GL_TEXTURE_2D, GLenum format_t
     return texture;
 }
 
-ImageGL *ImageGL::CloneGL()
+ImageGL *ImageGL::cloneGL()
 {
     //call Image clone function
-    Image *tmp = this->Clone();
+    Image *tmp = this->clone();
 
     //wrapping tmp into an ImageGL
     return new ImageGL(tmp, target, false, true);
@@ -909,7 +909,7 @@ void ImageGL::readFromBindedFBO()
     //TODO: check width height and data (mode and modeInternalFormat)
 
     glReadPixels(0, 0, width, height, mode, GL_FLOAT, data);
-    FlipV();
+    flipV();
 }
 
 void ImageGL::bindTexture()

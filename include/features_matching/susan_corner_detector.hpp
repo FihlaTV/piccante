@@ -165,18 +165,18 @@ public:
 
         float t = 0.05f; //depends on image noise
 
-        float g = C * 0.5f; //Geometric constant for determing corners
+        float g = C * 0.5f; //geometric constant for determing corners
 
         Image R(1,width, height, 1);
-        R.SetZero();
-        for(int i=radius; i<(height - radius - 1); i++) {
-            for(int j=radius; j<(width - radius - 1); j++) {
+        R.setZero();
+        for(int i = radius; i < (height - radius - 1); i++) {
+            for(int j = radius; j < (width - radius - 1); j++) {
 
                 int ind = i * width + j;
 
                 float sum = 0.0f;
 
-                for(unsigned int k=0; k<x.size(); k++) {
+                for(unsigned int k = 0; k < x.size(); k++) {
                     int ind_c = (i + y[k]) * width + (j + x[k]);
 
                     float diff = (lum_flt->data[ind_c] - lum_flt->data[ind]) / t;

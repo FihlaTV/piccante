@@ -39,7 +39,7 @@ Image *DurandTMO(Image *imgIn, Image *imgOut = NULL, float target_contrast = 5.0
     }
 
     if(imgOut == NULL) {
-        imgOut = imgIn->Clone();
+        imgOut = imgIn->clone();
     } else {
         *imgOut = imgIn;
     }
@@ -58,8 +58,8 @@ Image *DurandTMO(Image *imgIn, Image *imgOut = NULL, float target_contrast = 5.0
     Image *detail = sep->at(1);
 
 
-    base->ApplyFunction(log10fPlusEpsilon);
-    detail->ApplyFunction(log10fPlusEpsilon);
+    base->applyFunction(log10fPlusEpsilon);
+    detail->applyFunction(log10fPlusEpsilon);
 
     float max_log_base = base->getMaxVal()[0];
     float min_log_base = base->getMinVal()[0];
@@ -70,9 +70,9 @@ Image *DurandTMO(Image *imgIn, Image *imgOut = NULL, float target_contrast = 5.0
     *base *= compression_factor;
     *base += detail;
     *base -= log_absoulte;
-    base->ApplyFunction(powf10fe);
+    base->applyFunction(powf10fe);
 
-    imgOut = imgIn->Clone();
+    imgOut = imgIn->clone();
     *imgOut /= lum;
     *imgOut *= base;
 

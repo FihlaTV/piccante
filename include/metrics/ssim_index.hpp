@@ -51,7 +51,7 @@ Image* SSIMIndex(Image *ori, Image *cmp, float &ssim_index, Image *ssim_map = NU
         return NULL;
     }
 
-    if(!ori->SimilarType(cmp)) {
+    if(!ori->isSimilarType(cmp)) {
         return NULL;
     }
 

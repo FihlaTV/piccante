@@ -156,7 +156,7 @@ public:
             return Eigen::Vector2i(0, 0.0);
         }
 
-        if(!img1->SimilarType(img2)) {
+        if(!img1->isSimilarType(img2)) {
             return Eigen::Vector2i(0, 0);
         }
 
@@ -281,12 +281,12 @@ public:
             return NULL;
         }
 
-        if(!imgTarget->SimilarType(imgSource)) {
+        if(!imgTarget->isSimilarType(imgSource)) {
             return NULL;
         }
 
         Image *ret = imgTarget->AllocateSimilarOne();
-        ret->SetZero();
+        ret->setZero();
 
         shift = wa.GetExpShift(imgTarget, imgSource);
 

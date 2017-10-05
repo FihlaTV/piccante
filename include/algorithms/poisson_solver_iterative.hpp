@@ -42,7 +42,7 @@ Image *PoissonSolverIterative(Image *img, Image *laplacian,
         maxSteps = 20000;
     }
 
-    Image *tmpImg = img->Clone();
+    Image *tmpImg = img->clone();
     Image *tmpSwap = NULL;
 
     int c, coord, x, y;
@@ -51,20 +51,20 @@ Image *PoissonSolverIterative(Image *img, Image *laplacian,
     for(int i = 0; i < maxSteps; i++) {
         for(unsigned int j = 0; j < coords.size(); j++) {
             coord = coords[j];
-            img->ReverseAddress(coord, x, y);
+            img->reverseAddress(coord, x, y);
 
             workValue = -laplacian->data[coord];
 
-            c = img->Address(x + 1, y);
+            c = img->getAddress(x + 1, y);
             workValue += img->data[c];
 
-            c = img->Address(x - 1, y);
+            c = img->getAddress(x - 1, y);
             workValue += img->data[c];
 
-            c = img->Address(x, y + 1);
+            c = img->getAddress(x, y + 1);
             workValue += img->data[c];
 
-            c = img->Address(x, y - 1);
+            c = img->getAddress(x, y - 1);
             workValue += img->data[c];
 
             tmpImg->data[coord] = workValue / 4.0f;
