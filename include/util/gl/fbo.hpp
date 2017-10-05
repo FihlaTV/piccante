@@ -153,23 +153,23 @@ public:
     {
         switch(fboStatus) {
         case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-            std::cerr << "FBO Incomplete: Attachment" << endl;
+            std::cerr << "FBO Incomplete: Attachment" << std::endl;
             break;
 
         case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-            std::cerr << "FBO Incomplete: Missing Attachment" << endl;
+            std::cerr << "FBO Incomplete: Missing Attachment" << std::endl;
             break;
 
         case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
-            std::cerr << "FBO Incomplete: Draw Buffer" << endl;
+            std::cerr << "FBO Incomplete: Draw Buffer" << std::endl;
             break;
 
         case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
-            std::cerr << "FBO Incomplete: Read Buffer" << endl;
+            std::cerr << "FBO Incomplete: Read Buffer" << std::endl;
             break;
 
         default:
-            std::cerr << "Undefined FBO error" << endl;
+            std::cerr << "Undefined FBO error" << std::endl;
             break;
         }
     }

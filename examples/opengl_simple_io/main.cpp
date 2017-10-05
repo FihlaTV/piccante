@@ -26,8 +26,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
     #include "../opengl_common_code/gl_core_4_0.h"
 #endif
 
-#include "piccante.hpp"
-
 #include <QKeyEvent>
 #include <QtCore/QCoreApplication>
 #include <QtOpenGL/QGLWidget>
@@ -35,6 +33,10 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include <QOpenGLFunctions>
 #include <QVBoxLayout>
 #include <QLabel>
+
+#include "../common_code/image_qimage_interop.hpp"
+
+#include "piccante.hpp"
 
 class GLWidget : public QGLWidget, protected QOpenGLFunctions
 {
@@ -60,7 +62,8 @@ protected:
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f );
 
         //reading an input image
-        img.Read("../data/input/bottles.hdr");
+        ImageRead("../data/input/bottles.hdr", &img);
+
         img.generateTextureGL();
 
         //creating a screen aligned quad

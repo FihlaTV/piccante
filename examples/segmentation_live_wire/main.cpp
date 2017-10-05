@@ -45,6 +45,24 @@ int main(int argc, char *argv[])
     ImageRead(img_str, &img);
 
     if(img.isValid()) {
+        pic::LiveWire *lw = new pic::LiveWire(&img);
+
+        std::vector< pic::Vec<2, int> > out;
+        pic::Vec<2, int> pS(227, 206);
+        pic::Vec<2, int> pE(229, 324);
+        lw->execute(pS, pE, out);
+
+        printf("%d\n", out.size());
+
+        for(int i = 0; i < out.size(); i++) {
+            float *tmp = img(out[i][0], out[i][1]);
+
+            tmp[0] = 1.0f;
+            tmp[1] = 0.0f;
+            tmp[2] = 0.0f;
+        }
+
+        ImageWrite(&img, "../data/output/livewire.png");
 
     }
 

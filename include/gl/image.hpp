@@ -580,7 +580,7 @@ ImageGL::ImageGL(GLuint texture, GLuint target) : Image()
 
     getTextureInformationGL(texture, target, width, height, frames, channels);
 
-    AllocateAux();
+    allocateAux();
 }
 
 ImageGL::ImageGL(Image *img, GLenum target, bool mipmap, bool transferOwnership = false): Image()
@@ -652,14 +652,14 @@ ImageGL::ImageGL(int frames, int width, int height, int channels,
     switch(this->mode) {
 
     case IMG_CPU_GPU: {
-        Allocate(width, height, channels, frames);
+        allocate(width, height, channels, frames);
 
         generateTextureGL(target, GL_FLOAT, false);
     }
     break;
 
     case IMG_CPU: {
-        Allocate(width, height, channels, frames);
+        allocate(width, height, channels, frames);
     }
     break;
 
@@ -670,7 +670,7 @@ ImageGL::ImageGL(int frames, int width, int height, int channels,
         this->depth = frames;
         this->channels = channels;
 
-        AllocateAux();
+        allocateAux();
 
         generateTextureGL(target, GL_FLOAT, false);
     }
@@ -826,7 +826,7 @@ void ImageGL::loadToMemory()
             printf("RAM memory allocated: %d %d %d %d\n", width, height, channels, frames);
         #endif
 
-        Allocate(width, height, channels, frames);
+        allocate(width, height, channels, frames);
         this->mode = IMG_CPU_GPU;
     }
 
@@ -867,11 +867,11 @@ void ImageGL::loadAllSlicesIntoTexture()
 void ImageGL::readFromFBO(Fbo *fbo, GLenum format)
 {
     //TO DO: check data
-    bool bCheck =	(fbo->width  != width) ||
+    bool bCheck =   (fbo->width  != width) ||
                     (fbo->height != height);
 
     if(data == NULL || bCheck) {
-        Allocate(fbo->width, fbo->height, 4, 1);
+        allocate(fbo->width, fbo->height, 4, 1);
     }
 
     //ReadPixels from the FBO
