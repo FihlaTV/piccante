@@ -232,7 +232,7 @@ public:
         //ret = (Ix2.*Iy2 - Ixy.^2)./(Ix2 + Iy2 + eps);
 
         if(ret == NULL) {
-            ret = lum->AllocateSimilarOne();
+            ret = lum->allocateSimilarOne();
         }
 
         for(int i = 0; i < height; i++) {

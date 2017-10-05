@@ -122,7 +122,7 @@ public:
             lum = FilterLuminance::Execute(img, lum, LT_CIE_LUMINANCE);
         }
 
-        //Filtering the image
+        //filter the image
         FilterGaussian2D flt(sigma);
         Image *lum_flt = flt.ProcessP(Single(lum), NULL);
 
@@ -131,7 +131,7 @@ public:
 
         //non-maximum suppression
         if(imgEdges == NULL) {
-            imgEdges = lum->AllocateSimilarOne();
+            imgEdges = lum->allocateSimilarOne();
         }
 
         imgEdges->setZero();

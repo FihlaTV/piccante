@@ -178,24 +178,24 @@ public:
             if(pyrA == NULL) {
                 pyrA = new PyramidGL(imgDrago, true);
             } else {
-                pyrA->Update(imgDrago);
+                pyrA->update(imgDrago);
             }
 
             if(pyrB == NULL) {
                 pyrB = new PyramidGL(imgReinhard, true);
             } else {
-                pyrB->Update(imgReinhard);
+                pyrB->update(imgReinhard);
             }
 
             if(pyrWeight == NULL) {
                 pyrWeight = new PyramidGL(remapped, false);
             } else {
-                pyrWeight->Update(remapped);
+                pyrWeight->update(remapped);
             }
 
             //Blending
-            pyrA->Blend(pyrB, pyrWeight);
-            imgOut = pyrA->Reconstruct(imgOut);
+            pyrA->blend(pyrB, pyrWeight);
+            imgOut = pyrA->reconstruct(imgOut);
         }
         break;
         }

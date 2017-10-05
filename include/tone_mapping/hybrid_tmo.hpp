@@ -148,7 +148,7 @@ public:
             if(pyrA == NULL) {
                 pyrA = new Pyramid(imgDrago, true);
             } else {
-                pyrA->Update(imgDrago);
+                pyrA->update(imgDrago);
             }
 
             //Reinhard TMO
@@ -157,19 +157,19 @@ public:
             if(pyrB == NULL) {
                 pyrB = new Pyramid(imgReinhard, true);
             } else {
-                pyrB->Update(imgReinhard);
+                pyrB->update(imgReinhard);
             }
 
             //Blending weight
             if(pyrWeight == NULL) {
                 pyrWeight = new Pyramid(seg_map, false);
             } else {
-                pyrWeight->Update(seg_map);
+                pyrWeight->update(seg_map);
             }
 
             //Blending
-            pyrA->Blend(pyrB, pyrWeight);
-            pyrA->Reconstruct(imgOut);
+            pyrA->blend(pyrB, pyrWeight);
+            pyrA->reconstruct(imgOut);
         }
         break;
         }

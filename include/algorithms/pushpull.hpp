@@ -37,9 +37,9 @@ protected:
     ImageVec        stack;
 
     /**
-     * @brief Release
+     * @brief release
      */
-    void Release() {
+    void release() {
         for(unsigned int i = 1; i < stack.size(); i++) {
             if(stack[i] != NULL){
                 delete stack[i];
@@ -62,16 +62,16 @@ public:
 
     ~PushPull()
     {
-        Release();
+        release();
     }
 
     /**
-     * @brief Process computes push-pull.
+     * @brief process computes push-pull.
      * @param img
      * @param value
      * @return
      */
-    Image *Process(Image *imgIn, Image *imgOut, float *value = NULL, float threshold = 1e-6f)
+    Image *process(Image *imgIn, Image *imgOut, float *value = NULL, float threshold = 1e-6f)
     {
         if(imgIn == NULL) {
             return imgOut;
@@ -128,12 +128,12 @@ public:
     }
 
     /**
-     * @brief Execute
+     * @brief execute
      * @param img
      * @param value
      * @return
      */
-    static Image *Execute(Image *img, float value)
+    static Image *execute(Image *img, float value)
     {
         PushPull pp;
 
@@ -142,23 +142,9 @@ public:
             tmp_value[i] = value;
         }
 
-        return pp.Process(img, NULL, tmp_value);
+        return pp.process(img, NULL, tmp_value);
 
         delete[] tmp_value;
-    }
-
-    /**
-     * @brief Execute
-     * @param name
-     * @param nameOut
-     * @return
-     */
-    static Image *Execute(std::string name, std::string nameOut)
-    {
-        Image img(name);
-        Image *imgOut = Execute(&img, 0.0f);
-        imgOut->Write(nameOut);
-        return imgOut;
     }
 };
 

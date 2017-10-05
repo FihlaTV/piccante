@@ -37,9 +37,9 @@ protected:
     ImageGLVec      stack;
 
     /**
-     * @brief Release
+     * @brief release
      */
-    void Release() {
+    void release() {
         for(unsigned int i = 1; i < stack.size(); i++) {
             if(stack[i] != NULL){
                 delete stack[i];
@@ -62,16 +62,16 @@ public:
 
     ~PushPullGL()
     {
-        Release();
+        release();
     }
 
     /**
-     * @brief Process computes push-pull.
+     * @brief process computes push-pull.
      * @param img
      * @param value
      * @return
      */
-    ImageGL *Process(ImageGL *imgIn, ImageGL *imgOut, float *value, float threshold = 1e-6f)
+    ImageGL *process(ImageGL *imgIn, ImageGL *imgOut, float *value, float threshold = 1e-6f)
     {
         if(imgIn == NULL) {
             return imgOut;
@@ -133,7 +133,7 @@ public:
      * @param value
      * @return
      */
-    static ImageGL *Execute(ImageGL *img, float value)
+    static ImageGL *execute(ImageGL *img, float value)
     {
         PushPullGL pp;
 
@@ -142,23 +142,9 @@ public:
             tmp_value[i] = value;
         }
 
-        return pp.Process(img, NULL, tmp_value);
+        return pp.process(img, NULL, tmp_value);
 
         delete[] tmp_value;
-    }
-
-    /**
-     * @brief Execute
-     * @param name
-     * @param nameOut
-     * @return
-     */
-    static ImageGL *Execute(std::string name, std::string nameOut)
-    {
-        ImageGL img(name);
-        ImageGL *imgOut = Execute(&img, 0.0f);
-        imgOut->Write(nameOut);
-        return imgOut;
     }
 };
 

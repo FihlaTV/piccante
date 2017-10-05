@@ -35,7 +35,7 @@ Image *CalculateDivergence(Image *img, Image *div = NULL)
     }
 
     if(div == NULL) {
-        div = img->AllocateSimilarOne();
+        div = img->allocateSimilarOne();
     }
 
     Image *img_dx2, *img_dy2;

@@ -279,33 +279,33 @@ public:
     bool isSimilarType(const Image *img);
 
     /**
-     * @brief Assign
+     * @brief assign
      * @param imgIn
      */
-    void Assign(const Image *imgIn);
+    void assign(const Image *imgIn);
 
     /**
-     * @brief Blend
+     * @brief blend
      * @param img
      * @param weight
      */
-    void Blend(Image *img, Image *weight);
+    void blend(Image *img, Image *weight);
 
     /**
-     * @brief Minimum is the minimum operator for Image.
+     * @brief minimum is the minimum operator for Image.
      * @param img is a and Image and the operand. This
      * and the current Image need to have the same width,
      * height, and color channels.
      */
-    void Minimum(Image *img);
+    void minimum(Image *img);
 
     /**
-     * @brief Maximum is the maximum operator for Image.
+     * @brief maximum is the maximum operator for Image.
      * @param img is a and Image and the operand. This
      * and the current Image need to have the same width,
      * height, and color channels.
      */
-    void Maximum(Image *img);
+    void maximum(Image *img);
 
     /**
      * @brief applyFunction is an operator that applies
@@ -471,13 +471,13 @@ public:
     }
 
     /**
-     * @brief ConvertFromMask converts a boolean mask into an Image. true is mapped
+     * @brief convertFromMask converts a boolean mask into an Image. true is mapped
      * to 1.0f, and false is mapped to 0.0f.
      * @param mask is a buffer of boolean values with (width * height) elements.
      * @param width is the horizontal number of pixels.
      * @param height is the vertical number of pixels.
      */
-    void ConvertFromMask(bool *mask, int width, int height);
+    void convertFromMask(bool *mask, int width, int height);
 
     /**
      * @brief ConvertToMask converts an Image into a boolean mask.
@@ -487,7 +487,7 @@ public:
      * @param mask
      * @return
      */
-    bool *ConvertToMask(float *color, float threshold, bool cmp, bool *mask);
+    bool *convertToMask(float *color, float threshold, bool cmp, bool *mask);
 
     /**
      * @brief getFlippedEXR returns the flippedEXR flag.
@@ -512,10 +512,10 @@ public:
     void clamp(float a, float b);
 
     /**
-     * @brief CalculateStrides computes the strides values
+     * @brief calculateStrides computes the strides values
      * for pixels, lines and frames.
      */
-    void CalculateStrides()
+    void calculateStrides()
     {
         tstride = channels * height * width;
         ystride = width * channels;
@@ -624,7 +624,7 @@ public:
      * of the calling instance.
      * @return This returns an Image with the same size of the calling instance.
      */
-    Image *AllocateSimilarOne();
+    Image *allocateSimilarOne();
 
     /**
      * @brief Clone creates a deep copy of the calling instance.
@@ -839,7 +839,7 @@ PIC_INLINE Image::Image(Image *imgIn, bool deepCopy = true)
     }
 
     if(deepCopy) {
-        Assign(imgIn);
+        assign(imgIn);
     } else {
         width = imgIn->width;
         height = imgIn->height;
@@ -974,10 +974,10 @@ PIC_INLINE void Image::AllocateAux()
     this->framesf  = float(frames);
     this->frames1f = float(frames -1);
 
-    CalculateStrides();
+    calculateStrides();
 }
 
-PIC_INLINE void Image::Assign(const Image *imgIn)
+PIC_INLINE void Image::assign(const Image *imgIn)
 {
     if(imgIn == NULL) {
         return;
@@ -1193,7 +1193,7 @@ PIC_INLINE float Image::getGT(float val)
     return -1.0f;
 }
 
-PIC_INLINE void Image::Blend(Image *img, Image *weight)
+PIC_INLINE void Image::blend(Image *img, Image *weight)
 {
     if(img == NULL || weight == NULL) {
         return;
@@ -1224,7 +1224,7 @@ PIC_INLINE void Image::Blend(Image *img, Image *weight)
     }
 }
 
-PIC_INLINE void Image::Minimum(Image *img)
+PIC_INLINE void Image::minimum(Image *img)
 {
     if(!isValid() || !isSimilarType(img)) {
         return;
@@ -1239,7 +1239,7 @@ PIC_INLINE void Image::Minimum(Image *img)
     }
 }
 
-PIC_INLINE void Image::Maximum(Image *img)
+PIC_INLINE void Image::maximum(Image *img)
 {
     if(!isValid() || !isSimilarType(img)) {
         return;
@@ -1248,7 +1248,6 @@ PIC_INLINE void Image::Maximum(Image *img)
     int size = height * width * channels;
 
     #pragma omp parallel for
-
     for(int i = 0; i < size; i++) {
         data[i] = data[i] < img->data[i] ? img->data[i] : data[i];
     }
@@ -1542,7 +1541,7 @@ PIC_INLINE float *Image::getLogMeanVal(BBox *box = NULL, float *ret = NULL)
     return ret;
 }
 
-PIC_INLINE void Image::ConvertFromMask(bool *mask, int width, int height)
+PIC_INLINE void Image::convertFromMask(bool *mask, int width, int height)
 {
     if((mask == NULL) || (width < 1) || (height < 1)) {
         return;
@@ -1559,7 +1558,7 @@ PIC_INLINE void Image::ConvertFromMask(bool *mask, int width, int height)
     }
 }
 
-PIC_INLINE bool *Image::ConvertToMask(float *color = NULL, float threshold = 0.5f,
+PIC_INLINE bool *Image::convertToMask(float *color = NULL, float threshold = 0.5f,
                                       bool cmp = true,  bool *mask = NULL)
 {
     if(!isValid() || (color == NULL)) {
@@ -1873,7 +1872,7 @@ PIC_INLINE bool Image::Write(std::string nameFile, LDR_type typeWrite = LT_NOR_G
     }
 }
 
-PIC_INLINE Image *Image::AllocateSimilarOne()
+PIC_INLINE Image *Image::allocateSimilarOne()
 {
     Image *ret = new Image(frames, width, height, channels);
     ret->flippedEXR = flippedEXR;
@@ -1927,7 +1926,7 @@ PIC_INLINE float* Image::getColorSamples(float *samples,
 
 PIC_INLINE void Image::operator =(const Image &a)
 {
-    this->Assign(&a);
+    this->assign(&a);
 }
 
 PIC_INLINE void Image::operator =(const float &a)

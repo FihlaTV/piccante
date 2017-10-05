@@ -38,7 +38,7 @@ Image *RichardsonLucyDeconvolution(Image *imgIn, Image *psf, int nIterations = 1
     }
 
     if(imgOut == NULL) {
-        imgOut = imgIn->AllocateSimilarOne();
+        imgOut = imgIn->allocateSimilarOne();
     }
 
     if(nIterations < 1) {
@@ -50,7 +50,7 @@ Image *RichardsonLucyDeconvolution(Image *imgIn, Image *psf, int nIterations = 1
 
     *imgOut = 0.5f;
 
-    Image *img_rel_blur = imgIn->AllocateSimilarOne();
+    Image *img_rel_blur = imgIn->allocateSimilarOne();
 
     Image *img_est_conv = NULL;
     Image *img_err = NULL;
@@ -67,7 +67,7 @@ Image *RichardsonLucyDeconvolution(Image *imgIn, Image *psf, int nIterations = 1
 
         img_est_conv = flt_conv.ProcessP(vec, img_est_conv);
 
-        img_rel_blur->Assign(imgIn);
+        img_rel_blur->assign(imgIn);
         *img_rel_blur /= *img_est_conv;
 
         img_err = flt_conv.ProcessP(vec_err, img_err);

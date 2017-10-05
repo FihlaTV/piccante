@@ -164,7 +164,7 @@ Image *FilterSigmoidTMO::SetupAux(ImageVec imgIn, Image *imgOut)
     }
 
     if(imgOut == NULL) {
-        imgOut = imgIn[0]->AllocateSimilarOne();
+        imgOut = imgIn[0]->allocateSimilarOne();
     }
 
     return imgOut;

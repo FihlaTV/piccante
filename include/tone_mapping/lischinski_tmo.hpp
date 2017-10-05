@@ -111,7 +111,7 @@ Image *LischinskiTMO(Image *imgIn, Image *imgOut = NULL, float alpha = -1.0f,
     //creating the fstop maps
     lum->applyFunction(log2fPlusEpsilon);
 
-    Image *fstopMap = lum->AllocateSimilarOne();
+    Image *fstopMap = lum->allocateSimilarOne();
 
     for(int i = 0; i < lum->height; i++) {
         for(int j = 0; j < lum->width; j++) {
@@ -125,7 +125,7 @@ Image *LischinskiTMO(Image *imgIn, Image *imgOut = NULL, float alpha = -1.0f,
     }
 
     //Lischinski minimization
-    Image *tmp = lum->AllocateSimilarOne();
+    Image *tmp = lum->allocateSimilarOne();
     *tmp = 0.007f;
     Image *fstopMap_min = LischinskiMinimization(lum, fstopMap, tmp);
 

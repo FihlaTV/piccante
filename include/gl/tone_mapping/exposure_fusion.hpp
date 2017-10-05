@@ -187,7 +187,7 @@ public:
             pOut = new PyramidGL(width, height, channels, true);
         }
 
-        pOut->SetValue(0.0f);
+        pOut->setValue(0.0f);
 
         for(int j = 0; j < n; j++) {
             lum = flt_lum->Process(SingleGL(imgIn[j]), lum);
@@ -196,12 +196,12 @@ public:
             //normalization
             *weights /= *acc;
 
-            pW->Update(weights);
-            pI->Update(imgIn[j]);
+            pW->update(weights);
+            pI->update(imgIn[j]);
 
-            pI->Mul(pW);
+            pI->mul(pW);
 
-            pOut->Add(pI);
+            pOut->add(pI);
         }
 
         #ifdef PIC_DEBUG
@@ -209,7 +209,7 @@ public:
         #endif
 
         //final result
-        imgOut = pOut->Reconstruct(imgOut);
+        imgOut = pOut->reconstruct(imgOut);
         imgOut = remove_negative->Process(SingleGL(imgOut), imgOut);
 
         return imgOut;

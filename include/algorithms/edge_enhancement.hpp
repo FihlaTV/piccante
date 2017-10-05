@@ -41,7 +41,7 @@ inline Image *EdgeEnhancement(Image *imgIn, float sigma_s = 4.0f,
     Image *detail = imgIn->clone();
 
     *detail /= *imgBase;
-    imgBase->Assign(imgIn);
+    imgBase->assign(imgIn);
     *imgBase *= *detail;
     return imgBase;
 }

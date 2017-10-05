@@ -83,7 +83,7 @@ Image *ExposureFusion(ImageVec imgIn, float wC = 1.0f, float wE = 1.0f,
     Pyramid *pI   = new Pyramid(width, height, channels, true, 2);
     Pyramid *pOut = new Pyramid(width, height, channels, true, 2);
 
-    pOut->SetValue(0.0f);
+    pOut->setValue(0.0f);
 
     for(int j = 0; j < n; j++) {
         lum = flt_lum.ProcessP(Single(imgIn[j]), lum);
@@ -92,12 +92,12 @@ Image *ExposureFusion(ImageVec imgIn, float wC = 1.0f, float wE = 1.0f,
         //normalization
         *weights /= *acc;
 
-        pW->Update(weights);
-        pI->Update(imgIn[j]);
+        pW->update(weights);
+        pI->update(imgIn[j]);
 
-        pI->Mul(pW);
+        pI->mul(pW);
 
-        pOut->Add(pI);
+        pOut->add(pI);
     }
 
     #ifdef PIC_DEBUG
@@ -105,7 +105,7 @@ Image *ExposureFusion(ImageVec imgIn, float wC = 1.0f, float wE = 1.0f,
     #endif
 
     //final result
-    imgOut = pOut->Reconstruct(imgOut);
+    imgOut = pOut->reconstruct(imgOut);
 
     #pragma omp parallel for
     for(int i = 0; i < imgOut->size(); i++) {

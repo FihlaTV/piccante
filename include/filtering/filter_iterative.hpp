@@ -147,20 +147,20 @@ void FilterIterative::Update(Filter *flt, int iterations)
 Image *FilterIterative::SetupAuxN(ImageVec imgIn, Image *imgOut)
 {
     if(imgOut == NULL) {
-        imgOut = imgIn[0]->AllocateSimilarOne();
+        imgOut = imgIn[0]->allocateSimilarOne();
     }
 
     if((iterations % 2) == 0) {
         imgTmp[1] = imgOut;
 
         if(imgTmp[0] == NULL) {
-            imgTmp[0] = imgOut->AllocateSimilarOne();
+            imgTmp[0] = imgOut->allocateSimilarOne();
         }
     } else {
         imgTmp[0] = imgOut;
 
         if(imgTmp[1] == NULL) {
-            imgTmp[1] = imgOut->AllocateSimilarOne();
+            imgTmp[1] = imgOut->allocateSimilarOne();
         }
     }
 

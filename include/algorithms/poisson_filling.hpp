@@ -87,7 +87,7 @@ public:
      */
     void Update(Image *imgOut, Image *imgIn)
     {
-        imgOut->Assign(imgIn);
+        imgOut->assign(imgIn);
 
         #pragma omp parallel for
 
@@ -196,7 +196,7 @@ public:
         if(imgOut == NULL) {
             imgOut = imgIn->clone();
         } else {
-            imgOut->Assign(imgIn);
+            imgOut->assign(imgIn);
         }
 
         this->value = value;
@@ -207,7 +207,7 @@ public:
             color[i] = value;
         }
 
-        mask = imgIn->ConvertToMask(color, threshold, false);
+        mask = imgIn->convertToMask(color, threshold, false);
 
         maskPoisson = MaskClone(mask, maskPoisson, imgIn->width, imgIn->height);
 
@@ -227,7 +227,7 @@ public:
         }
 
         if((i % 2) == 1) {
-            imgOut->Assign(imgTmp);
+            imgOut->assign(imgTmp);
         }
 
         delete[] color;

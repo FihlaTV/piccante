@@ -38,18 +38,18 @@ protected:
 
     FilterGLGaussian2D  *flt_gauss;
     FilterGLSampler2D   *flt_sampler;
-    FilterGLOp			*flt_add, *flt_sub;
+    FilterGLOp		*flt_add, *flt_sub;
     FilterGLBlend       *flt_blend;
 
     ImageGLVec          trackerRec, trackerUp;
 
     /**
-     * @brief InitFilters
+     * @brief initFilters
      */
-    void InitFilters();
+    void initFilters();
 
     /**
-     * @brief Create
+     * @brief create
      * @param img
      * @param width
      * @param height
@@ -57,7 +57,7 @@ protected:
      * @param lapGauss
      * @param limitLevel
      */
-    void Create(ImageGL *img, int width, int height, int channels, bool lapGauss, int limitLevel);
+    void create(ImageGL *img, int width, int height, int channels, bool lapGauss, int limitLevel);
 
 public:
 
@@ -84,48 +84,48 @@ public:
     ~PyramidGL();
 
     /**
-     * @brief Update
+     * @brief update
      * @param img
      */
-    void Update(ImageGL *img);
+    void update(ImageGL *img);
 
     /**
-     * @brief SetValue
+     * @brief setValue
      * @param value
      */
-    void SetValue(float value);
+    void setValue(float value);
 
     /**
-     * @brief Mul
+     * @brief mul
      * @param pyr
      */
-    void Mul(const PyramidGL *pyr);
+    void mul(const PyramidGL *pyr);
 
     /**
-     * @brief MulNeg
+     * @brief mulNeg
      * @param pyr
      */
-    void MulNeg(const PyramidGL *pyr);
+    void mulNeg(const PyramidGL *pyr);
 
     /**
-     * @brief Add
+     * @brief add
      * @param pyr
      */
-    void Add(const PyramidGL *pyr);
+    void add(const PyramidGL *pyr);
 
     /**
-     * @brief Blend
+     * @brief blend
      * @param pyr
      * @param weight
      */
-    void Blend(PyramidGL *pyr, PyramidGL *weight);
+    void blend(PyramidGL *pyr, PyramidGL *weight);
 
     /**
-     * @brief Reconstruct
+     * @brief reconstruct
      * @param imgOut
      * @return
      */
-    ImageGL *Reconstruct(ImageGL *imgOut);
+    ImageGL *reconstruct(ImageGL *imgOut);
 };
 
 PyramidGL::PyramidGL(ImageGL *img, bool lapGauss, int limitLevel = 1)
@@ -137,7 +137,7 @@ PyramidGL::PyramidGL(ImageGL *img, bool lapGauss, int limitLevel = 1)
     flt_blend = NULL;
 
     if(img != NULL) {
-        Create(img, img->width, img->height, img->channels, lapGauss, limitLevel);
+        create(img, img->width, img->height, img->channels, lapGauss, limitLevel);
     }
 }
 
@@ -152,7 +152,7 @@ PyramidGL::PyramidGL(int width, int height, int channels, bool lapGauss, int lim
 //    ImageGL *img = new ImageGL(1, width, height, channels, IMG_GPU, GL_TEXTURE_2D);
 //    *img = 0.0f;
 
-    Create(NULL, width, height, channels, lapGauss, limitLevel);
+    create(NULL, width, height, channels, lapGauss, limitLevel);
 
 //    delete img;
 }
@@ -206,7 +206,7 @@ PyramidGL::~PyramidGL()
     }
 }
 
-void PyramidGL::InitFilters()
+void PyramidGL::initFilters()
 {
     if(flt_gauss == NULL) {
         flt_gauss = new FilterGLGaussian2D(1.0f);
@@ -229,7 +229,7 @@ void PyramidGL::InitFilters()
     }
 }
 
-void PyramidGL::Create(ImageGL *img, int width, int height, int channels, bool lapGauss, int limitLevel = 1)
+void PyramidGL::create(ImageGL *img, int width, int height, int channels, bool lapGauss, int limitLevel = 1)
 {
     this->lapGauss = lapGauss;
 
@@ -239,7 +239,7 @@ void PyramidGL::Create(ImageGL *img, int width, int height, int channels, bool l
 
     this->limitLevel  = limitLevel;
 
-    InitFilters();
+    initFilters();
 
     int levels = MAX(log2(MIN(width, height)) - limitLevel, 1);
 
@@ -306,7 +306,7 @@ void PyramidGL::Create(ImageGL *img, int width, int height, int channels, bool l
 #endif
 }
 
-void PyramidGL::Update(ImageGL *img)
+void PyramidGL::update(ImageGL *img)
 {
     if(img == NULL) {
         return;
@@ -345,7 +345,7 @@ void PyramidGL::Update(ImageGL *img)
     }
 }
 
-ImageGL *PyramidGL::Reconstruct(ImageGL *imgOut)
+ImageGL *PyramidGL::reconstruct(ImageGL *imgOut)
 {
     if(stack.size() < 2) {
         return imgOut;
@@ -375,7 +375,7 @@ ImageGL *PyramidGL::Reconstruct(ImageGL *imgOut)
     return imgOut;
 }
 
-void PyramidGL::SetValue(float value)
+void PyramidGL::setValue(float value)
 {
     if(stack.empty()) {
         return;
@@ -386,7 +386,7 @@ void PyramidGL::SetValue(float value)
     }
 }
 
-void PyramidGL::Mul(const PyramidGL *pyr)
+void PyramidGL::mul(const PyramidGL *pyr)
 {
     if(stack.size() != pyr->stack.size()) {
         return;
@@ -397,7 +397,7 @@ void PyramidGL::Mul(const PyramidGL *pyr)
     }
 }
 
-void PyramidGL::Add(const PyramidGL *pyr)
+void PyramidGL::add(const PyramidGL *pyr)
 {
     if(stack.size() != pyr->stack.size()) {
         return;
@@ -408,7 +408,7 @@ void PyramidGL::Add(const PyramidGL *pyr)
     }
 }
 
-void PyramidGL::Blend(PyramidGL *pyr, PyramidGL *weight)
+void PyramidGL::blend(PyramidGL *pyr, PyramidGL *weight)
 {
     if(stack.size() != pyr->stack.size() ||
        stack.size() != weight->stack.size()) {

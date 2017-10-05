@@ -602,7 +602,7 @@ ImageGL::ImageGL(Image *img, GLenum target, bool mipmap, bool transferOwnership 
     channels = img->channels;
     data     = img->data;
 
-    CalculateStrides();
+    calculateStrides();
 
     texture = 0;
 
@@ -630,7 +630,7 @@ ImageGL::ImageGL(Image *img, bool transferOwnership = false) : Image()
     channels = img->channels;
     data     = img->data;
 
-    CalculateStrides();
+    calculateStrides();
 
     texture = 0;
 

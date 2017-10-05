@@ -43,12 +43,12 @@ protected:
     ImageVec trackerRec, trackerUp;
 
     /**
-     * @brief InitFilters
+     * @brief initFilters
      */
-    void InitFilters();
+    void initFilters();
 
     /**
-     * @brief Create
+     * @brief create
      * @param img
      * @param width
      * @param height
@@ -56,7 +56,7 @@ protected:
      * @param lapGauss
      * @param limitLevel
      */
-    void Create(Image *img, int width, int height, int channels, bool lapGauss, int limitLevel);
+    void create(Image *img, int width, int height, int channels, bool lapGauss, int limitLevel);
 
 public:
 
@@ -95,42 +95,42 @@ public:
     }
 
     /**
-     * @brief Update recomputes the pyramid given a compatible image, img.
+     * @brief update recomputes the pyramid given a compatible image, img.
      * @param img
      */
-    void Update(Image *img);
+    void update(Image *img);
 
     /**
      * @brief SetValue
      * @param value
      */
-    void SetValue(float value);
+    void setValue(float value);
 
     /**
-     * @brief Mul is the mul operator ( *= ) between pyramids.
+     * @brief mul is the mul operator ( *= ) between pyramids.
      * @param pyr
      */
-    void Mul(const Pyramid *pyr);
+    void mul(const Pyramid *pyr);
 
     /**
-     * @brief Mul is the add operator ( += ) between pyramids.
+     * @brief add is the add operator ( += ) between pyramids.
      * @param pyr
      */
-    void Add(const Pyramid *pyr);
+    void add(const Pyramid *pyr);
 
     /**
-     * @brief Reconstruct evaluates a Gaussian/Laplacian pyramid.
+     * @brief reconstruct evaluates a Gaussian/Laplacian pyramid.
      * @param imgOut
      * @return
      */
-    Image *Reconstruct(Image *imgOut);
+    Image *reconstruct(Image *imgOut);
 
     /**
-     * @brief Blend
+     * @brief blend
      * @param pyr
      * @param weight
      */
-    void Blend(Pyramid *pyr, Pyramid *weight);
+    void blend(Pyramid *pyr, Pyramid *weight);
 
     /**
      * @brief size
@@ -160,7 +160,7 @@ Pyramid::Pyramid(Image *img, bool lapGauss, int limitLevel = 1)
     flt_add = NULL;
 
     if(img != NULL) {
-        Create(img, img->width, img->height, img->channels, lapGauss, limitLevel);
+        create(img, img->width, img->height, img->channels, lapGauss, limitLevel);
     }
 }
 
@@ -172,7 +172,7 @@ Pyramid::Pyramid(int width, int height, int channels, bool lapGauss, int limitLe
     flt_sub = NULL;
     flt_add = NULL;
 
-    Create(NULL, width, height, channels, lapGauss, limitLevel);
+    create(NULL, width, height, channels, lapGauss, limitLevel);
 }
 
 Pyramid::~Pyramid()
@@ -204,7 +204,7 @@ Pyramid::~Pyramid()
     }
 }
 
-void Pyramid::InitFilters()
+void Pyramid::initFilters()
 {
     if(flt_gauss == NULL) {
         flt_gauss = new FilterGaussian2D(1.0f);
@@ -223,7 +223,7 @@ void Pyramid::InitFilters()
     }
 }
 
-void Pyramid::Create(Image *img, int width, int height, int channels, bool lapGauss, int limitLevel = 1)
+void Pyramid::create(Image *img, int width, int height, int channels, bool lapGauss, int limitLevel = 1)
 {
     this->lapGauss  = lapGauss;
 
@@ -233,7 +233,7 @@ void Pyramid::Create(Image *img, int width, int height, int channels, bool lapGa
 
     this->limitLevel = limitLevel;
 
-    InitFilters();
+    initFilters();
 
     int levels = MAX(log2(MIN(width, height)) - limitLevel, 1);
 
@@ -277,7 +277,7 @@ void Pyramid::Create(Image *img, int width, int height, int channels, bool lapGa
             flt_sub->ProcessP(Double(tmpImg, tmpD), tmpG);
             stack.push_back(tmpG);
         } else {			//Gaussian Pyramid
-            tmpG->Assign(tmpImg);
+            tmpG->assign(tmpImg);
             stack.push_back(tmpG);
         }
 
@@ -297,7 +297,7 @@ void Pyramid::Create(Image *img, int width, int height, int channels, bool lapGa
 #endif
 }
 
-void Pyramid::Update(Image *img)
+void Pyramid::update(Image *img)
 {
     //TODO: check if the image and the pyramid are compatible
     if(img == NULL) {
@@ -332,14 +332,14 @@ void Pyramid::Update(Image *img)
         if(lapGauss) {	//Laplacian Pyramid
             flt_sub->ProcessP(Double(tmpImg, tmpD), tmpG);
         } else {		//Gaussian Pyramid
-            tmpG->Assign(tmpImg);
+            tmpG->assign(tmpImg);
         }
 
         tmpImg = tmpD;
     }
 }
 
-Image *Pyramid::Reconstruct(Image *imgOut = NULL)
+Image *Pyramid::reconstruct(Image *imgOut = NULL)
 {
     if(stack.size() < 2) {
         return imgOut;
@@ -369,14 +369,14 @@ Image *Pyramid::Reconstruct(Image *imgOut = NULL)
     return imgOut;
 }
 
-void Pyramid::SetValue(float value)
+void Pyramid::setValue(float value)
 {
     for(unsigned int i = 0; i < stack.size(); i++) {
         *stack[i] = value;
     }
 }
 
-void Pyramid::Mul(const Pyramid *pyr)
+void Pyramid::mul(const Pyramid *pyr)
 {
     if(stack.size() != pyr->stack.size()) {
         return;
@@ -387,7 +387,7 @@ void Pyramid::Mul(const Pyramid *pyr)
     }
 }
 
-void Pyramid::Add(const Pyramid *pyr)
+void Pyramid::add(const Pyramid *pyr)
 {
     if(stack.size() != pyr->stack.size()) {
         return;
@@ -398,14 +398,14 @@ void Pyramid::Add(const Pyramid *pyr)
     }
 }
 
-void Pyramid::Blend(Pyramid *pyr, Pyramid *weight)
+void Pyramid::blend(Pyramid *pyr, Pyramid *weight)
 {
     if((stack.size() != pyr->stack.size()) && (pyr->stack.size() > 0)) {
         return;
     }
 
     for(unsigned int i = 0; i < stack.size(); i++) {
-        stack[i]->Blend(pyr->stack[i], weight->stack[i]);
+        stack[i]->blend(pyr->stack[i], weight->stack[i]);
     }
 }
 

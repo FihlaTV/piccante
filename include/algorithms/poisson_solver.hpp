@@ -41,7 +41,7 @@ Image *PoissonSolver(Image *f, Image *ret = NULL)
 
     //Allocating the output
     if(ret == NULL) {
-        ret = f->AllocateSimilarOne();
+        ret = f->allocateSimilarOne();
     }
 
     int width = f->width;

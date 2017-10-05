@@ -285,7 +285,7 @@ public:
             return NULL;
         }
 
-        Image *ret = imgTarget->AllocateSimilarOne();
+        Image *ret = imgTarget->allocateSimilarOne();
         ret->setZero();
 
         shift = wa.GetExpShift(imgTarget, imgSource);

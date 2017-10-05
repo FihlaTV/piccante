@@ -52,7 +52,7 @@ public:
         }
 
         if(imgOut == NULL) {
-            imgOut = imgIn->AllocateSimilarOne();
+            imgOut = imgIn->allocateSimilarOne();
         }
 
         if(size < 1) {
@@ -138,7 +138,7 @@ public:
         }
 
         if(imgOut == NULL) {
-            imgOut = imgIn->AllocateSimilarOne();
+            imgOut = imgIn->allocateSimilarOne();
         }
 
         if(size < 1) {

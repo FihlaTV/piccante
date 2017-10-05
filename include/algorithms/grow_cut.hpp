@@ -42,7 +42,7 @@ Image *GrowCut(Image *img, Image *seeds, Image *state_cur = NULL)
         state_cur = new Image(img->width, img->height, 2);
     }
 
-    Image *state_next = state_cur->AllocateSimilarOne();
+    Image *state_next = state_cur->allocateSimilarOne();
 
     //computing max
     Image *img_max = FilterMax::Execute(img, NULL, 5);

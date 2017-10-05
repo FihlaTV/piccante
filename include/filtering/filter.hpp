@@ -175,10 +175,10 @@ public:
 PIC_INLINE Image *Filter::SetupAux(ImageVec imgIn, Image *imgOut)
 {
     if(imgOut == NULL) {
-        imgOut = imgIn[0]->AllocateSimilarOne();
+        imgOut = imgIn[0]->allocateSimilarOne();
     } else {
         if(!imgIn[0]->isSimilarType(imgOut)) {
-            imgOut = imgIn[0]->AllocateSimilarOne();
+            imgOut = imgIn[0]->allocateSimilarOne();
         }
     }
 
@@ -221,7 +221,7 @@ PIC_INLINE Image *Filter::CachedProcess(ImageVec imgIn, Image *imgOut,
         }
     } else {
         if(imgOut != NULL) {
-            imgOut->Assign(imgOut2);
+            imgOut->assign(imgOut2);
             return imgOut;
         } else {
             return imgOut2;

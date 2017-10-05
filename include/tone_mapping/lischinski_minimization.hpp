@@ -78,7 +78,7 @@ Image *LischinskiMinimization(Image *L, Image *g,
     }
 
     if(omega == NULL) {
-        omega = L->AllocateSimilarOne();
+        omega = L->allocateSimilarOne();
         *omega = 0.0f;
     }
 
@@ -165,7 +165,7 @@ Image *LischinskiMinimization(Image *L, Image *g,
         printf("SOLVER SUCCESS!\n");
     #endif
 
-    Image *ret = L->AllocateSimilarOne();
+    Image *ret = L->allocateSimilarOne();
 
     for(int i = 0; i < height; i++) {
         int counter = i * width;

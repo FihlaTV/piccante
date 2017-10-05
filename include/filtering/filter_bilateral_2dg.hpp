@@ -321,7 +321,7 @@ Image *FilterBilateral2DG::Process(ImageVec imgIn, Image *imgOut)
     }
 
     if(imgOut == NULL) {
-        imgOut = imgIn[0]->AllocateSimilarOne();
+        imgOut = imgIn[0]->allocateSimilarOne();
     }
 
     Image *base, *edge;
