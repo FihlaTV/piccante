@@ -86,6 +86,15 @@ protected:
         }
     }
 
+    /**
+     * @brief f1minusx
+     * @param x
+     * @return
+     */
+    static float f1minusx(float x) {
+        return 1.0 - x;
+    }
+
 public:
 
     LiveWire(Image *img)
@@ -120,9 +129,7 @@ public:
         //compute fZ
         fZ = FilterLoG2D::Execute(img_L, fZ, 1.0f);
 
-        Image tmp(img_L->width, img_L->height, 1);
-        tmp = 1.0f;
-        *fZ = tmp - *fZ;
+        fZ->applyFunction(f1minusx);
 
         //aux buffers
         g = img_L->allocateSimilarOne();
