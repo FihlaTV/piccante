@@ -611,7 +611,7 @@ public:
 
             for (int i=1; i<channels; i++) {
                 float * col = new float[256];
-                BufferAssign(col, lin, 256);
+                Buffer<float>::assign(col, lin, 256);
                 this->icrf.push_back(col);
             }
         }
@@ -628,7 +628,7 @@ public:
         for (int ch=0; ch<channels; ch++) {
             float * fun = this->icrf[ch];
             float funPrev[256];
-            BufferAssign(funPrev, fun, 256);
+            Buffer<float>::assign(funPrev, fun, 256);
 
             std::vector<float> x(pixelcount);
 
@@ -653,7 +653,7 @@ public:
                     }
 
                     if (mid != 0.0f) {
-                        BufferDiv(fun, 256, mid);
+                        Buffer<float>::div(fun, 256, mid);
                     }
                 }
 
@@ -789,7 +789,7 @@ public:
         }
 
         for (int ch=0; ch<channels; ch++) {
-            BufferDiv(this->icrf[ch], 256, maxV);
+            Buffer<float>::div(this->icrf[ch], 256, maxV);
             this->icrf[ch][255] = 1.0f;
         }
 

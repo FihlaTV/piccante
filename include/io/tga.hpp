@@ -113,10 +113,10 @@ PIC_INLINE unsigned char *ReadTGA(std::string nameFile, unsigned char *data,
         tga_in.read((char*)(data), size);
 
         //values are stored as BGR
-        BufferBGRtoRGB(data, width, height, channels, 1);
+        Buffer<unsigned char>::BGRtoRGB(data, width, height, channels, 1);
 
         //values are stored with a vertical flip
-        BufferFlipV(data, width, height, channels, 1);
+        Buffer<unsigned char>::flipV(data, width, height, channels, 1);
 
     } else {
         //reading RLE compressed data

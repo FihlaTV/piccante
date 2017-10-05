@@ -203,7 +203,7 @@ public:
      */
     void flipH()
     {
-        BufferFlipH<float>(data, width, height, channels, frames);
+        Buffer<float>::flipH(data, width, height, channels, frames);
     }
 
     /**
@@ -211,7 +211,7 @@ public:
      */
     void flipV()
     {
-        BufferFlipV<float>(data, width, height, channels, frames);
+        Buffer<float>::flipV(data, width, height, channels, frames);
     }
 
     /**
@@ -219,8 +219,8 @@ public:
      */
     void flipHV()
     {
-        BufferFlipH<float>(data, width, height, channels, frames);
-        BufferFlipV<float>(data, width, height, channels, frames);
+        Buffer<float>::flipH(data, width, height, channels, frames);
+        Buffer<float>::flipV(data, width, height, channels, frames);
     }
 
     /**
@@ -228,8 +228,8 @@ public:
      */
     void flipVH()
     {
-        BufferFlipV<float>(data, width, height, channels, frames);
-        BufferFlipH<float>(data, width, height, channels, frames);
+        Buffer<float>::flipV(data, width, height, channels, frames);
+        Buffer<float>::flipH(data, width, height, channels, frames);
     }
 
     /**
@@ -237,7 +237,7 @@ public:
      */
     void rotate90CCW()
     {
-        BufferRotate90CCW<float>(data, width, height, channels);
+        Buffer<float>::rotate90CCW(data, width, height, channels);
         AllocateAux();
     }
 
@@ -246,7 +246,7 @@ public:
      */
     void rotate90CW()
     {
-        BufferRotate90CW<float>(data, width, height, channels);
+        Buffer<float>::rotate90CW(data, width, height, channels);
         AllocateAux();
     }
 
@@ -1849,10 +1849,10 @@ PIC_INLINE bool Image::Write(std::string nameFile, LDR_type typeWrite = LT_NOR_G
 
             case IO_TGA:
                 //values are stored with a vertical flip
-                BufferFlipV(dataUC, width, height, channels, 1);
+                Buffer<unsigned char>::flipV(dataUC, width, height, channels, 1);
 
                 //values needs to be stored as BGR
-                BufferBGRtoRGB(dataUC, width, height, channels, 1);
+                Buffer<unsigned char>::BGRtoRGB(dataUC, width, height, channels, 1);
 
                 return WriteTGA(nameFile, dataUC, width, height, channels);
                 break;
@@ -1931,12 +1931,12 @@ PIC_INLINE void Image::operator =(const Image &a)
 
 PIC_INLINE void Image::operator =(const float &a)
 {
-    BufferAssign(data, size(), a);
+    Buffer<float>::assign(data, size(), a);
 }
 
 PIC_INLINE void Image::operator +=(const float &a)
 {
-    BufferAdd(data, size(), a);
+    Buffer<float>::add(data, size(), a);
 }
 
 PIC_INLINE Image Image::operator +(const float &a) const
@@ -1949,10 +1949,10 @@ PIC_INLINE Image Image::operator +(const float &a) const
 PIC_INLINE void Image::operator +=(const Image &a)
 {
     if(isSimilarType(&a)) {
-        BufferAdd(data, a.data, size());
+        Buffer<float>::add(data, a.data, size());
     } else {
         if((nPixels() == a.nPixels()) && (a.channels == 1)) {
-            BufferAddS(data, a.data, nPixels(), channels);
+            Buffer<float>::addS(data, a.data, nPixels(), channels);
         }
     }
 
@@ -1967,7 +1967,7 @@ PIC_INLINE Image Image::operator +(const Image &a) const
 
 PIC_INLINE void Image::operator *=(const float &a)
 {
-    BufferMul(data, size(), a);
+    Buffer<float>::mul(data, size(), a);
 }
 
 PIC_INLINE Image Image::operator *(const float &a) const
@@ -1980,10 +1980,10 @@ PIC_INLINE Image Image::operator *(const float &a) const
 PIC_INLINE void Image::operator *=(const Image &a)
 {
     if(isSimilarType(&a)) {
-        BufferMul(data, a.data, size());
+        Buffer<float>::mul(data, a.data, size());
     } else {
         if((nPixels() == a.nPixels()) && (a.channels == 1)) {
-            BufferMulS(data, a.data, nPixels(), channels);
+            Buffer<float>::mulS(data, a.data, nPixels(), channels);
         }
     }
 }
@@ -1997,7 +1997,7 @@ PIC_INLINE Image Image::operator *(const Image &a) const
 
 PIC_INLINE void Image::operator -=(const float &a)
 {
-    BufferSub(data, size(), a);
+    Buffer<float>::sub(data, size(), a);
 }
 
 PIC_INLINE Image Image::operator -(const float &a) const
@@ -2010,10 +2010,10 @@ PIC_INLINE Image Image::operator -(const float &a) const
 PIC_INLINE void Image::operator -=(const Image &a)
 {
     if(isSimilarType(&a)) {
-        BufferSub(data, a.data, size());
+        Buffer<float>::sub(data, a.data, size());
     } else {
         if((nPixels() == a.nPixels()) && (a.channels == 1)) {
-            BufferSubS(data, a.data, nPixels(), channels);
+            Buffer<float>::subS(data, a.data, nPixels(), channels);
         }
     }
 }
@@ -2027,7 +2027,7 @@ PIC_INLINE Image Image::operator -(const Image &a) const
 
 PIC_INLINE void Image::operator /=(const float &a)
 {
-    BufferDiv(data, size(), a);
+    Buffer<float>::div(data, size(), a);
 }
 
 PIC_INLINE Image Image::operator /(const float &a) const
@@ -2040,10 +2040,10 @@ PIC_INLINE Image Image::operator /(const float &a) const
 PIC_INLINE void Image::operator /=(const Image &a)
 {
     if(isSimilarType(&a)) {
-        BufferDiv(data, a.data, size());
+        Buffer<float>::div(data, a.data, size());
     } else {
         if((nPixels() == a.nPixels()) && (a.channels == 1)) {
-            BufferDivS(data, a.data, nPixels(), channels);
+            Buffer<float>::divS(data, a.data, nPixels(), channels);
         }
     }
 }

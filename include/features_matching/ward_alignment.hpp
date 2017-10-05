@@ -235,8 +235,8 @@ public:
                     int xs = cur_shift[0] + i;
                     int ys = cur_shift[1] + j;
 
-                    BufferShift(tb2_shifted, tb2, xs, ys, width, height, 1, 1);
-                    BufferShift(eb2_shifted, eb2, xs, ys, width, height, 1, 1);
+                    Buffer<bool>::shift(tb2_shifted, tb2, xs, ys, width, height, 1, 1);
+                    Buffer<bool>::shift(eb2_shifted, eb2, xs, ys, width, height, 1, 1);
 
                     int err = 0;
                     for(int k=0; k<n; k++) {
@@ -294,7 +294,7 @@ public:
             printf("Ward alignment shift: (%d, %d)\n", shift[0], shift[1]);
         #endif
 
-        BufferShift(ret->data, imgSource->data, shift[0], shift[1], imgTarget->width,
+        Buffer<float>::shift(ret->data, imgSource->data, shift[0], shift[1], imgTarget->width,
                     imgTarget->height, imgTarget->channels, imgTarget->frames);
 
         return ret;
