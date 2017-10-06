@@ -25,6 +25,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "filtering/filter_luminance.hpp"
 #include "filtering/filter_gradient.hpp"
 #include "filtering/filter_log_2d.hpp"
+#include "filtering/filter_channel.hpp"
 #include "util/vec.hpp"
 
 namespace pic {
@@ -32,7 +33,11 @@ namespace pic {
 class LiveWire
 {
 protected:
-    Image *img_L, *img_G, *fZ, *g, *e, *pointers;
+    float fG_min, fG_max;
+
+    Image *img_L, *img_G, *fG, *fZ, *g;
+    int *pointers;
+    bool *e;
 
     /**
      * @brief getCost
@@ -47,15 +52,53 @@ protected:
 
         //fZ cost
         tmp = (*fZ)(q[0], q[1]);
-        out  = 0.43f * tmp[0];
-
-        tmp = (*img_G)(q[0], q[1]);
+        out = 0.43f * tmp[0];
 
         //fG cost
-        float dist_qp = sqrtf(q.distanceSq(p));
-        out += 0.14f * tmp[2] / dist_qp;
+        tmp = (*fG)(q[0], q[1]);
+        float dist_qp = sqrtf(float(q.distanceSq(p)));
+        out += 0.14f * tmp[0] / dist_qp;
 
         //fD cost
+
+        //D_p
+        tmp = (*img_G)(p[0], p[1]);
+        Vec<2, float> D_p(tmp[1], -tmp[0]);
+        float n_D_p_sq = D_p.lengthSq();
+        if(n_D_p_sq > 0.0f) {
+            D_p.div(sqrtf(n_D_p_sq));
+        }
+
+        //D_q
+        tmp = (*img_G)(q[0], q[1]);
+        Vec<2, float> D_q(tmp[1], -tmp[0]);
+        float n_D_q_sq = D_q.lengthSq();
+        if(n_D_q_sq > 0.0f) {
+            D_q.div(sqrtf(n_D_q_sq));
+        }
+
+        //Delta_qp
+        Vec<2, float> delta_qp(float(q[0] - p[0]), float(q[1] - p[1]));
+
+        Vec<2, float> L;
+        if(D_p.dot(delta_qp) >= 0.0f) {
+            L = delta_qp;
+        } else {
+            L = delta_qp;
+            L.neg();
+        }
+
+        float n_L_sq = L.lengthSq();
+        if(n_L_sq > 0.0f) {
+            L.div(sqrtf(n_L_sq));
+        }
+
+        float dp_pq = D_p.dot(L);
+        float dq_pq = L.dot(D_q);
+
+        float fD = (acosf(dp_pq) + acosf(dq_pq)) * 2.0f / (3.0f * C_PI);
+
+        out +=  0.43f * fD;
 
         return out;
     }
@@ -84,6 +127,10 @@ protected:
         if(e != NULL) {
             delete e;
         }
+
+        if(pointers != NULL) {
+            delete pointers;
+        }
     }
 
     /**
@@ -102,6 +149,7 @@ public:
         img_L = NULL;
         img_G = NULL;
         fZ = NULL;
+        fG = NULL;
         g = NULL;
         e = NULL;
         pointers = NULL;
@@ -124,18 +172,25 @@ public:
 
         img_L = FilterLuminance::Execute(img, img_L);
 
-        img_G = FilterGradient::Execute(img, img_G);
+        //compute fG
+        img_G = FilterGradient::Execute(img_L, img_G);
+        fG = FilterChannel::Execute(img_G, fG, 2);
+
+        fG->getMinVal(NULL, &fG_min);
+        *fG -= fG_min;
+        fG->getMaxVal(NULL, &fG_max);
+        *fG /= fG_max;
+        fG->applyFunction(f1minusx);
 
         //compute fZ
         fZ = FilterLoG2D::Execute(img_L, fZ, 1.0f);
-
         fZ->applyFunction(f1minusx);
 
         //aux buffers
         g = img_L->allocateSimilarOne();
-        e = img_L->allocateSimilarOne();
+        e = new bool[img_L->nPixels()];
 
-        pointers = new Image(img_L->width, img_L->height, 2);
+        pointers = new int[img_L->nPixels() * 2];
     }
 
     /**
@@ -147,10 +202,13 @@ public:
     {
         float *tmp;
 
-        std::vector< Vec<2, int> > list;
-
         *g = FLT_MAX;
-        e->setZero();
+
+        e = Buffer<bool>::assign(e, img_L->nPixels(), false);
+        pointers = Buffer<int>::assign(pointers, img_L->nPixels() * 2, 0);
+
+        int width  = img_L->width;
+        int height = img_L->height;
 
         int nx[] = {-1, 0, 1, -1, 1, -1, 0, 1};
         int ny[] = {1, 1, 1, 0, 0, -1, -1, -1};
@@ -158,6 +216,7 @@ public:
         tmp = (*g)(pS[0], pS[1]);
         tmp[0] = 0.0f;
 
+        std::vector< Vec<2, int> > list;
         list.push_back(pS);
 
         while(!list.empty()) {
@@ -166,12 +225,18 @@ public:
             Vec<2, int> q;
 
             float g_q = FLT_MAX;
+            bool bCheck = false;
             for(auto it = list.begin(); it != list.end(); it++) {
                 float g_it = (*g)((*it)[0], (*it)[1])[0];
                 if(g_it < g_q) {
                     g_q = g_it;
                     index = it;
+                    bCheck = true;
                 }
+            }
+
+            if(!bCheck) {
+                break;
             }
 
             q[0] = (*index)[0];
@@ -180,30 +245,28 @@ public:
             list.erase(index);
 
             //update
-            tmp = (*e)(q[0], q[1]);
-            tmp[0] = 1.0f;
+            e[q[1] * width + q[0]] = true;
 
             for(int i = 0; i < 8; i++) {
-                Vec<2, int> r = q;
-                r[0] += nx[i];
-                r[1] += ny[i];
+                Vec<2, int> r(  q[0] + nx[i],
+                                q[1] + ny[i]);
 
-                if(r[0] > -1 && r[0] < img_L->width &&
-                   r[1] > -1 && r[1] < img_L->height) {
-                    tmp = (*e)(r[0], r[1]);
-                    if(tmp[0] < 0.5f) {
+                if(r[0] > -1 && r[0] < width &&
+                   r[1] > -1 && r[1] < height) {
+
+                    if(!e[r[1] * width + r[0]]) {
                         float g_tmp = g_q + getCost(q, r);
 
                         //check list
                         bool bFlag = false;
                         for(auto it = list.begin(); it != list.end(); it++) {
-                            if((*it)[0] == r[0] && (*it)[1] == r[1]) {
+                            if(r.equal(*it)) {
                                 index = it;
                                 bFlag = true;
                             }
                         }
 
-                        if(bFlag && g_tmp < g_q) {
+                        if(bFlag && (g_tmp < g_q)) {
                             list.erase(index);
                         }
 
@@ -211,9 +274,9 @@ public:
                             tmp = (*g)(r[0], r[1]);
                             tmp[0] = g_tmp;
 
-                            tmp = (*pointers)(r[0], r[1]);
-                            tmp[0] = float(q[0]);
-                            tmp[1] = float(q[1]);
+                            int index = (r[1] * width + r[0]) * 2;
+                            pointers[index    ] = q[0];
+                            pointers[index + 1] = q[1];
                             list.push_back(r);
                         }
 
@@ -222,26 +285,29 @@ public:
                 }
 
             }
-
         }
 
-        //tracking
+        //forward pass -- tracking
         out.clear();
 
         out.push_back(pE);
         Vec<2, int> m = pE;
-
-        printf("tracking");
+        Vec<2, int> prev(-1, -1);
         while(true) {
-            if(m[0] == pS[0] && m[1] == pS[1]) {
+            prev = m;
+            if(m.equal(pS)) {
                 break;
             }
 
-            tmp = (*pointers)(m[0], m[1]);
-            Vec<2, int> t(tmp[0], tmp[1]);
+            int index = (m[1] * width + m[0]) * 2;
+            Vec<2, int> t(pointers[index], pointers[index + 1]);
 
             out.push_back(t);
             m = t;
+
+            if(prev.equal(m)) {
+                break;
+            }
         }
 
     }

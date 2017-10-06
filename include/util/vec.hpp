@@ -112,6 +112,19 @@ public:
     }
 
     /**
+     * @brief dot
+     * @param a
+     */
+    T dot(Vec<N, T> a)
+    {
+        T out = T(0);
+        for(unsigned int i=0; i<N; i++) {
+            out += data[i] * a[i];
+        }
+        return out;
+    }
+
+    /**
      * @brief div
      * @param value
      */
@@ -119,6 +132,28 @@ public:
     {
         for(unsigned int i=0; i<N; i++) {
             data[i] /= value;
+        }
+    }
+
+    /**
+     * @brief sub
+     * @param value
+     */
+    void sub(Vec<N, T> a)
+    {
+        for(unsigned int i=0; i<N; i++) {
+            data[i] -= a[i];
+        }
+    }
+
+    /**
+     * @brief neg
+     * @param value
+     */
+    void neg()
+    {
+        for(unsigned int i=0; i<N; i++) {
+            data[i] = -data[i];
         }
     }
 
@@ -172,13 +207,13 @@ public:
      */
     T lengthSq()
     {
-        T l2 = data[0] * data[0];
+        T out = data[0] * data[0];
 
         for(unsigned int i = 1; i < N; i++) {
-            l2 += data[i] * data[i];
+            out += data[i] * data[i];
         }
 
-        return l2;
+        return out;
     }
 };
 

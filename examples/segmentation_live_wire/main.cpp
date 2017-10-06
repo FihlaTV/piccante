@@ -52,9 +52,7 @@ int main(int argc, char *argv[])
         pic::Vec<2, int> pE(229, 324);
         lw->execute(pS, pE, out);
 
-        printf("%d\n", out.size());
-
-        for(int i = 0; i < out.size(); i++) {
+        for(unsigned int i = 0; i < out.size(); i++) {
             float *tmp = img(out[i][0], out[i][1]);
 
             tmp[0] = 1.0f;
