@@ -39,13 +39,13 @@ public:
     }
 
     /**
-     * @brief Transform computes the forward DCT transformation.
+     * @brief transform computes the forward DCT transformation.
      * @param imgIn is an input image.
      * @param imgOut is an output image; i.e. imgIn in the DCT domain.
      * @param size is the size of blocks (size * size) for computing the DCT.
      * @return
      */
-    static Image *Transform(Image *imgIn, Image *imgOut, int size = 8)
+    static Image *transform(Image *imgIn, Image *imgOut, int size = 8)
     {
         if(imgIn == NULL) {
             return imgOut;
@@ -125,13 +125,13 @@ public:
     }
 
     /**
-     * @brief Inverse computes the inverse DCT transformation.
+     * @brief inverse computes the inverse DCT transformation.
      * @param imgIn is an input image in the DCT domain.
      * @param imgOut is an output image; i.e. imgIn in spatial domain.
      * @param size is the size of blocks (size * size) for computing the DCT.
      * @return
      */
-    static Image *Inverse(Image *imgIn, Image *imgOut, int size = 8)
+    static Image *inverse(Image *imgIn, Image *imgOut, int size = 8)
     {
         if(imgIn == NULL) {
             return imgOut;

@@ -36,20 +36,20 @@ protected:
     int							bmax[2], bmin[2];
 
     /**
-     * @brief FindAux
+     * @brief findAux
      * @param pos
      * @param radius2
      * @param out
      */
-    void FindAux(int *pos, int radius2, std::set<int> &out)
+    void findAux(int *pos, int radius2, std::set<int> &out)
     {
         if(leaf) {
             out.insert(list.begin(), list.end());
         } else {
             for(int i = 0; i < 4; i++) {
                 if(children[i] != NULL) {
-                    if(CheckCircleBBox(children[i]->bmax, children[i]->bmin, pos, radius2)) {
-                        children[i]->FindAux(pos, radius2, out);
+                    if(checkCircleBBox(children[i]->bmax, children[i]->bmin, pos, radius2)) {
+                        children[i]->findAux(pos, radius2, out);
                     }
                 }
             }
@@ -86,13 +86,13 @@ public:
     }
 
     /**
-     * @brief CheckPointBBox
+     * @brief checkPointBBox
      * @param p
      * @param bmin
      * @param bmax
      * @return
      */
-    static bool CheckPointBBox(int *p, int *bmin, int *bmax)
+    static bool checkPointBBox(int *p, int *bmin, int *bmax)
     {
         return((p[0] >= bmin[0])
                && (p[1] >= bmin[1])
@@ -101,14 +101,14 @@ public:
     }
 
     /**
-     * @brief CheckCircleBBox
+     * @brief checkCircleBBox
      * @param bmax
      * @param bmin
      * @param center
      * @param radius2
      * @return
      */
-    static bool CheckCircleBBox(int *bmax, int *bmin, int *center, int radius2)
+    static bool checkCircleBBox(int *bmax, int *bmin, int *center, int radius2)
     {
         int dmin = 0;
 
@@ -128,14 +128,14 @@ public:
     }
 
     /**
-     * @brief GetQuadrant
+     * @brief getQuadrant
      * @param bmax
      * @param bmin
      * @param pMax
      * @param pMin
      * @param i
      */
-    static void GetQuadrant(int *bmax, int *bmin, int *pMax, int *pMin, int i)
+    static void getQuadrant(int *bmax, int *bmin, int *pMax, int *pMin, int i)
     {
         int half[2];
 
@@ -189,13 +189,13 @@ public:
     }
 
     /**
-     * @brief Insert
+     * @brief insert
      * @param pos
      * @param value
      * @param MAX_OCTREE_LEVEL
      * @param level
      */
-    void Insert(int *pos, int value, int MAX_OCTREE_LEVEL, int level = 0)
+    void insert(int *pos, int value, int MAX_OCTREE_LEVEL, int level = 0)
     {
         if(level == MAX_OCTREE_LEVEL) {
             list.insert(value);
@@ -204,14 +204,14 @@ public:
             int pMax[2], pMin[2];
 
             for(int i = 0; i < 4; i++) {
-                GetQuadrant(bmax, bmin, pMax, pMin, i);
+                getQuadrant(bmax, bmin, pMax, pMin, i);
 
-                if(CheckPointBBox(pos, pMin, pMax)) {
+                if(checkPointBBox(pos, pMin, pMax)) {
                     if(children[i] == NULL) {
                         children[i] = new Quadtree(pMax, pMin);
                     }
 
-                    children[i]->Insert(pos, value, MAX_OCTREE_LEVEL, level + 1);
+                    children[i]->insert(pos, value, MAX_OCTREE_LEVEL, level + 1);
                     break;
                 }
             }
@@ -219,13 +219,13 @@ public:
     }
 
     /**
-     * @brief Find
+     * @brief find
      * @param x
      * @param y
      * @param radius
      * @param out
      */
-    void Find(float x, float y, float radius, std::set<int> &out)
+    void find(float x, float y, float radius, std::set<int> &out)
     {
 
         int pos[2];
@@ -233,8 +233,8 @@ public:
         pos[1] = int(y);
         int radius2 = int(ceilf(radius * radius));
 
-        if(CheckPointBBox(pos, bmin, bmax)) {
-            FindAux(pos, radius2, out);
+        if(checkPointBBox(pos, bmin, bmax)) {
+            findAux(pos, radius2, out);
         }
     }
 };

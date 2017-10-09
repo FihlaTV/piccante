@@ -94,11 +94,11 @@ protected:
     }
 
     /**
-     * @brief Spatial creates a low resolution version of the stack.
+     * @brief spatial creates a low resolution version of the stack.
      * @param stack is a stack of Image* at different exposures
      * @param sub_type
      */
-    void Spatial(ImageVec &stack, SAMPLER_TYPE sub_type = ST_MONTECARLO_S)
+    void spatial(ImageVec &stack, SAMPLER_TYPE sub_type = ST_MONTECARLO_S)
     {
         int width    = stack[0]->width;
         int height   = stack[0]->height;
@@ -162,13 +162,13 @@ public:
 
     ~SubSampleStack()
     {
-        Destroy();
+        release();
     }
 
     /**
      * @brief Destroy
      */
-    void Destroy()
+    void release()
     {
         exposures = 0;
         channels = 0;
@@ -181,15 +181,15 @@ public:
     }
 
     /**
-     * @brief Compute
+     * @brief execute
      * @param stack
      * @param nSamples output number of samples
      * @param bSpatial
      * @param sub_type
      */
-    void Compute(ImageVec &stack, int nSamples, float alpha = 0.f, bool bSpatial = false, SAMPLER_TYPE sub_type = ST_MONTECARLO_S)
+    void execute(ImageVec &stack, int nSamples, float alpha = 0.f, bool bSpatial = false, SAMPLER_TYPE sub_type = ST_MONTECARLO_S)
     {
-        Destroy();
+        release();
 
         if(!((stack.size() > 1 && (nSamples > 1)))) {
             return;
@@ -200,7 +200,7 @@ public:
         this->exposures = stack.size();
 
         if(bSpatial) {
-            Spatial(stack, sub_type);
+            spatial(stack, sub_type);
         } else {
             Grossberg(stack);
         }

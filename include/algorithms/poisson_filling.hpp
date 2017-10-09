@@ -37,6 +37,28 @@ protected:
     bool		*maskPoisson;
     Image       *imgTmp;
 
+
+    /**
+     * @brief release
+     */
+    void release()
+    {
+        if(mask != NULL) {
+            delete[] mask;
+            mask = NULL;
+        }
+
+        if(maskPoisson != NULL) {
+            delete[] maskPoisson;
+            maskPoisson = NULL;
+        }
+
+        if(imgTmp != NULL) {
+            delete imgTmp;
+            imgTmp = NULL;
+        }
+    }
+
 public:
 
     /**
@@ -56,36 +78,15 @@ public:
 
     ~PoissonFilling()
     {
-        CleanUp();
+        release();
     }
 
     /**
-     * @brief CleanUp
-     */
-    void CleanUp()
-    {
-        if(mask != NULL) {
-            delete[] mask;
-            mask = NULL;
-        }
-
-        if(maskPoisson != NULL) {
-            delete[] maskPoisson;
-            maskPoisson = NULL;
-        }
-
-        if(imgTmp != NULL) {
-            delete imgTmp;
-            imgTmp = NULL;
-        }
-    }
-
-    /**
-     * @brief Update
+     * @brief update
      * @param imgOut
      * @param imgIn
      */
-    void Update(Image *imgOut, Image *imgIn)
+    void update(Image *imgOut, Image *imgIn)
     {
         imgOut->assign(imgIn);
 
@@ -168,13 +169,13 @@ public:
     }
 
     /**
-     * @brief Compute
+     * @brief execute
      * @param imgIn
      * @param imgOut
      * @param value
      * @return
      */
-    Image *Compute(Image *imgIn, Image *imgOut, float value)
+    Image *execute(Image *imgIn, Image *imgOut, float value)
     {
         if(imgIn == NULL) {
             return NULL;
@@ -186,7 +187,7 @@ public:
 
         if(imgTmp != NULL) {
             if(!imgTmp->isSimilarType(imgIn)) {
-                CleanUp();
+                release();
                 imgTmp = imgIn->clone();
             }
         } else {
@@ -218,7 +219,7 @@ public:
         int i = 0;
 
         while(!MaskEmpty(mask, imgIn->width, imgIn->height)) {
-            Update(work[i % 2], work[(i + 1) % 2]);
+            update(work[i % 2], work[(i + 1) % 2]);
             i++;
 
             if(i > maxIter) {

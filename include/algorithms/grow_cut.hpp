@@ -26,13 +26,13 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 namespace pic {
 
 /**
- * @brief GrowCut
+ * @brief computeGrowCut
  * @param img
  * @param seeds
  * @param state_cur
  * @return
  */
-Image *GrowCut(Image *img, Image *seeds, Image *state_cur = NULL)
+Image *computeGrowCut(Image *img, Image *seeds, Image *state_cur = NULL)
 {
     if(img == NULL || seeds == NULL) {
         return NULL;
@@ -54,7 +54,7 @@ Image *GrowCut(Image *img, Image *seeds, Image *state_cur = NULL)
         state_cur->data[j] = seeds->data[j2];
         state_cur->data[j + 1] = seeds->data[j2] > 0.0f ? 1.0f : 0.0f;
 
-        //fixing max
+        //fix max
         j = i * img_max->channels;
         float C = img_max->data[j] * img_max->data[j];
         for(int c = 1; c < img_max->channels; c++) {

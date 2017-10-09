@@ -24,14 +24,14 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 namespace pic {
 
 /**
- * @brief RichardsonLucyDeconvolution
+ * @brief computeRichardsonLucyDeconvolution
  * @param imgIn
  * @param psf
  * @param nIterations
  * @param imgOut
  * @return
  */
-Image *RichardsonLucyDeconvolution(Image *imgIn, Image *psf, int nIterations = 10, Image *imgOut = NULL)
+Image *computeRichardsonLucyDeconvolution(Image *imgIn, Image *psf, int nIterations = 10, Image *imgOut = NULL)
 {
     if(imgIn == NULL) {
         return imgOut;

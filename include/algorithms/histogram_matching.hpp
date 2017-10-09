@@ -24,13 +24,13 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 namespace pic {
 
 /**
- * @brief HistogramMatching
+ * @brief matchHistograms
  * @param img_source is the input image
  * @param img_target is the image with target colors
  * @param out is
  * @return It returns out.
  */
-Image *HistogramMatching(Image* img_source, Image* img_target, int nBin = 256, Image* out = NULL)
+Image *matchHistograms(Image* img_source, Image* img_target, int nBin = 256, Image* out = NULL)
 {
     if(img_source == NULL || img_target == NULL) {
         return out;

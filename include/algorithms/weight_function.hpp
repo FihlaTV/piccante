@@ -26,12 +26,12 @@ namespace pic {
 enum CRF_WEIGHT {CW_ALL, CW_HAT, CW_DEB97, CW_DEB97p01, CW_ROBERTSON};
 
 /**
- * @brief WeightFunction computes weight functions for x in [0,1].
+ * @brief weightFunction computes weight functions for x in [0,1].
  * @param x is an input value in [0, 1].
  * @param type is the type of the function.
  * @return It returns a weight for x.
  */
-inline float WeightFunction(float x, CRF_WEIGHT type)
+inline float weightFunction(float x, CRF_WEIGHT type)
 {
     switch(type) {
 

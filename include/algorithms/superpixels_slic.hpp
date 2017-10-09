@@ -80,12 +80,12 @@ protected:
     }
 
     /**
-     * @brief Pass
+     * @brief pass
      * @param img
      * @param S
      * @return
      */
-    bool Pass(Image *img, int S)
+    bool pass(Image *img, int S)
     {
         float Sf = float(S);
         float Sf2 = Sf * Sf;
@@ -122,7 +122,7 @@ protected:
             }
         }
 
-        //Updating mPixel
+        //update mPixel
         for(int i = 0; i < labels_distance->size(); i += labels_distance->channels) {
             int label = int(labels_distance->data[i]);
 
@@ -135,7 +135,7 @@ protected:
             }
         }
 
-        //Updating clusters
+        //update clusters
         for(int i = 0; i < nSuperPixels; i++) {
             centers[i].x = 0;
             centers[i].y = 0;
@@ -193,10 +193,32 @@ protected:
         return (E > (0.0001f * float(nSuperPixels)));
     }
 
+
+
     /**
-     * @brief Destroy
+     * @brief allocate
+     * @param nSuperPixels
+     * @param channels
      */
-    void Destroy()
+    void allocate(int nSuperPixels, int channels)
+    {
+
+        this->nSuperPixels = nSuperPixels;
+
+        release();
+
+        centers		= new SlicoCenter[nSuperPixels];
+        prevX		= new unsigned int [nSuperPixels];
+        prevY		= new unsigned int [nSuperPixels];
+        counter		= new unsigned int [nSuperPixels];
+        mPixel		= new float [nSuperPixels];
+        col_values	= new float [nSuperPixels * channels];
+    }
+
+    /**
+     * @brief release
+     */
+    void release()
     {
         if(lap_img != NULL) {
             delete lap_img;
@@ -229,26 +251,6 @@ protected:
         if(mPixel != NULL) {
             delete[] mPixel;
         }
-    }
-
-    /**
-     * @brief Allocate
-     * @param nSuperPixels
-     * @param channels
-     */
-    void Allocate(int nSuperPixels, int channels) 
-    {
-
-        this->nSuperPixels = nSuperPixels;
-
-        Destroy();
-
-        centers		= new SlicoCenter[nSuperPixels];
-        prevX		= new unsigned int [nSuperPixels];
-        prevY		= new unsigned int [nSuperPixels];
-        counter		= new unsigned int [nSuperPixels];
-        mPixel		= new float [nSuperPixels];
-        col_values	= new float [nSuperPixels * channels];
     }
 
 public:
@@ -284,20 +286,20 @@ public:
         col_values = NULL;
         mPixel = NULL;
 
-        Process(img, nSuperPixels);
+        execute(img, nSuperPixels);
     }
 
     ~Slic()
     {
-        Destroy();
+        release();
     }
     
     /**
-     * @brief Process
+     * @brief execute
      * @param img
      * @param nSuperPixels
      */
-    void Process(Image *img, int nSuperPixels = 64)
+    void execute(Image *img, int nSuperPixels = 64)
     {
         if(img == NULL) {
             return;
@@ -312,7 +314,7 @@ public:
 
         nSuperPixels = (img->width / S) * (img->height / S);
 
-        Allocate(nSuperPixels, img->channels);
+        allocate(nSuperPixels, img->channels);
 
         if(labels_distance == NULL) {
             labels_distance = new Image(1, img->width, img->height, 3);
@@ -385,7 +387,7 @@ public:
         bool bCheck = true;
 
         while(bCheck) {
-            bCheck = Pass(img, S);
+            bCheck = pass(img, S);
 
             if(!bCheck && iter <= 10) {
                 bCheck = true;

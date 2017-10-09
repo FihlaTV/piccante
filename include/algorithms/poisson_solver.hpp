@@ -28,12 +28,12 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 namespace pic {
 
 /**
- * @brief PoissonSolver
+ * @brief computePoissonSolver
  * @param f
  * @param ret
  * @return
  */
-Image *PoissonSolver(Image *f, Image *ret = NULL)
+Image *computePoissonSolver(Image *f, Image *ret = NULL)
 {
     if(f == NULL) {
         return NULL;
@@ -123,6 +123,66 @@ Image *PoissonSolver(Image *f, Image *ret = NULL)
     }
 
     return ret;
+}
+
+/**
+ * @brief computePoissonSolverIterative
+ * @param img
+ * @param laplacian
+ * @param coords
+ * @param maxSteps
+ * @return
+ */
+Image *computePoissonSolverIterative(Image *img, Image *laplacian,
+                              std::vector<int> coords,
+                              int maxSteps = 100)
+{
+    #ifdef PIC_DEBUG
+        printf("Iterative Poisson solver... ");
+    #endif
+
+    if(maxSteps < 1) {
+        maxSteps = 20000;
+    }
+
+    Image *tmpImg = img->clone();
+    Image *tmpSwap = NULL;
+
+    int c, coord, x, y;
+    float workValue;
+
+    for(int i = 0; i < maxSteps; i++) {
+        for(unsigned int j = 0; j < coords.size(); j++) {
+            coord = coords[j];
+            img->reverseAddress(coord, x, y);
+
+            workValue = -laplacian->data[coord];
+
+            c = img->getAddress(x + 1, y);
+            workValue += img->data[c];
+
+            c = img->getAddress(x - 1, y);
+            workValue += img->data[c];
+
+            c = img->getAddress(x, y + 1);
+            workValue += img->data[c];
+
+            c = img->getAddress(x, y - 1);
+            workValue += img->data[c];
+
+            tmpImg->data[coord] = workValue / 4.0f;
+        }
+
+        tmpSwap = img;
+        img     = tmpImg;
+        tmpImg  = tmpSwap;
+    }
+
+    #ifdef PIC_DEBUG
+        printf("done.\n");
+    #endif
+
+    return img;
 }
 
 } // end namespace pic

@@ -39,9 +39,9 @@ protected:
     Quadtree			*root;
 
     /**
-     * @brief Init
+     * @brief init
      */
-    void Init()
+    void init()
     {
         int size = width * height;
 
@@ -73,7 +73,7 @@ protected:
 
             for(int j = 0; j < width; j++) {
                 pos[0] = j;
-                root->Insert(pos, buffer[ind + j], max_level);
+                root->insert(pos, buffer[ind + j], max_level);
             }
         }
     }
@@ -95,7 +95,7 @@ public:
         this->buffer = buffer;
         this->width  = width;
         this->height = height;
-        Init();
+        init();
     }
 
     ~SuperPixelsOracle()
@@ -104,15 +104,15 @@ public:
     }
 
     /**
-     * @brief Query
+     * @brief query
      * @param x
      * @param y
      * @param r
      * @param out
      */
-    void Query(float x, float y, float r, std::set<int> &out)
+    void query(float x, float y, float r, std::set<int> &out)
     {
-        root->Find(x, y, r, out);
+        root->find(x, y, r, out);
     }
 };
 

@@ -25,14 +25,14 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 namespace pic {
 
 /**
- * @brief FlashPhotography implements basic flash photography.
+ * @brief flashPhotography implements basic flash photography.
  * @param nameFlash
  * @param nameNoFlash
  * @param nameOut
  * @param filter
  * @return
  */
-Image *FlashPhotography(std::string nameFlash, std::string nameNoFlash,
+Image *flashPhotography(std::string nameFlash, std::string nameNoFlash,
                            std::string nameOut,
                            Filter *filter)
 {
@@ -55,7 +55,7 @@ Image *FlashPhotography(std::string nameFlash, std::string nameNoFlash,
 }
 
 /**
- * @brief FlashPhotography2DF
+ * @brief flashPhotography2DF
  * @param nameFlash
  * @param nameNoFlash
  * @param nameOut
@@ -63,16 +63,16 @@ Image *FlashPhotography(std::string nameFlash, std::string nameNoFlash,
  * @param sigma_r
  * @return
  */
-Image *FlashPhotography2DF(std::string nameFlash, std::string nameNoFlash,
+Image *flashPhotography2DF(std::string nameFlash, std::string nameNoFlash,
                               std::string nameOut,
                               float sigma_s, float sigma_r)
 {
     FilterBilateral2DF filter(sigma_s, sigma_r);
-    return FlashPhotography(nameFlash, nameNoFlash, nameOut, (Filter *)&filter);
+    return flashPhotography(nameFlash, nameNoFlash, nameOut, (Filter *)&filter);
 }
 
 /**
- * @brief FlashPhotography2DS
+ * @brief flashPhotography2DS
  * @param nameFlash
  * @param nameNoFlash
  * @param nameOut
@@ -80,12 +80,12 @@ Image *FlashPhotography2DF(std::string nameFlash, std::string nameNoFlash,
  * @param sigma_r
  * @return
  */
-Image *FlashPhotography2DS(std::string nameFlash, std::string nameNoFlash,
+Image *flashPhotography2DS(std::string nameFlash, std::string nameNoFlash,
                               std::string nameOut,
                               float sigma_s, float sigma_r)
 {
     FilterBilateral2DS filter(sigma_s, sigma_r, 1);
-    return FlashPhotography(nameFlash, nameNoFlash, nameOut, (Filter *)&filter);
+    return flashPhotography(nameFlash, nameNoFlash, nameOut, (Filter *)&filter);
 }
 
 } // end namespace pic

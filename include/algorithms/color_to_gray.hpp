@@ -25,12 +25,12 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 namespace pic {
 
 /**
- * @brief ColorToGray
+ * @brief colorToGray
  * @param imgIn
  * @param imgOut
  * @return
  */
-Image *ColorToGray(Image *imgIn, Image *imgOut)
+Image *colorToGray(Image *imgIn, Image *imgOut)
 {
     if(imgIn == NULL){
         return imgOut;

@@ -100,7 +100,7 @@ protected:
                         max_val_saturation = x / t_min;
                     }
 
-                    float weight = WeightFunction(x, weight_type);
+                    float weight = weightFunction(x, weight_type);
 
                     if(domain == HRD_SQ) {
                         weight *= (src[l]->exposure * src[l]->exposure);

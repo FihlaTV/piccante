@@ -130,7 +130,7 @@ public:
     Image *SegmentationSuperPixels(Image *imgIn, int nSuperPixels = 4096)
     {
         Slic sp;
-        sp.Process(imgIn, nSuperPixels);
+        sp.execute(imgIn, nSuperPixels);
         Image *imgOut = sp.getMeanImage(NULL);
         return imgOut;
     }

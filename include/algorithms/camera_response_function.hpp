@@ -116,7 +116,7 @@ protected:
      */
     void Destroy()
     {
-        stackOut.Destroy();
+        stackOut.release();
 
         for(unsigned int i = 0; i < icrf.size(); i++) {
             if(icrf[i] != NULL) {
@@ -397,7 +397,7 @@ public:
         this->type_linearization = IL_LUT_8_BIT;
 
         //Subsampling the image stack
-        stackOut.Compute(stack, nSamples);
+        stackOut.execute(stack, nSamples);
 
         int *samples = stackOut.get();
         nSamples = stackOut.getNSamples();
@@ -407,7 +407,7 @@ public:
 
         //pre-computing the weight function
         for(int i = 0; i < 256; i++) {
-            w[i] = WeightFunction(float(i) / 255.0f, type);
+            w[i] = weightFunction(float(i) / 255.0f, type);
         }
 
         unsigned int nExposure = stack.size();
@@ -461,7 +461,7 @@ public:
         ImaveVecSortByExposureTime(stack);
 
         //Subsampling the image stack
-        stackOut.Compute(stack, nSamples, alpha);
+        stackOut.execute(stack, nSamples, alpha);
         int *samples = stackOut.get();
         nSamples = stackOut.getNSamples();
 
@@ -546,13 +546,13 @@ public:
 
         // precompute robertson weighting function
         for (size_t i=0; i<256; i++) {
-            this->w[i] = pic::WeightFunction(i / 255.0, pic::CW_ROBERTSON);
+            this->w[i] = pic::weightFunction(i / 255.0, pic::CW_ROBERTSON);
         }
 
         // avoid saturation
         int minM = 0;
         int maxM = 255;
-        for (int m=0; m<256; m++) {
+        for (int m = 0; m < 256; m++) {
             if (this->w[m] > 0) {
                 minM = m;
                 break;

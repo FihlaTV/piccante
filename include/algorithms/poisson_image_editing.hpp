@@ -29,14 +29,14 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 namespace pic {
 
 /**
- * @brief PoissonImageEditing
+ * @brief computePoissonImageEditing
  * @param source
  * @param target
  * @param mask
  * @param ret
  * @return
  */
-Image *PoissonImageEditing(Image *source, Image *target, bool *mask, Image *ret = NULL)
+Image *computePoissonImageEditing(Image *source, Image *target, bool *mask, Image *ret = NULL)
 {
     if((source == NULL) || (target == NULL) || (mask == NULL)) {
         return NULL;

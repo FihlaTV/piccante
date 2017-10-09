@@ -18,14 +18,13 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #ifndef PIC_ALGORITHMS_HPP
 #define PIC_ALGORITHMS_HPP
 
-#include "algorithms/calculate_divergence.hpp"
+#include "algorithms/compute_divergence.hpp"
 #include "algorithms/nelder_mead_opt_gray_match.hpp"
 #include "algorithms/camera_response_function.hpp"
 #include "algorithms/connected_components.hpp"
 #include "algorithms/discrete_cosine_transform.hpp"
 #include "algorithms/edge_enhancement.hpp"
 #include "algorithms/flash_photography.hpp"
-#include "algorithms/poisson_solver_iterative.hpp"
 #include "algorithms/poisson_filling.hpp"
 #include "algorithms/poisson_solver.hpp"
 #include "algorithms/poisson_image_editing.hpp"

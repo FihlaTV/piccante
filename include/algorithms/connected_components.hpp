@@ -56,7 +56,7 @@ public:
         coords.push_back(i);
     }
 
-    void Add(int i)
+    void add(int i)
     {
         coords.push_back(i);
     }
@@ -69,14 +69,14 @@ public:
 
 
 /**
- * @brief ConnectedComponents computes connected components in an image
+ * @brief computeConnectedComponents computes connected components in an image
  * @param img
  * @param ret
  * @param comp
  * @param channel
  * @return
  */
-Image *ConnectedComponents(Image *img, std::vector<LabelOutput> &ret,
+Image *computeConnectedComponents(Image *img, std::vector<LabelOutput> &ret,
                               Image *comp = NULL, float thr = 0.05f)
 {
     //Check input paramters
@@ -272,7 +272,7 @@ Image *ConnectedComponents(Image *img, std::vector<LabelOutput> &ret,
         uniqueIt = unique.find(id);
 
         if(uniqueIt != unique.end()) {
-            ret[mapping[id]].Add(i);
+            ret[mapping[id]].add(i);
         } else {
             std::pair<float, int> tmp = std::make_pair(id, counter);
             mapping.insert(tmp);
