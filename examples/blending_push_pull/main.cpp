@@ -34,17 +34,17 @@ int main(int argc, char *argv[])
         printf("OK\n");
 
         pic::Image img_black(1, 32, 32, 3);
-        img_black.SetZero();
+        img_black.setZero();
 
         //Adding a hole in the image
-        img.CopySubImage(&img_black, 292, 130);
+        img.copySubImage(&img_black, 292, 130);
 
         img.Write("../data/output/pull_push_black_pixels.hdr");
 
         //Recovering black pixels with push-pull
         pic::PushPull pp;
 
-        pic::Image *imgOut = pp.Execute(&img, 0.0f);
+        pic::Image *imgOut = pp.execute(&img, 0.0f);
 
         printf("Writing recovered result using Push-Pull... ");
 
