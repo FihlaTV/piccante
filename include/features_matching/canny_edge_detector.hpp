@@ -40,9 +40,9 @@ protected:
     float    sigma, threshold_1, threshold_2;
 
     /**
-     * @brief Destroy frees allocated memory for this class.
+     * @brief release frees allocated memory for this class.
      */
-    void Destroy()
+    void release()
     {
         if(bLum && lum != NULL) {
             delete lum;
@@ -61,21 +61,21 @@ public:
         lum = NULL;
         bLum = false;
 
-        Update();
+        update();
     }
 
     ~CannyEdgeDetector()
     {
-        Destroy();
+        release();
     }
 
     /**
-     * @brief Update
+     * @brief update
      * @param sigma
      * @param threshold_1
      * @param threshold_2
      */
-    void Update(float sigma = 1.4f, float threshold_1 = 0.05f, float threshold_2 = 0.3f)
+    void update(float sigma = 1.4f, float threshold_1 = 0.05f, float threshold_2 = 0.3f)
     {
         if(sigma > 0.0f) {
             this->sigma = sigma;
@@ -103,19 +103,19 @@ public:
     }
 
     /**
-     * @brief Compute computes Canny edge detector on img and ouputs imgEdges as results.
+     * @brief execute executes Canny edge detector on img and ouputs imgEdges as results.
      * @param img
      * @param imgEdges
      * @return
      */
-    Image *Compute(Image *img, Image *imgEdges)
+    Image *execute(Image *img, Image *imgEdges)
     {
         if(img == NULL) {
             return imgEdges;
         }
 
         if(img->channels == 1) {
-            Destroy();
+            release();
             lum = img;
         } else {
             bLum = true;
@@ -197,7 +197,7 @@ public:
             }
         }
 
-        //removing false edges: a weak edge is a strong one
+        //remove false edges: a weak edge is a strong one
         //if it is connected to a strong edge
         int x[] = {1, 1, 0, -1, -1, -1,  0,  1};
         int y[] = {0, 1, 1,  1,  0, -1, -1, -1};

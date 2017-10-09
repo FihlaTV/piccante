@@ -44,7 +44,7 @@ protected:
     float sigma, threshold;
     int   radius, radius_maxima;
 
-    void Destroy()
+    void release()
     {
         if(lum != NULL) {
             delete lum;
@@ -68,22 +68,22 @@ public:
         lum_flt = NULL;
 
         bComputeThreshold = true;
-        Update();
+        update();
     }
 
     ~SusanCornerDetector()
     {
-        Destroy();
+        release();
     }
 
     /**
-     * @brief Update
+     * @brief update
      * @param sigma
      * @param radius_maxima
      * @param radius
      * @param threshold
      */
-    void Update(float sigma = 1.0f, int radius_maxima = 5, int radius = 3, float threshold = 0.001f)
+    void update(float sigma = 1.0f, int radius_maxima = 5, int radius = 3, float threshold = 0.001f)
     {
         if(sigma > 0.0f) {
             this->sigma = sigma;
@@ -111,11 +111,11 @@ public:
     }
 
     /**
-     * @brief Compute
+     * @brief execute
      * @param img
      * @param corners
      */
-    void Compute(Image *img, std::vector< Eigen::Vector3f > *corners)
+    void execute(Image *img, std::vector< Eigen::Vector3f > *corners)
     {
         if(img == NULL) {
             return;

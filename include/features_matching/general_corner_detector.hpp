@@ -52,11 +52,11 @@ public:
     }
 
     /**
-     * @brief Compute
+     * @brief execute
      * @param img
      * @param corners
      */
-    virtual void Compute(Image *img, std::vector< Eigen::Vector3f > *corners)
+    virtual void execute(Image *img, std::vector< Eigen::Vector3f > *corners)
     {
 
     }
@@ -100,10 +100,10 @@ public:
     }
 
     /**
-     * @brief Test
+     * @brief test
      * @param gcd
      */
-    static void Test(GeneralCornerDetector *gcd)
+    static void test(GeneralCornerDetector *gcd)
     {
         if(gcd == NULL){
             return;
@@ -118,7 +118,7 @@ public:
         full_image.copySubImage(&quad, 192, 192);
 
         std::vector< Eigen::Vector3f > corners;
-        gcd->Compute(&full_image, &corners);
+        gcd->execute(&full_image, &corners);
 
         printf("\n Corner Detector Test:\n");
 

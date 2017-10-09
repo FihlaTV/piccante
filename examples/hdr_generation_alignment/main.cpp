@@ -50,11 +50,11 @@ int main(int argc, char *argv[])
 
         printf("Aligning bright and dark exposure images to the well-exposed one... ");
         Eigen::Vector2i shift_dark;
-        pic::Image *img_dark = pic::WardAlignment::Execute(&img[0], &img[1], shift_dark);
+        pic::Image *img_dark = pic::WardAlignment::execute(&img[0], &img[1], shift_dark);
         ImageWrite(img_dark, "../data/output/stack_aligned_dark.jpg", pic::LT_NOR);
 
         Eigen::Vector2i shift_bright;
-        pic::Image *img_bright = pic::WardAlignment::Execute(&img[0], &img[2], shift_bright);
+        pic::Image *img_bright = pic::WardAlignment::execute(&img[0], &img[2], shift_bright);
         ImageWrite(img_bright, "../data/output/stack_aligned_bright.jpg", pic::LT_NOR);
         printf("Ok\n");
 

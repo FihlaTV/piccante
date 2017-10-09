@@ -69,7 +69,7 @@ pic::Image *ImageConvertFromQImage(QImage *imgIn,
     if(imgOut == NULL) {
         imgOut = new pic::Image(width, height, channels);
     } else {
-        imgOut->Allocate(width, height, channels, 1);
+        imgOut->allocate(width, height, channels, 1);
     }
 
     int frames = imgOut->frames;

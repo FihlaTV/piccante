@@ -73,8 +73,8 @@ int main(int argc, char *argv[])
         //get corners
         printf("Extracting corners...\n");
         pic::HarrisCornerDetector hcd(2.5f, 5);
-        hcd.Compute(L0, &corners_from_img0);
-        hcd.Compute(L1, &corners_from_img1);
+        hcd.execute(L0, &corners_from_img0);
+        hcd.execute(L1, &corners_from_img1);
 
         //compute ORB descriptors for each corner and image
         //compute luminance images

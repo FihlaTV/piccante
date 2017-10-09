@@ -45,10 +45,10 @@ protected:
     int             *x, *y;
 
     /**
-     * @brief GenerateSample
+     * @brief generateSample
      * @param sample
      */
-    void GenerateSample(int *sample)
+    void generateSample(int *sample)
     {
         float theta = C_PI_2 * Random((*m)());
 
@@ -60,10 +60,10 @@ protected:
     }
 
     /**
-     * @brief GenerateSamples
+     * @brief generateSamples
      * @param n
      */
-    void GenerateSamples(unsigned int n)
+    void generateSamples(unsigned int n)
     {
         this->n = n;
         unsigned int n2 = n * 2;
@@ -72,8 +72,8 @@ protected:
         y = new int [n2];
 
         for(unsigned int i = 0; i < n2; i += 2) {
-            GenerateSample(&x[i]);
-            GenerateSample(&y[i]);
+            generateSample(&x[i]);
+            generateSample(&y[i]);
         }
     }
 
@@ -165,7 +165,7 @@ public:
         this->sigma_sq = float(S * S) / 25.0f;
         this->sigma_sq_2 = 2.0f * this->sigma_sq;
 
-        GenerateSamples(n);
+        generateSamples(n);
     }
 
     ~BRIEFDescriptor()

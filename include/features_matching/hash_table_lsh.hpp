@@ -87,6 +87,13 @@ public:
         return address;
     }
 
+    /**
+     * @brief getNearest
+     * @param desc
+     * @param matched_j
+     * @param dist_1
+     * @param dist_2
+     */
     void getNearest(unsigned int * desc, int &matched_j, unsigned int &dist_1, unsigned int &dist_2)
     {
         unsigned int address = getAddress(desc);

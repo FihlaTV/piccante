@@ -57,8 +57,8 @@ int main(int argc, char *argv[])
         //FAST corners
         std::vector< Eigen::Vector3f > corners_fast;
         pic::FastCornerDetector fcd;
-        fcd.Update(1.0f, 5);
-        fcd.Compute(&img, &corners_fast);
+        fcd.update(1.0f, 5);
+        fcd.execute(&img, &corners_fast);
 
         printf("\nFAST Corner Detector Test:\n");
         for(unsigned int i = 0; i < corners_fast.size(); i++) {
@@ -74,8 +74,8 @@ int main(int argc, char *argv[])
         //Harris corners
         std::vector< Eigen::Vector3f > corners_harris;
         pic::HarrisCornerDetector hcd;
-        hcd.Update(1.0f, 5);
-        hcd.Compute(&img, &corners_harris);
+        hcd.update(1.0f, 5);
+        hcd.execute(&img, &corners_harris);
 
         printf("\nHarris Corner Detector Test:\n");
         for(unsigned int i = 0; i < corners_harris.size(); i++) {
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
         //SUSAN corners
         std::vector< Eigen::Vector3f > corners_susan;
         pic::SusanCornerDetector scd;
-        scd.Compute(&img, &corners_susan);
+        scd.execute(&img, &corners_susan);
 
         printf("\nSUSAN Corner Detector Test:\n");
         for(unsigned int i = 0; i < corners_susan.size(); i++) {

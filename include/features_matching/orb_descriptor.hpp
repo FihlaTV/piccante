@@ -94,7 +94,7 @@ public:
         this->sigma_sq = float(S * S) / 25.0f;
         this->sigma_sq_2 = 2.0f * this->sigma_sq;
 
-        GenerateSamples(n);
+        generateSamples(n);
         rotateSamples();
     }
 

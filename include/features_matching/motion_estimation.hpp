@@ -35,11 +35,11 @@ protected:
     PatchComp   *pmc;
 
     /**
-     * @brief ProcessAux
+     * @brief processAux
      * @param tiles
      * @param imgOut
      */
-    void ProcessAux(TileList *tiles, Image *imgOut)
+    void processAux(TileList *tiles, Image *imgOut)
     {
         bool state = true;
 
@@ -107,7 +107,7 @@ public:
     {
         pmc = NULL;
 
-        Setup(img0, img1, blockSize, maxRadius);
+        setup(img0, img1, blockSize, maxRadius);
     }
 
     ~MotionEstimation()
@@ -118,13 +118,13 @@ public:
     }
 
     /**
-     * @brief Setup
+     * @brief setup
      * @param img0
      * @param img1
      * @param blockSize
      * @param maxRadius
      */
-    void Setup(Image *img0, Image *img1, int blockSize, int maxRadius)
+    void setup(Image *img0, Image *img1, int blockSize, int maxRadius)
     {
         if(img0 == NULL || img1 == NULL) {
             return;
@@ -156,11 +156,11 @@ public:
     }
 
     /**
-     * @brief Process
+     * @brief execute
      * @param imgOut
      * @return
      */
-    Image *Process(Image *imgOut)
+    Image *process(Image *imgOut)
     {
         if(imgOut == NULL) {
             imgOut = new Image(1, width, height, 3);
@@ -175,7 +175,7 @@ public:
 
         for(int i = 0; i < numCores; i++) {
             thrd[i] = new std::thread(
-                std::bind(&MotionEstimation::ProcessAux, this, &lst, imgOut));
+                std::bind(&MotionEstimation::processAux, this, &lst, imgOut));
         }
 
         //threads join
@@ -195,11 +195,11 @@ public:
      * @param imgOut
      * @return
      */
-    static Image *Execute(Image *img0, Image *img1, int blockSize, int maxRadius, Image *imgOut)
+    static Image *execute(Image *img0, Image *img1, int blockSize, int maxRadius, Image *imgOut)
     {
         MotionEstimation me(img0, img1, blockSize, maxRadius);
 
-        return me.Process(imgOut);
+        return me.process(imgOut);
     }
 };
 

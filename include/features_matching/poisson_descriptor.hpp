@@ -39,10 +39,10 @@ protected:
     RandomSampler<2> *rs;
 
     /**
-     * @brief GenerateSamples
+     * @brief generateSamples
      * @param kernelSize
      */
-    void GenerateSamples(unsigned int kernelSize)
+    void generateSamples(unsigned int kernelSize)
     {
         rs = new RandomSampler<2>(ST_BRIDSON, kernelSize, kernelSize, 1);
         nSamples = rs->samplesR.size() >> 1;
@@ -116,18 +116,18 @@ public:
         subBlock = 0;
         m = new std::mt19937(seed);
 
-        GenerateSamples(kernelSize);
+        generateSamples(kernelSize);
     }
 
     ~PoissonDescriptor()
     {
-        Release();
+        release();
     }
 
     /**
-     * @brief Release deallocates memory.
+     * @brief release deallocates memory.
      */
-    void Release()
+    void release()
     {
 
         if(m != NULL) {

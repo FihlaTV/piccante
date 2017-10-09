@@ -53,9 +53,9 @@ protected:
     int width, height;
 
     /**
-     * @brief Destroy
+     * @brief release
      */
-    void Destroy()
+    void release()
     {
         if(lum != NULL) {
             delete lum;
@@ -107,9 +107,9 @@ protected:
     }
 
     /**
-     * @brief SetNULL
+     * @brief setNULL
      */
-    void SetNULL()
+    void setNULL()
     {
         width = -1;
         height = -1;
@@ -134,22 +134,22 @@ public:
      */
     HarrisCornerDetector(float sigma = 1.0f, int radius = 3, float threshold = 0.001f) : GeneralCornerDetector()
     {
-        SetNULL();
-        Update(sigma, radius, threshold);
+        setNULL();
+        update(sigma, radius, threshold);
     }
 
     ~HarrisCornerDetector()
     {
-        Destroy();
+        release();
     }
 
     /**
-     * @brief Update
+     * @brief update
      * @param sigma
      * @param radius
      * @param threshold
      */
-    void Update(float sigma = 1.0f, int radius = 3, float threshold = 0.001f)
+    void update(float sigma = 1.0f, int radius = 3, float threshold = 0.001f)
     {
         if(sigma > 0.0f) {
             this->sigma = sigma;
@@ -167,11 +167,11 @@ public:
     }
 
     /**
-     * @brief Compute
+     * @brief execute
      * @param img
      * @param corners
      */
-    void Compute(Image *img, std::vector< Eigen::Vector3f > *corners)
+    void execute(Image *img, std::vector< Eigen::Vector3f > *corners)
     {
         if(img == NULL) {
             return;
@@ -181,7 +181,7 @@ public:
             width = img->width;
             height = img->height;
 
-            Destroy();
+            release();
         }
 
         if(img->channels == 1) {
@@ -206,7 +206,7 @@ public:
 
         float kernel[] = { -1.0f, 0.0f, 1.0f};
 
-        //compute gradients
+        //execute gradients
         Ix = FilterConv1D::Execute(lum, Ix, kernel, 3, true);
         Iy = FilterConv1D::Execute(lum, Iy, kernel, 3, false);
 

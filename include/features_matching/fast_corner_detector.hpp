@@ -37,7 +37,7 @@ class FastCornerDetector: public GeneralCornerDetector
 {
 protected:
     Image     *lum_flt;
-    bool      bComputeThreshold;
+    bool      bexecuteThreshold;
 
     float     sigma, threshold;
     int       radius;
@@ -51,11 +51,11 @@ public:
      */
     FastCornerDetector(float sigma = 1.0f, int radius = 1, float threshold = 0.001f) : GeneralCornerDetector()
     {
-        bComputeThreshold = true;
+        bexecuteThreshold = true;
 
         lum_flt = NULL;
 
-        Update(sigma, radius, threshold);
+        update(sigma, radius, threshold);
     }
 
     ~FastCornerDetector()
@@ -74,12 +74,12 @@ public:
     }
 
     /**
-     * @brief Update
+     * @brief update
      * @param sigma
      * @param radius
      * @param threshold
      */
-    void Update(float sigma = 1.0f, int radius = 1, float threshold = 0.001f)
+    void update(float sigma = 1.0f, int radius = 1, float threshold = 0.001f)
     {
         if(sigma > 0.0f) {
             this->sigma = sigma;
@@ -101,11 +101,11 @@ public:
     }
 
     /**
-     * @brief Compute
+     * @brief execute
      * @param img
      * @param corners
      */
-    void Compute(Image *img, std::vector< Eigen::Vector3f > *corners)
+    void execute(Image *img, std::vector< Eigen::Vector3f > *corners)
     {
         if(img == NULL) {
             return;
@@ -162,7 +162,7 @@ public:
 
                 //computing the threshold
                 float thr;
-                if(bComputeThreshold) {
+                if(bexecuteThreshold) {
                     thr = 0.2f * sum / 16.0f;
                     thr = (thr > 1e-9f ) ? thr : threshold;
 

@@ -55,10 +55,10 @@ protected:
         return weight;
     }
 
-    int		patch_size, half_patch_size;
-    bool	bNormalization;
-    bool	bLargeGradientsSupression;
-    int		num_angles, num_bins, num_samples;
+    int     patch_size, half_patch_size;
+    bool    bNormalization;
+    bool    bLargeGradientsSupression;
+    int     num_angles, num_bins, num_samples;
     float   CONST_GRADIENT_SUPRESSIO_THRESHOLD;
 
     Image *gauss, *L, *L_X, *L_Y, *gX, *gY, *grad, *I_orientation,
@@ -67,6 +67,35 @@ protected:
     float *cos_angles, *sin_angles;
 
     FilterConv2D fltConv;
+
+    /**
+     * @brief normalize
+     * @param sift_arr
+     */
+    void normalize(Image *sift_arr) //normalziation of the sift
+    {
+        for(int i = 0; i < sift_arr->height; i++) {
+            for(int j = 0; j < sift_arr->width; j++) {
+                float *tmp_pixel = (*sift_arr)(j, i);
+
+                //normalizing large gradients
+                float norm = Array<float>::norm(tmp_pixel, sift_arr->channels);
+
+                if(norm > 1.0f) {
+                    Array<float>::normalize(tmp_pixel, sift_arr->channels, norm);
+
+                    //supressing large gradients
+                    if(bLargeGradientsSupression) {
+                        for(int k = 0; k < sift_arr->channels; k++) {
+                            tmp_pixel[k] = MIN(tmp_pixel[k], CONST_GRADIENT_SUPRESSIO_THRESHOLD);
+                        }
+
+                        Array<float>::normalize(tmp_pixel, sift_arr->channels);
+                    }
+                }
+            }
+        }
+    }
 
 public:
 
@@ -87,7 +116,7 @@ public:
         gauss = new Image(1, 5, 5, 1);
         EvaluateGaussian(gauss, -1.0f, true);
 
-        SetNULL();
+        setNULL();
 
         //precompute angles
         num_angles = 8;
@@ -115,10 +144,13 @@ public:
 
     ~DenseSift()
     {
-        Destroy();
+        release();
     }
 
-    void SetNULL()
+    /**
+     * @brief setNULL
+     */
+    void setNULL()
     {
         L = NULL;
         L_X = NULL;
@@ -132,7 +164,10 @@ public:
         I_theta = NULL;
     }
 
-    void Destroy()
+    /**
+     * @brief release
+     */
+    void release()
     {
         if(L != NULL) {
             delete L;
@@ -179,7 +214,14 @@ public:
         }
     }
 
-    Image *get(Image *img, Image *sift_arr = NULL, float alpha = 9.0f)
+    /**
+     * @brief exectue
+     * @param img
+     * @param sift_arr
+     * @param alpha
+     * @return
+     */
+    Image *exectue(Image *img, Image *sift_arr = NULL, float alpha = 9.0f)
     {
         if(img == NULL) {
             return NULL;
@@ -282,35 +324,10 @@ public:
         }
 
         if(bNormalization) {
-            Normalization(sift_arr);
+            normalize(sift_arr);
         }
 
         return sift_arr;
-    }
-
-    void Normalization(Image *sift_arr) //normalziation of the sift
-    {
-        for(int i = 0; i < sift_arr->height; i++) {
-            for(int j = 0; j < sift_arr->width; j++) {
-                float *tmp_pixel = (*sift_arr)(j, i);
-
-                //normalizing large gradients
-                float norm = Array<float>::norm(tmp_pixel, sift_arr->channels);
-
-                if(norm > 1.0f) {
-                    Array<float>::normalize(tmp_pixel, sift_arr->channels, norm);
-
-                    //supressing large gradients
-                    if(bLargeGradientsSupression) {
-                        for(int k = 0; k < sift_arr->channels; k++) {
-                            tmp_pixel[k] = MIN(tmp_pixel[k], CONST_GRADIENT_SUPRESSIO_THRESHOLD);
-                        }
-
-                        Array<float>::normalize(tmp_pixel, sift_arr->channels);
-                    }
-                }
-            }
-        }
     }
 
 };

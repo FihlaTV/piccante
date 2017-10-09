@@ -50,7 +50,7 @@ public:
      */
     WardAlignment()
     {
-        Update(0.5f, 0.015625f);
+        update(0.5f, 0.015625f);
     }
 
     ~WardAlignment()
@@ -85,11 +85,11 @@ public:
     }
 
     /**
-     * @brief Update sets parameters up for MTB
+     * @brief update sets parameters up for MTB
      * @param percentile
      * @param tolerance
      */
-    void Update(float percentile, float tolerance)
+    void update(float percentile, float tolerance)
     {
         if(percentile < 0.0f && percentile > 1.0f) {
             percentile = 0.5f;
@@ -143,13 +143,13 @@ public:
     }
 
     /**
-     * @brief GetExpShift computes the shift vector for moving an img1 onto img2
+     * @brief getExpShift computes the shift vector for moving an img1 onto img2
      * @param img1
      * @param img2
      * @param shift_bits
      * @return
      */
-    Eigen::Vector2i GetExpShift(Image *img1, Image *img2,
+    Eigen::Vector2i getExpShift(Image *img1, Image *img2,
                                    int shift_bits = 6)
     {
         if(img1 == NULL || img2 == NULL) {
@@ -267,13 +267,13 @@ public:
     }
 
     /**
-     * @brief Execute aligns imgSource to imgTarget
+     * @brief execute aligns imgSource to imgTarget
      * @param imgTarget
      * @param imgSource
      * @param shift
      * @return
      */
-    static Image *Execute(Image *imgTarget, Image *imgSource, Eigen::Vector2i &shift)
+    static Image *execute(Image *imgTarget, Image *imgSource, Eigen::Vector2i &shift)
     {
         WardAlignment wa;
 
@@ -288,7 +288,7 @@ public:
         Image *ret = imgTarget->allocateSimilarOne();
         ret->setZero();
 
-        shift = wa.GetExpShift(imgTarget, imgSource);
+        shift = wa.getExpShift(imgTarget, imgSource);
 
         #ifdef PIC_DEBUG
             printf("Ward alignment shift: (%d, %d)\n", shift[0], shift[1]);

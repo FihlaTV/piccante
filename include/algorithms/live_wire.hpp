@@ -197,6 +197,7 @@ public:
      * @brief execute
      * @param pS
      * @param pE
+     * @param out
      */
     void execute(Vec<2, int> pS, Vec<2, int> pE, std::vector< Vec<2, int> > &out)
     {
@@ -293,6 +294,10 @@ public:
         out.push_back(pE);
         Vec<2, int> m = pE;
         Vec<2, int> prev(-1, -1);
+
+        int maxIter = (width + height) * 4;
+        int i = 0;
+
         while(true) {
             prev = m;
             if(m.equal(pS)) {
@@ -306,6 +311,12 @@ public:
             m = t;
 
             if(prev.equal(m)) {
+                break;
+            }
+
+            i++;
+
+            if(i > maxIter) {
                 break;
             }
         }
