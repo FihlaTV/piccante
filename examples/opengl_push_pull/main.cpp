@@ -26,6 +26,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
     #include "../opengl_common_code/gl_core_4_0.h"
 #endif
 
+#include "../common_code/image_qimage_interop.hpp"
+
 #include "piccante.hpp"
 
 #include <QKeyEvent>
@@ -61,14 +63,14 @@ protected:
 
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f );
 
-        //reading an input image
+        //read an input image
         img.Read("../data/input/bottles.hdr");
 
         pic::Image img_black(1, 32, 32, 3);
-        img_black.SetZero();
+        img_black.setZero();
 
-        //Adding a hole in the image
-        img.CopySubImage(&img_black, 292, 130);
+        //add a hole in the image
+        img.copySubImage(&img_black, 292, 130);
 
         img.generateTextureGL();
 
@@ -108,7 +110,7 @@ protected:
 
         //simple tone mapping: gamma + exposure correction
         if(method == 1) {
-            imgRec = pp->Process(&img, imgRec, NULL);
+            imgRec = pp->process(&img, imgRec, NULL);
             img_flt_tmo = tmo->Process(pic::SingleGL(imgRec), img_flt_tmo);
         } else {
             img_flt_tmo = tmo->Process(pic::SingleGL(&img), img_flt_tmo);
