@@ -59,11 +59,10 @@ int main(int argc, char *argv[])
         pic::Image *img_CIE_Lab = pic::FilterColorConv::fromRGBtoCIELAB(&img, NULL);
 
         //from CIE Lab to RGB
-        pic::Image *img_RGB = pic::FilterColorConv::fromRGBtoCIELAB(img_CIE_Lab, NULL);
+        pic::Image *img_RGB = pic::FilterColorConv::fromCIELABtoRGB2(img_CIE_Lab, NULL);
 
         printf("Writing the file to disk...");
         bool bWritten = ImageWrite(img_CIE_Lab, "../data/output/singapore_CIE_Lab.pfm");
-
         bWritten = bWritten && ImageWrite(img_RGB, "../data/output/singapore_RGB.png");
 
         if(bWritten) {

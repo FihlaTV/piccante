@@ -84,9 +84,9 @@ protected:
                         list[k].f->transform(tmp[(k + 1) % 2], tmp[k % 2], list[k].bDirection);
                     }
                 } else { //inverse color transform
-                    list[n - 1].f->transform(dataIn, tmp[0], list[n - 1].bDirection);
+                    list[n - 1].f->transform(dataIn, tmp[0], !list[n - 1].bDirection);
                     for(unsigned int k = 1; k < n; k++) {
-                        list[n - k - 1].f->transform(tmp[(k + 1) % 2], tmp[k % 2], list[n - k - 1].bDirection);
+                        list[n - k - 1].f->transform(tmp[(k + 1) % 2], tmp[k % 2], !list[n - k - 1].bDirection);
                     }
                 }
             }
@@ -114,10 +114,11 @@ public:
     void insertColorConv(ColorConv *transform, bool bDirection)
     {
         if(transform != NULL) {
-            ColorConvTransform tmp;
-            tmp.f = transform;
-            tmp.bDirection = bDirection;
-            list.push_back(tmp);
+            ColorConvTransform entry;
+            entry.f = transform;
+            entry.bDirection = bDirection;
+
+            list.push_back(entry);
         }
 
         n = list.size();
@@ -166,6 +167,27 @@ public:
 
         flt.insertColorConv(&cc_from_XYZ_to_CIELAB, false);
         flt.insertColorConv(&cc_from_RGB_to_XYZ,    false);
+
+        return flt.Process(Single(imgIn), imgOut);
+    }
+
+    /**
+     * @brief fromCIELABtoRGB2
+     * @param imgIn
+     * @param imgOut
+     * @return
+     */
+    static Image *fromCIELABtoRGB2(Image *imgIn, Image *imgOut)
+    {
+        ColorConvRGBtoXYZ    cc_from_RGB_to_XYZ;
+        ColorConvXYZtoCIELAB cc_from_XYZ_to_CIELAB;
+
+        FilterColorConv flt;
+
+        flt.insertColorConv(&cc_from_RGB_to_XYZ,    true);
+        flt.insertColorConv(&cc_from_XYZ_to_CIELAB, true);
+
+        flt.update(false);
 
         return flt.Process(Single(imgIn), imgOut);
     }
