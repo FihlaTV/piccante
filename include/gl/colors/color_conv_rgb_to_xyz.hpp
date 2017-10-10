@@ -53,8 +53,9 @@ public:
         void main(void) {
             \n
             ivec2 coords = ivec2(gl_FragCoord.xy); \n
-            vec3 color = texelFetch(u_tex, coords, 0).xyz; \n
-            f_color = vec4(mtx * color, 1.0); \n
+            vec3 colIn = texelFetch(u_tex, coords, 0).xyz; \n
+            vec3 colOut = mtx * colIn;
+            f_color = vec4(colOut, 1.0); \n
             \n
         }
                           );

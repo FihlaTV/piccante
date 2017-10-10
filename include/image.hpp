@@ -990,8 +990,8 @@ PIC_INLINE void Image::assign(const Image *imgIn)
 
     exposure = imgIn->exposure;
     nameFile = imgIn->nameFile;
-    flippedEXR = imgIn->flippedEXR;
     typeLoad = imgIn->typeLoad;
+    flippedEXR = imgIn->flippedEXR;
 
     memcpy(data, imgIn->data, frames * width * height * channels * sizeof(float));
 }
@@ -1027,11 +1027,11 @@ PIC_INLINE bool Image::isSimilarType(const Image *img)
         return false;
     }
 
-    bool ret =	(width		==	img->width) &&
-                (height		==	img->height) &&
-                (frames		==	img->frames) &&
-                (channels	==	img->channels) &&
-                (flippedEXR	==	img->flippedEXR);
+    bool ret =	(width      ==  img->width) &&
+                (height     ==  img->height) &&
+                (frames     ==  img->frames) &&
+                (channels   ==  img->channels) &&
+                (flippedEXR ==  img->flippedEXR);
 
 #ifdef PIC_DEBUG
 

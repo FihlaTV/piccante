@@ -134,6 +134,22 @@ public:
     }
 
     /**
+     * @brief fromRGBtoXYZ
+     * @param imgIn
+     * @param imgOut
+     * @return
+     */
+    static Image *fromRGBtoXYZ(Image *imgIn, Image *imgOut)
+    {
+        ColorConvRGBtoXYZ    cc_from_RGB_to_XYZ;
+
+        FilterColorConv flt;
+
+        flt.insertColorConv(&cc_from_RGB_to_XYZ,    true);
+        return flt.Process(Single(imgIn), imgOut);
+    }
+
+    /**
      * @brief fromRGBtoCIELAB
      * @param imgIn
      * @param imgOut

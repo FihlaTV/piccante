@@ -27,9 +27,6 @@ namespace pic {
  */
 class ColorConvGLRGBtosRGB: public ColorConvGL
 {
-protected:
-    float a, a_plus_1, gamma, gamma_inv;
-
 public:
 
     /**
@@ -37,11 +34,10 @@ public:
      */
     ColorConvGLRGBtosRGB(bool direct = true) : ColorConvGL(direct)
     {
-        gamma = 2.4f;
-        gamma_inv = 1.0f / gamma;
-        a = 0.055f;
-        a_plus_1 = 1.0f + a;
     }
+
+    // a = 0.055
+    // gamma = 2.4
 
     /**
      * @brief getDirectFunction
@@ -51,14 +47,11 @@ public:
     {
         std::string fragment_source = MAKE_STRING(
             uniform sampler2D u_tex; \n
-            uniform float a; \n
-            uniform float a_plus_one; \n
-            uniform float gamma_inv; \n
             out     vec4 f_color; \n
             \n
-            float tosRGB(float x) {
+            float fromRGBtosRGB(float x) {
                 if(x > 0.0031308) {
-                    return a_plus_one * pow(x, gamma_inv) - a;
+                    return 1.055 * pow(x, 1.0 / 2.4) - 0.055;
                 } else {
                     return x * 12.92;
                 }
@@ -66,8 +59,11 @@ public:
 
             void main(void) {
                 ivec2 coords = ivec2(gl_FragCoord.xy); \n
-                vec3 color = texelFetch(u_tex, coords, 0).xyz; \n
-                f_color = vec4(tosRGB(color.x), tosRGB(color.y), tosRGB(color.z), 1.0); \n
+                vec3 colIn = texelFetch(u_tex, coords, 0).xyz; \n
+                vec3 colOut = vec3(fromRGBtosRGB(colIn.x),
+                                   fromRGBtosRGB(colIn.y),
+                                   fromRGBtosRGB(colIn.z));
+                f_color = vec4(colOut, 1.0); \n
                 \n
             }
                               );
@@ -83,14 +79,11 @@ public:
     {
         std::string fragment_source = MAKE_STRING(
             uniform sampler2D u_tex; \n
-            uniform float a; \n
-            uniform float a_plus_one; \n
-            uniform float gamma; \n
             out     vec4 f_color; \n
             \n
-            float toRGB(float x) {
+            float fromsRGBtoRGB(float x) {
                 if(x > 0.04045) {
-                    return pow((x + a) / a_plus_one, gamma);
+                    return pow((x + 0.055) / (1.055), 2.4);
                 } else {
                     return x / 12.92;
                 }
@@ -99,35 +92,17 @@ public:
             void main(void) {
                 \n
                 ivec2 coords = ivec2(gl_FragCoord.xy); \n
-                vec3 color = texelFetch(u_tex, coords, 0).xyz; \n
-                f_color = vec4(toRGB(color.x), toRGB(color.y), toRGB(color.z), 1.0); \n
+                vec3 colIn = texelFetch(u_tex, coords, 0).xyz; \n
+                vec3 colOut = vec3(fromsRGBtoRGB(colIn.x),
+                                   fromsRGBtoRGB(colIn.y),
+                                   fromsRGBtoRGB(colIn.z)); \n
+                f_color = vec4(colOut, 1.0); \n
             \n
             }
                 );
 
         return fragment_source;
     }
-
-    /**
-     * @brief setUniforms
-     */
-    void setUniforms()
-    {
-        if(direct) {
-            techniques[0].bind();
-            techniques[0].setUniform("a", a);
-            techniques[0].setUniform("a_plus_one", a_plus_1);
-            techniques[0].setUniform("gamma_inv", gamma_inv);
-            techniques[0].unbind();
-        } else {
-            techniques[1].bind();
-            techniques[1].setUniform("a", a);
-            techniques[1].setUniform("a_plus_one", a_plus_1);
-            techniques[1].setUniform("gamma", gamma);
-            techniques[1].unbind();
-        }
-    }
-
 };
 
 } // end namespace pic

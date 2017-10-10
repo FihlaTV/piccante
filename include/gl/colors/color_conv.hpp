@@ -51,10 +51,34 @@ public:
     virtual std::string getDirectFunction() = 0;
 
     /**
+     * @brief getDirectFunctionAux
+     * @return
+     */
+    virtual std::string getDirectFunctionAux() = 0;
+
+    /**
+     * @brief getDirectUniforms
+     * @return
+     */
+    virtual std::string getDirectUniforms() = 0;
+
+    /**
      * @brief getInverseFunction
      * @return
      */
     virtual std::string getInverseFunction() = 0;
+
+    /**
+     * @brief getInverseUniforms
+     * @return
+     */
+    virtual std::string getInverseUniforms() = 0;
+
+    /**
+     * @brief getInverseFunctionAux
+     * @return
+     */
+    virtual std::string getInverseFunctionAux() = 0;
 
     /**
      * @brief generatePrograms
