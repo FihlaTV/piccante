@@ -115,7 +115,7 @@ PIC_INLINE float *ReadHDR(std::string nameFile, float *data, int &width,
         for(int i = 0; i < width; i++) {
             for(int j = 0; j < height; j++) {
                 fread(colRGBE, 1, 4, file);
-                RGBE2Float(colRGBE, &data[c]);
+                fromRGBEToFloat(colRGBE, &data[c]);
                 c += 3;
             }
         }
@@ -182,7 +182,7 @@ PIC_INLINE float *ReadHDR(std::string nameFile, float *data, int &width,
 
             //From RGBE to Float
             for(int j = 0; j < width; j++) {
-                RGBE2Float(&buffer_line[j * 4], &data[c_buffer_line + j * 3]);
+                fromRGBEToFloat(&buffer_line[j * 4], &data[c_buffer_line + j * 3]);
             }
 
             c += 4;
@@ -339,9 +339,9 @@ PIC_INLINE bool WriteHDR(std::string nameFile, float *data, int width,
                 int ind2 = (ind + j) * channels;
 
                 if(channels == 1) {
-                    SingleFloat2RGBE(&data[ind2], buffer_rgbe);
+                    fromSingleFloatToRGBE(&data[ind2], buffer_rgbe);
                 } else {
-                    Float2RGBE(&data[ind2], buffer_rgbe);
+                    fromFloatToRGBE(&data[ind2], buffer_rgbe);
                 }
 
                 buffer_line[         j] = buffer_rgbe[0];
@@ -369,9 +369,9 @@ PIC_INLINE bool WriteHDR(std::string nameFile, float *data, int width,
 
                 if(channels == 3) {
                     c *= 3;
-                    Float2RGBE(&data[c], colRGBE);
+                    fromFloatToRGBE(&data[c], colRGBE);
                 } else {
-                    SingleFloat2RGBE(&data[c], colRGBE);
+                    fromSingleFloatToRGBE(&data[c], colRGBE);
                 }
 
                 fwrite(colRGBE, 1, 4 * sizeof(unsigned char), file);
@@ -437,9 +437,9 @@ PIC_INLINE bool WriteHDRBlock(std::string nameFile, float *buffer_line, int widt
 
             if(channels == 3) {
                 c *= 3;
-                Float2RGBE(&buffer_line[c], colRGBE);
+                fromFloatToRGBE(&buffer_line[c], colRGBE);
             } else {
-                SingleFloat2RGBE(&buffer_line[c], colRGBE);
+                fromSingleFloatToRGBE(&buffer_line[c], colRGBE);
             }
 
             fwrite(colRGBE, 1, 4 * sizeof(unsigned char), file);

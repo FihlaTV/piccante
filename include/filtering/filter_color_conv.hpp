@@ -26,15 +26,21 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 namespace pic {
 
+struct ColorConvTransform
+{
+    ColorConv *f;
+    bool bDirection;
+};
+
 /**
  * @brief The FilterColorConv class
  */
 class FilterColorConv: public Filter
 {
 protected:
-    std::vector<ColorConv *>    conv_list;
-    unsigned int				n;
-    bool						bDirect;
+    std::vector<ColorConvTransform> list;
+    bool bDirection;
+    unsigned int n;
 
     /**
      * @brief ProcessBBox
@@ -48,7 +54,7 @@ protected:
             return;
         }
 
-        int channels	= src[0]->channels;
+        int channels = src[0]->channels;
 
         float *tmpCol = new float [channels];
         float *tmp[2];
@@ -72,16 +78,15 @@ protected:
                     tmp[1] = tmpCol;
                 }
 
-                if(bDirect) { //Direct color transform                    
-                    conv_list[0]->direct(dataIn, tmp[0]);
+                if(bDirection) { //direct color transform
+                    list[0].f->transform(dataIn, tmp[0], list[0].bDirection);
                     for(unsigned int k = 1; k < n; k++) {
-                        conv_list[k]->direct(tmp[(k + 1) % 2], tmp[k % 2]);
+                        list[k].f->transform(tmp[(k + 1) % 2], tmp[k % 2], list[k].bDirection);
                     }
-
-                } else { //Inverse color transform
-                    conv_list[n - 1]->inverse(dataIn, tmp[0]);
+                } else { //inverse color transform
+                    list[n - 1].f->transform(dataIn, tmp[0], list[n - 1].bDirection);
                     for(unsigned int k = 1; k < n; k++) {
-                        conv_list[n - k - 1]->inverse(tmp[(k + 1) % 2], tmp[k % 2]);
+                        list[n - k - 1].f->transform(tmp[(k + 1) % 2], tmp[k % 2], list[n - k - 1].bDirection);
                     }
                 }
             }
@@ -94,96 +99,73 @@ public:
 
     /**
      * @brief FilterColorConv
-     * @param conv
-     * @param bDirect
      */
-    FilterColorConv(ColorConv *conv, bool bDirect)
+    FilterColorConv()
     {
-        this->bDirect = bDirect;
-        insertColorConv(conv);
+        this->bDirection = true;
+        n = -1;
     }
 
     /**
      * @brief insertColorConv
-     * @param conv
+     * @param transform
+     * @param bDirection
      */
-    void insertColorConv(ColorConv *conv)
+    void insertColorConv(ColorConv *transform, bool bDirection)
     {
-        if(conv != NULL) {
-            conv_list.push_back(conv);
+        if(transform != NULL) {
+            ColorConvTransform tmp;
+            tmp.f = transform;
+            tmp.bDirection = bDirection;
+            list.push_back(tmp);
         }
 
-        n = conv_list.size();
+        n = list.size();
     }
 
     /**
-     * @brief Update
-     * @param bDirect
+     * @brief update
+     * @param bDirection
      */
-    void Update(bool bDirect)
+    void update(bool bDirection)
     {
-        this->bDirect = bDirect;
+        this->bDirection = bDirection;
     }
 
     /**
-     * @brief RGBtoLogLuv
+     * @brief fromRGBtoCIELAB
      * @param imgIn
      * @param imgOut
-     * @param bDirect
      * @return
      */
-    static Image *RGBtoLogLuv(Image *imgIn, Image *imgOut,
-                                        bool bDirect)
+    static Image *fromRGBtoCIELAB(Image *imgIn, Image *imgOut)
     {
-        ColorConvRGBtoXYZ       csXYZ;
-        ColorConvXYZtoLogLuv    csLogLuv;
+        ColorConvRGBtoXYZ    cc_from_RGB_to_XYZ;
+        ColorConvXYZtoCIELAB cc_from_XYZ_to_CIELAB;
 
-        FilterColorConv flt(NULL, bDirect);
+        FilterColorConv flt;
 
-        flt.insertColorConv(&csXYZ);
-        flt.insertColorConv(&csLogLuv);
+        flt.insertColorConv(&cc_from_RGB_to_XYZ,    true);
+        flt.insertColorConv(&cc_from_XYZ_to_CIELAB, true);
 
         return flt.Process(Single(imgIn), imgOut);
     }
 
     /**
-     * @brief RGBtoCIELAB converts an image from linear RGB color to CIE Lab color space
+     * @brief fromCIELABtoRGB
      * @param imgIn
      * @param imgOut
-     * @param bDirect
      * @return
      */
-    static Image *RGBtoCIELAB(Image *imgIn, Image *imgOut,
-                                        bool bDirect)
+    static Image *fromCIELABtoRGB(Image *imgIn, Image *imgOut)
     {
-        ColorConvRGBtoXYZ       csXYZ;
-        ColorConvXYZtoCIELAB    csCIELAB;
+        ColorConvRGBtoXYZ    cc_from_RGB_to_XYZ;
+        ColorConvXYZtoCIELAB cc_from_XYZ_to_CIELAB;
 
-        FilterColorConv flt(NULL, bDirect);
+        FilterColorConv flt;
 
-        flt.insertColorConv(&csXYZ);
-        flt.insertColorConv(&csCIELAB);
-
-        return flt.Process(Single(imgIn), imgOut);
-    }
-
-    /**
-     * @brief ExectueCIELABtoRGB converts an image from CIE Lab color space to linear RGB color
-     * @param imgIn
-     * @param imgOut
-     * @param bDirect
-     * @return
-     */
-    static Image *CIELABtoRGB(Image *imgIn, Image *imgOut,
-                                        bool bDirect)
-    {
-        ColorConvRGBtoXYZ       csXYZ;
-        ColorConvXYZtoCIELAB    csCIELAB;
-
-        FilterColorConv flt(NULL, bDirect);
-
-        flt.insertColorConv(&csCIELAB);
-        flt.insertColorConv(&csXYZ);
+        flt.insertColorConv(&cc_from_XYZ_to_CIELAB, false);
+        flt.insertColorConv(&cc_from_RGB_to_XYZ,    false);
 
         return flt.Process(Single(imgIn), imgOut);
     }

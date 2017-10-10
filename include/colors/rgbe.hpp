@@ -31,11 +31,11 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 namespace pic {
 
 /**
- * @brief Float2RGBE
+ * @brief fromFloatToRGBE
  * @param colFloat
  * @param colRGBE
  */
-PIC_INLINE void Float2RGBE(float *colFloat, unsigned char *colRGBE)
+PIC_INLINE void fromFloatToRGBE(float *colFloat, unsigned char *colRGBE)
 {
     float v;
     int e;
@@ -67,11 +67,11 @@ PIC_INLINE void Float2RGBE(float *colFloat, unsigned char *colRGBE)
 }
 
 /**
- * @brief SingleFloat2RGBE
+ * @brief fromSingleFloatToRGBE
  * @param colFloat
  * @param colRGBE
  */
-PIC_INLINE void SingleFloat2RGBE(float *colFloat, unsigned char *colRGBE)
+PIC_INLINE void fromSingleFloatToRGBE(float *colFloat, unsigned char *colRGBE)
 {
     float v;
     int e;
@@ -95,11 +95,11 @@ PIC_INLINE void SingleFloat2RGBE(float *colFloat, unsigned char *colRGBE)
 }
 
 /**
- * @brief RGBE2Float
+ * @brief fromRGBEToFloat
  * @param colRGBE
  * @param colFloat
  */
-PIC_INLINE void RGBE2Float(unsigned char *colRGBE, float *colFloat)
+PIC_INLINE void fromRGBEToFloat(unsigned char *colRGBE, float *colFloat)
 {
 
     if((*(colRGBE) == 0) && (*(colRGBE + 1) == 0) &&

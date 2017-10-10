@@ -55,22 +55,16 @@ int main(int argc, char *argv[])
     if(img.isValid()) {
         printf("OK\n");
 
-        printf("DCT transform...");
-        pic::Image *img_dct = pic::FilterDCT2D::Transform(&img, NULL, 8);
-        printf(" Ok\n");
+        //from RGB to CIE Lab
+        pic::Image *img_CIE_Lab = pic::FilterColorConv::fromRGBtoCIELAB(&img, NULL);
 
-        printf("Removing small coefficients...");
-        for(int i = 0; i < img_dct->size(); i++) {
-            if(fabsf(img_dct->data[i]) < 0.025f) {
-                img_dct->data[i] = 0.0f;
-            }
-        }
-        printf(" Ok\n");
-
-        pic::Image *imgOut = pic::FilterDCT2D::Inverse(img_dct, NULL, 8);
+        //from CIE Lab to RGB
+        pic::Image *img_RGB = pic::FilterColorConv::fromRGBtoCIELAB(img_CIE_Lab, NULL);
 
         printf("Writing the file to disk...");
-        bool bWritten = ImageWrite(imgOut, "../data/output/simple_dct.png");
+        bool bWritten = ImageWrite(img_CIE_Lab, "../data/output/singapore_CIE_Lab.pfm");
+
+        bWritten = bWritten && ImageWrite(img_RGB, "../data/output/singapore_RGB.png");
 
         if(bWritten) {
             printf(" Ok\n");

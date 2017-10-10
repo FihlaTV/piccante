@@ -34,17 +34,33 @@ public:
     {
     }
 
-    /** This method converts from a color space to another one.
+    /**
+    * @brief direct converts from a color space to another one.
     * \param colIn a pointer to the input color to be converted.
     * \param colOut a pointer to the output color.
     */
     virtual void direct(float *colIn, float *colOut) {}
 
-    /** This method is the inverse of direct.
+    /**
+    * @brief inverse is the inverse of direct.
     * \param colIn a pointer to the input color to be converted.
     * \param colOut a pointer to the output color.
     */
     virtual void inverse(float *colIn, float *colOut) {}
+
+    /**
+     * @brief transform
+     * @param colIn
+     * @param colOut
+     * @param bDirection
+     */
+    void transform(float *colIn, float *colOut, bool bDirection) {
+        if(bDirection) {
+            direct(colIn, colOut);
+        } else {
+            inverse(colIn, colOut);
+        }
+    }
 
     /**
      * @brief apply
@@ -54,20 +70,20 @@ public:
      */
     static void apply(const float *mtx, float *colIn, float *colOut)
     {
-        //Working copy
+        //working copy
         float tmp[3];
         tmp[0] = colIn[0];
         tmp[1] = colIn[1];
         tmp[2] = colIn[2];
 
-        //Conversion
+        //conversion
         colOut[0] = tmp[0] * mtx[0] + tmp[1] * mtx[1] + tmp[2] * mtx[2];
         colOut[1] = tmp[0] * mtx[3] + tmp[1] * mtx[4] + tmp[2] * mtx[5];
         colOut[2] = tmp[0] * mtx[6] + tmp[1] * mtx[7] + tmp[2] * mtx[8];
     }
 
     /**
-     * @brief apply_s
+     * @brief apply_s a safe apply
      * @param mtx
      * @param colIn
      * @param colOut
