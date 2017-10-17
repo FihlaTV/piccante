@@ -1,4 +1,4 @@
-/*
+ /*
 
 PICCANTE Examples
 The hottest examples of Piccante:
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
         pic::Image *img_CIE_Lab = pic::FilterColorConv::fromRGBtoCIELAB(&img, NULL);
 
         //from CIE Lab to RGB
-        pic::Image *img_RGB = pic::FilterColorConv::fromCIELABt3oRGB2(img_CIE_Lab, NULL);
+        pic::Image *img_RGB = pic::FilterColorConv::fromCIELABtoRGB2(img_CIE_Lab, NULL);
 
         printf("Writing the file to disk...");
         bool bWritten = ImageWrite(img_CIE_Lab, "../data/output/singapore_CIE_Lab.pfm");

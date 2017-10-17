@@ -267,7 +267,6 @@ public:
         *ret /= *Ix2_flt;
         */
 
-
         //non-maximal supression
         ret_flt = FilterMax::Execute(ret, ret_flt, radius * 2 + 1);
 

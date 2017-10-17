@@ -37,6 +37,16 @@ protected:
     Image *lum;
     bool bLum;
 
+    static bool scD (Eigen::Vector3f i, Eigen::Vector3f  j)
+    {
+        return (i[2] > j [2]);
+    }
+
+    static bool scA (Eigen::Vector3f i, Eigen::Vector3f  j)
+    {
+        return (i[2] < j [2]);
+    }
+
 public:
     /**
      * @brief GeneralCornerDetector
@@ -97,6 +107,19 @@ public:
         }
 
         return imgOut;
+    }
+
+    /**
+     * @brief sortCorners
+     * @param corners
+     */
+    static void sortCorners(std::vector< Eigen::Vector3f > *corners, bool bDescend = true)
+    {
+        if(bDescend) {
+            std::sort(corners->begin(), corners->end(), scD);
+        } else {
+            std::sort(corners->begin(), corners->end(), scA);
+        }
     }
 
     /**
