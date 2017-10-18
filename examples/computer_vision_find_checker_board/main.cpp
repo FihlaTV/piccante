@@ -61,12 +61,15 @@ int main(int argc, char *argv[])
         pic::GeneralCornerDetector::sortCorners(&corners_from_img);
 
         printf("[");
-        for(unsigned int i = 0; i < corners_from_img.size(); i++) {
+        unsigned int n = (corners_from_img.size() - 1);
+        for(unsigned int i = 0; i < n; i++) {
             printf("%3.5f %3.5f; ",
                    corners_from_img[i][0],
                    corners_from_img[i][1]);
         }
-        printf("]");
+        printf("%3.5f %3.5f]",
+               corners_from_img[n][0],
+               corners_from_img[n][1]);
 
         /*
         //compute luminance images

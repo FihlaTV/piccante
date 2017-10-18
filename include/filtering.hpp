@@ -22,6 +22,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "filtering/filter.hpp"
 #include "filtering/filter_down_pp.hpp"
 #include "filtering/filter_up_pp.hpp"
+#include "filtering/filter_white_balance.hpp"
 #include "filtering/filter_integral_image.hpp"
 #include "filtering/filter_reconstruct.hpp"
 #include "filtering/filter_local_extrema.hpp"
