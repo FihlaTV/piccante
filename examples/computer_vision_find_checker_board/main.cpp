@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     }
 
     pic::Image img;
-    ImageRead(img_str, &img, pic::LT_NOR);
+    ImageRead(img_str, &img);
 
     printf("Ok\n");
 
@@ -70,6 +70,18 @@ int main(int argc, char *argv[])
         printf("%3.5f %3.5f]",
                corners_from_img[n][0],
                corners_from_img[n][1]);
+
+
+        float *col_mu = img.getMeanVal(NULL, NULL);
+        float *scaling = pic::FilterWhiteBalance::getScalingFactors(col_mu, img.channels);
+        pic::FilterWhiteBalance fwb(scaling, img.channels);
+
+
+        pic::Image *img_wb = fwb.Process(Single(&img), NULL);
+
+        ImageWrite(img_wb, "../data/output/img_wb.png");
+
+
 
         /*
         //compute luminance images
