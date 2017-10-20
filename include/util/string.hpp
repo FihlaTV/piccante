@@ -81,11 +81,11 @@ inline std::string stdStringRepAll(std::string str, std::string strSub,
 }
 
 /**
- * @brief NumberToString converts a number into a string.
+ * @brief fromNumberToString converts a number into a string.
  * @param num is an input number.
  */
 template<class T>
-inline std::string NumberToString(T num)
+inline std::string fromNumberToString(T num)
 {
     std::ostringstream convert;
     convert << num;

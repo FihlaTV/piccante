@@ -33,7 +33,7 @@ public:
     {
     }
 
-    static std::string FileNumber(std::string nameFile, std::string nameExt)
+    static std::string getFileNumber(std::string nameFile, std::string nameExt)
     {
         int counter = 0;
 
@@ -47,7 +47,7 @@ public:
             infile.close();
             nameTime = nameFile;
             nameTime += "_";
-            nameTime += NumberToString(counter);
+            nameTime += fromNumberToString(counter);
             nameTime += ".";
             nameTime += nameExt;
 
@@ -58,7 +58,7 @@ public:
         return nameFile;
     }
 
-    static StringVec *List(std::string nameDir, std::string nameFilter,
+    static StringVec *getList(std::string nameDir, std::string nameFilter,
                            StringVec *sVecOut)
     {
         if(sVecOut == NULL) {

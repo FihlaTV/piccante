@@ -308,7 +308,7 @@ PIC_INLINE Image *Filter::ProcessP(ImageVec imgIn, Image *imgOut)
 PIC_INLINE std::string GenBilString(std::string type, float sigma_s,
                                     float sigma_r)
 {
-    std::string ret = type + "_Ss_"+NumberToString(sigma_s)+"_Sr_"+NumberToString(sigma_r);
+    std::string ret = type + "_Ss_" + fromNumberToString(sigma_s) + "_Sr_" + fromNumberToString(sigma_r);
     return ret;
 }
 

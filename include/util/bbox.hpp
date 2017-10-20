@@ -200,9 +200,9 @@ public:
      */
     std::string toString()
     {
-        return "X = ("+NumberToString(x0) + ", "+NumberToString(x1) + ") " +
-               "Y = ("+NumberToString(y0) + ", "+NumberToString(y1) + ") " +
-               "Z = ("+NumberToString(z0) + ", "+NumberToString(z1) + ")";
+        return "X = (" + fromNumberToString(x0) + ", " + fromNumberToString(x1) + ") " +
+               "Y = (" + fromNumberToString(y0) + ", " + fromNumberToString(y1) + ") " +
+               "Z = (" + fromNumberToString(z0) + ", " + fromNumberToString(z1) + ")";
     }
 };
 

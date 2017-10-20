@@ -19,6 +19,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #define PIC_FEATURES_MATCHING_GENERAL_CORNER_DETECTOR_HPP
 
 #include "image.hpp"
+#include "util/string.hpp"
+#include "util/string.hpp"
 
 #ifndef PIC_DISABLE_EIGEN
 #include "externals/Eigen/Dense"
@@ -120,6 +122,84 @@ public:
         } else {
             std::sort(corners->begin(), corners->end(), scA);
         }
+    }
+
+    /**
+     * @brief exportToString
+     * @param corners
+     * @return
+     */
+    static std::string exportToString(std::vector< Eigen::Vector2f > *corners)
+    {
+        std::string out = "[";
+        auto n = corners->size();
+
+        for(auto i = 0; i < (n - 1); i++) {
+            out += fromNumberToString(corners->at(i)[0]) + " ";
+            out += fromNumberToString(corners->at(i)[1]) + "; ";
+        }
+        out += fromNumberToString(corners->at(n - 1)[0]) + " ";
+        out += fromNumberToString(corners->at(n - 1)[1]) + "]";
+        return out;
+    }
+
+    /**
+     * @brief removeClosestCorners
+     */
+    static void removeClosestCorners(std::vector< Eigen::Vector3f > *corners,
+                                     std::vector< Eigen::Vector2f > *out,
+                                     float threshold,
+                                     int max_limit)
+    {
+        unsigned int n = MIN(corners->size(), max_limit);
+        bool *processed = new bool [n];
+        memset(processed, 0, sizeof(bool) * n);
+
+        for(unsigned int i = 0; i < n; i++) {
+            //find the closest
+            if(!processed[i]) {
+                processed[i] = true;
+
+                std::vector< int > indices;
+                for(unsigned int j = 0; j < n; j++) {
+
+                    if(!processed[j]) {
+                        float dx = (*corners)[j][0] - (*corners)[i][0];
+                        float dy = (*corners)[j][1] - (*corners)[i][1];
+                        float dist = sqrtf(dx * dx + dy * dy);
+
+                        if(dist < threshold) {
+                            processed[j] = true;
+                            indices.push_back(j);
+                        }
+                    }
+                }
+
+                auto n_i = indices.size();
+                if(n_i > 0) {
+                    Eigen::Vector2f point;
+                    point[0] = (*corners)[i][0];
+                    point[1] = (*corners)[i][1];
+
+                    for(unsigned int j = 0; j < indices.size(); j++) {
+                        auto k = indices[j];
+                        point[0] += (*corners)[k][0];
+                        point[1] += (*corners)[k][1];
+                    }
+
+                    point[0] /= float(n_i + 1);
+                    point[1] /= float(n_i + 1);
+                    out->push_back(point);
+                } else {
+                    Eigen::Vector2f point;
+                    point[0] = (*corners)[i][0];
+                    point[1] = (*corners)[i][1];
+                    out->push_back(point);
+                }
+            }
+        }
+
+        delete[] processed;
     }
 
     /**

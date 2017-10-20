@@ -263,7 +263,7 @@ template <class T> PIC_INLINE RAW<T> *CalculateRAWMeanFromFile(
 
     StringVec vec;
 
-    FileLister::List(nameDir, nameFilter, &vec);
+    FileLister::getList(nameDir, nameFilter, &vec);
 
     RAW<T> imgRAW;
     unsigned long *dataAcc = NULL;
