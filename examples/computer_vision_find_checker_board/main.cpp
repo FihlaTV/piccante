@@ -32,21 +32,24 @@ This program is free software: you can redistribute it and/or modify
 
 int main(int argc, char *argv[])
 {
-    std::string img_str;
+    std::string img_str0, img_str1;
 
-    if(argc == 2) {
-        img_str = argv[1];
+    if(argc == 3) {
+        img_str0 = argv[1];
+        img_str1 = argv[2];
     } else {
-        img_str = "../data/input/features/checker_board.png";
+        img_str0 = "../data/input/features/checker_board_photo.png";
+        img_str1 = "../data/input/features/checker_board_pattern.png";
     }
 
-    pic::Image img;
-    ImageRead(img_str, &img);
+    pic::Image img, img_pattern;
+    ImageRead(img_str0, &img);
+    ImageRead(img_str1, &img_pattern);
 
     printf("Ok\n");
 
     printf("Is the image valid? ");
-    if(img.isValid()) {
+    if(img.isValid() && img_pattern.isValid()) {
         printf("OK\n");
 
         //compute the luminance images
