@@ -110,7 +110,7 @@ public:
         printf("Separate Bilateral Filter on GPU time: %f ms\n", ms);
 
         std::string sign = GenBilString("S", sigma_s, sigma_r);
-        std::string nameTime = FileLister::FileNumber(sign, "txt");
+        std::string nameTime = FileLister::getFileNumber(sign, "txt");
 
         FILE *file = fopen(nameTime.c_str(), "w");
 

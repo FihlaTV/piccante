@@ -49,7 +49,7 @@ protected:
     void AllocateFilters()
     {
         flt_lum = new FilterGLLuminance();
-        flt_log10 = new FilterGLOp("log(I0) * " + NumberToString(1.0f / logf(10.0f)), true, NULL, NULL);
+        flt_log10 = new FilterGLOp("log(I0) * " + fromNumberToString(1.0f / logf(10.0f)), true, NULL, NULL);
         flt_durand = new FilterGLDurandTMO();
     }
 
