@@ -45,7 +45,7 @@ inline GLuint64 glEndTimeQuery(GLuint64 ret)
 {
     GLuint64 timeVal = 0;
     //Timing
-    glEndQuery(GL_TIME_ELAPSED);
+    glEndQuery(GL_TIME_ELAPSED); 
     glGetQueryObjectui64v(ret, GL_QUERY_RESULT, &timeVal);
 
     return timeVal;

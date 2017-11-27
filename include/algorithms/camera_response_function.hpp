@@ -152,7 +152,7 @@ protected:
 
         icrf.clear();
 
-        for(int i=0; i < poly.size(); i++) {
+        for(unsigned int i = 0; i < poly.size(); i++) {
             float *tmp = new float[256];
 
             for(int j = 0; j < 256; j++) {
@@ -546,7 +546,7 @@ public:
 
         // precompute robertson weighting function
         for (size_t i=0; i<256; i++) {
-            this->w[i] = pic::weightFunction(i / 255.0, pic::CW_ROBERTSON);
+            this->w[i] = pic::weightFunction(float(i) / 255.0f, pic::CW_ROBERTSON);
         }
 
         // avoid saturation

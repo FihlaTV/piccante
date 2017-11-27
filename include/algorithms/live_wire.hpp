@@ -139,7 +139,7 @@ protected:
      * @return
      */
     static float f1minusx(float x) {
-        return 1.0 - x;
+        return 1.0f - x;
     }
 
 public:

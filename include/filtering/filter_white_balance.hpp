@@ -31,7 +31,7 @@ class FilterWhiteBalance: public Filter
 protected:
 
     float *white;
-    unsigned int nWhite;
+    int nWhite;
 
     /**
      * @brief ProcessBBox

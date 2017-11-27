@@ -41,7 +41,7 @@ inline float weightFunction(float x, CRF_WEIGHT type)
         static const double shift    = exp(-4);
         static const double scaleDiv = (1.0 - shift);
         const double t = x - 0.5;
-        return (exp(-16.0 * (t * t) ) - shift) / scaleDiv;
+        return float((exp(-16.0 * (t * t) ) - shift) / scaleDiv);
     }
     break;
 

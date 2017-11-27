@@ -473,7 +473,7 @@ public:
      * @param range is the input dynamic range.
      * @return It returns the exposure value in f-stops.
      */
-    float getBestExposure(float range = 8.0f)
+    float getBestExposure(int range = 8)
     {
         return -getBestInterval(range);
     }
