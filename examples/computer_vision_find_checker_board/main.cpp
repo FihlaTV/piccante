@@ -77,24 +77,6 @@ int main(int argc, char *argv[])
 
         printf("%s\n", pic::GeneralCornerDetector::exportToString(&cfi_out).c_str());
 
-        /*
-        //compute luminance images
-        pic::Image *L_flt = pic::FilterGaussian2D::Execute(L, NULL, 2.5f);
-
-        //compute ORB descriptors for each corner and image
-        printf("Computing ORB descriptors...\n");
-
-        pic::ORBDescriptor b_desc(31, 512);
-
-        std::vector< unsigned int *> descs;
-        for(unsigned int i=0; i<corners_from_img.size(); i++) {
-            int x = corners_from_img[i][0];
-            int y = corners_from_img[i][1];
-            descs.push_back(b_desc.get(L_flt, x, y));
-        }
-
-        */
-
     } else {
         printf("No there is at least an invalid file!\n");
     }

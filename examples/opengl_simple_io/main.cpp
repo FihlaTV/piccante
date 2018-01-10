@@ -61,19 +61,19 @@ protected:
 
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f );
 
-        //reading an input image
+        //read an input image
         ImageRead("../data/input/bottles.hdr", &img);
 
         img.generateTextureGL();
 
-        //creating a screen aligned quad
+        //create a screen aligned quad
         pic::QuadGL::getTechnique(technique,
                                 pic::QuadGL::getVertexProgramV3(),
                                 pic::QuadGL::getFragmentProgramForView());
 
         quad = new pic::QuadGL(true);
 
-        //allocating a new filter for simple tone mapping
+        //allcoate a new filter for simple tone mapping
         tmo = new pic::FilterGLColorConv(new pic::ColorConvGLRGBtosRGB());
     }
 

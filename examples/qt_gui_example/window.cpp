@@ -32,6 +32,8 @@ See the GNU Lesser General Public License
 //This means that OpenGL acceleration layer is disable
 #define PIC_DISABLE_OPENGL
 
+#include "../common_code/image_qimage_interop.hpp"
+
 #include "piccante.hpp"
 
 Window::Window(QMainWindow *parent) :
@@ -287,11 +289,13 @@ void Window::update_pixmap()
     }
 
     *image /=(image->getMeanVal()[0] * 4.0f);
-    QImage *qimage = image->ConvertToQImage();
+
+    QImage *qimage = ImageConvertToQImage(image);
 
     if(qimage->isNull()) {
         exit(EXIT_FAILURE);
     }
+
     image_label->setPixmap(QPixmap::fromImage(*qimage));
     delete qimage;
 }

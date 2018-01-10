@@ -21,7 +21,7 @@
 #    ( http://www.gnu.org/licenses/lgpl-3.0.html ) for more details.
 #
 
-TARGET = corners_extraction
+TARGET = cv_corners_extraction
 
 QT       += core
 #TEMPLATE = app

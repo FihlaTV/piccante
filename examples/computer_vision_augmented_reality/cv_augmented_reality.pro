@@ -21,7 +21,7 @@
 #    ( http://www.gnu.org/licenses/lgpl-3.0.html ) for more details.
 #
 
-TARGET = augmented_reality
+TARGET = cv_augmented_reality
 
 QT       += core
 #TEMPLATE = app
@@ -41,7 +41,6 @@ win32-msvc*{
 win32{
 	DEFINES += NOMINMAX
 }
-
 
 linux-g++*{
     QMAKE_CXXFLAGS += -fopenmp -pthread

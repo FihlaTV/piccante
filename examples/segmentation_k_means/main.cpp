@@ -36,7 +36,6 @@ int main(int argc, char *argv[])
     Q_UNUSED(argc);
     Q_UNUSED(argv);
 
-
     std::mt19937 m;
 
     int n = 100000;
@@ -79,7 +78,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        ImageWrite(&img, "../data/output/kmeans.png");
+        ImageWrite(&img, "../data/output/s_kmeans.png");
     }
 
     return 0;

@@ -21,7 +21,7 @@
 #    ( http://www.gnu.org/licenses/lgpl-3.0.html ) for more details.
 #
 
-TARGET = b_blending_laplacian
+TARGET = cv_find_checker_board
 
 QT       += core
 #TEMPLATE = app
@@ -41,6 +41,7 @@ win32-msvc*{
 win32{
 	DEFINES += NOMINMAX
 }
+
 
 linux-g++*{
     QMAKE_CXXFLAGS += -fopenmp -pthread

@@ -103,6 +103,43 @@ public:
 
         return fragment_source;
     }
+
+    /**
+     * @brief getDirectFunctionAux
+     * @return
+     */
+    std::string getDirectFunctionAux()
+    {
+
+    }
+
+    /**
+     * @brief getInverseFunctionAux
+     * @return
+     */
+    std::string getInverseFunctionAux()
+    {
+
+    }
+
+    /**
+     * @brief getDirectUniforms
+     * @return
+     */
+    std::string getDirectUniforms()
+    {
+
+    }
+
+    /**
+     * @brief getInverseUniforms
+     * @return
+     */
+    std::string getInverseUniforms()
+    {
+
+    }
+
 };
 
 } // end namespace pic

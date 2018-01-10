@@ -45,6 +45,7 @@ int main(int argc, char *argv[])
     ImageRead(img_str, &img);
 
     if(img.isValid()) {
+        printf(" Ok!\n");
         pic::LiveWire *lw = new pic::LiveWire(&img);
 
         std::vector< pic::Vec<2, int> > out;
@@ -60,8 +61,9 @@ int main(int argc, char *argv[])
             tmp[2] = 0.0f;
         }
 
-        ImageWrite(&img, "../data/output/livewire.png");
-
+        ImageWrite(&img, "../data/output/s_livewire.png");
+    } else {
+        printf("No, the file is not valid!\n");
     }
 
     return 0;

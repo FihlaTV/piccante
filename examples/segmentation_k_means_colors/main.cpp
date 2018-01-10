@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 
             }
 
-            ImageWrite(&img, "../data/output/kmeans_colors.png");
+            ImageWrite(&img, "../data/output/s_kmeans_colors.png");
         }
     }
 

@@ -26,6 +26,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
     #include "../opengl_common_code/gl_core_4_0.h"
 #endif
 
+#include "../common_code/image_qimage_interop.hpp"
+
 #include "piccante.hpp"
 
 #include <QKeyEvent>
@@ -68,7 +70,7 @@ protected:
 
         //creating a random image
         imgRand = new pic::ImageGL(img.frames, img.width, img.height, 1, pic::IMG_CPU_GPU, GL_TEXTURE_2D);
-        imgRand->SetRand();
+        imgRand->setRand();
         imgRand->loadFromMemory();
         *imgRand *= 0.1f;
 

@@ -18,6 +18,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 //This means that OpenGL acceleration layer is disabled
 #define PIC_DISABLE_OPENGL
 
+#include "../common_code/image_qimage_interop.hpp"
+
 #include "piccante.hpp"
 
 int main(int argc, char *argv[])
@@ -25,7 +27,7 @@ int main(int argc, char *argv[])
     printf("Reading an HDR file...");
 
     pic::Image img;
-    img.Read("../data/input/bottles.hdr", pic::LT_NOR);
+    ImageRead("../data/input/bottles.hdr", &img, pic::LT_NOR);
 
     printf("Ok\n");
 
@@ -48,7 +50,7 @@ int main(int argc, char *argv[])
 
         printf("Writing recovered result using Push-Pull... ");
 
-        bool bWritten = imgOut->Write("../data/output/pull_push_reconstruction.hdr");
+        bool bWritten = ImageWrite(imgOut, "../data/output/pull_push_reconstruction.hdr");
 
         if(bWritten) {
             printf("Ok\n");

@@ -23,6 +23,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 //This means that OpenGL acceleration layer is disabled
 #define PIC_DISABLE_OPENGL
 
+#include "../common_code/image_qimage_interop.hpp"
+
 #include "piccante.hpp"
 
 int main(int argc, char *argv[])
@@ -33,7 +35,7 @@ int main(int argc, char *argv[])
     printf("Reading an LDR file...");
 
     pic::Image img;
-    img.Read("../data/input/connected_test.png", pic::LT_NOR);
+    ImageRead("../data/input/connected_test.png", &img, pic::LT_NOR);
 
     printf("Ok\n");
 
@@ -44,7 +46,7 @@ int main(int argc, char *argv[])
         printf("Computing connected components...");
 
         std::vector<pic::LabelOutput> ret;
-        pic::Image *comp = pic::ConnectedComponents(&img, ret, NULL, 0.05f);
+        pic::Image *comp = pic::computeConnectedComponents(&img, ret, NULL, 0.05f);
         printf("Ok!\n");
 
         unsigned int areaMin = img.nPixels();
@@ -55,7 +57,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        std::string out = "The size of the smallest circle is: " + pic::NumberToString(areaMin) + " pixels.\n";
+        std::string out = "The size of the smallest circle is: " + pic::fromNumberToString(areaMin) + " pixels.\n";
         printf("%s", out.c_str());
 
         printf("Writing the connected component labeling results to a file on the disk...");

@@ -20,6 +20,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 //This means that OpenGL acceleration layer is disabled
 #define PIC_DISABLE_OPENGL
 
+#include "../common_code/image_qimage_interop.hpp"
+
 #include "piccante.hpp"
 
 int main(int argc, char *argv[])
@@ -30,17 +32,19 @@ int main(int argc, char *argv[])
     printf("Reading an image...");
 
     pic::Image img, strokes;
-    img.Read("../data/input/yellow_flowers.png");
-    strokes.Read("../data/input/yellow_flowers_segmentation_strokes.png");
+
+    ImageRead("../data/input/yellow_flowers.png", &img);
+    ImageRead("../data/input/yellow_flowers_segmentation_strokes.png", &strokes);
+
     printf("OK\n");
 
     printf("Are input images valid? ");
     if(img.isValid() && strokes.isValid()) {
         printf("OK\n");
 
-        pic::Image *gc = pic::GrowCut(&img, &strokes);
+        pic::Image *gc = pic::computeGrowCut(&img, &strokes);
 
-        gc->Write("../data/output/gc.pfm");
+        gc->Write("../data/output/s_grow_cut.pfm");
 
 
     } else {

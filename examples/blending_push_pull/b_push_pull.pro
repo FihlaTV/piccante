@@ -21,7 +21,7 @@
 #    ( http://www.gnu.org/licenses/lgpl-3.0.html ) for more details.
 #
 
-TARGET = push_pull
+TARGET = b_push_pull
 
 QT       += core
 #TEMPLATE = app

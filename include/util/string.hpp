@@ -295,12 +295,12 @@ inline std::string getFileName(std::string path)
 }
 
 /**
- * @brief ParseStringToStdVector
+ * @brief parseStringToStdVector
  * @param str
  * @param delim
  * @param str_vec
  */
-inline void ParseStringToStdVector(std::string str, char delim,
+inline void parseStringToStdVector(std::string str, char delim,
                                    StringVec *str_vec)
 {
     std::stringstream ss(str);

@@ -20,16 +20,20 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #define PIC_DEBUG
 
+#include "../common_code/image_qimage_interop.hpp"
+
 #include "piccante.hpp"
 
 int main(int argc, char *argv[])
 {
     pic::Image img;
-    img.Read("../data/input/crop.bmp");
+    ImageRead("../data/input/tommaseo_statue.png", &img);
 
     if(img.isValid()) {
         pic::Slic slic(&img, 128);
-        slic.getMeanImage(NULL)->Write("../test.bmp");
+        pic::Image *output = slic.getMeanImage(NULL);
+
+        ImageWrite(output, "../data/output/s_slic.png");
 
     } else {
         printf("No, the file is not valid!\n");
