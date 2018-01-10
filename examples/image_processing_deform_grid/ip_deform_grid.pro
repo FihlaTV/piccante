@@ -18,7 +18,7 @@
 # See the GNU Lesser General Public License
 # ( http://www.gnu.org/licenses/lgpl-3.0.html ) for more details.
 
-TARGET = simple_deform_grid
+TARGET = ip_deform_grid
 
 QT       += core
 TEMPLATE = app
@@ -39,7 +39,6 @@ win32-msvc*{
 win32{
 	DEFINES += NOMINMAX
 }
-
 
 linux-g++*{
     QMAKE_CXXFLAGS += -fopenmp -pthread

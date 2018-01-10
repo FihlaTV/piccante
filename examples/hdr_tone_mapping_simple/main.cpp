@@ -25,6 +25,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 //This means we do not use QT for I/O
 #define PIC_DISABLE_QT
 
+#include "../common_code/image_qimage_interop.hpp"
+
 #include "piccante.hpp"
 
 int main(int argc, char *argv[])
@@ -53,7 +55,7 @@ int main(int argc, char *argv[])
           we just convert it to 8-bit withou applying gamma.
           In this case, this is fine, because gamma was already applied
           in the pic::FilterSimpleTMO*/
-        bool bWritten = imgToneMapped->Write("../data/output/simple_tmo.bmp", pic::LT_NOR);
+        bool bWritten = ImageWrite(imgToneMapped, "../data/output/simple_tmo.bmp", pic::LT_NOR);
 
         if(bWritten) {
             printf("Ok\n");

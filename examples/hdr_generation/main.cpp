@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 
     for(unsigned int i=0; i<7; i++) {
         pic::Image *img = new pic::Image();
-        std::string name = "../data/input/stack/stack_room_exp_" + pic::NumberToString(i) + ".jpg";
+        std::string name = "../data/input/stack/stack_room_exp_" + pic::fromNumberToString(i) + ".jpg";
         printf("\n%s", name.c_str());
         ImageRead(name, img, pic::LT_NOR);
 

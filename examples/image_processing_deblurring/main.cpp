@@ -52,18 +52,20 @@ int main(int argc, char *argv[])
         printf("Ok\n");
 
         printf("Filtering the image with a PSF read from file...");
-        pic::Image psf("../data/input/kernel_psf.png");
+        pic::Image psf;
+
+        ImageRead("../data/input/kernel_psf.png", &psf);
 
         //normalization of the PSF
         psf /= psf.getSumVal(NULL, NULL)[0];
 
         pic::Image *conv = pic::FilterConv2D::Execute(&img, &psf, NULL);
-        conv->Write("../data/output/bottles_conv_kernel_psf.hdr");
+        ImageWrite(conv, "../data/output/bottles_conv_kernel_psf.hdr");
 
         printf("Ok!\n");
 
         printf("Deconvolving the image with the PSF read from file...");
-        pic::Image *deconv = pic::RichardsonLucyDeconvolution(conv, &psf, 1000, NULL);
+        pic::Image *deconv = pic::computeRichardsonLucyDeconvolution(conv, &psf, 1000, NULL);
 
         printf("Ok!\n");
 

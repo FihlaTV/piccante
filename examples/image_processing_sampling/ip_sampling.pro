@@ -18,7 +18,7 @@
 # See the GNU Lesser General Public License
 # ( http://www.gnu.org/licenses/lgpl-3.0.html ) for more details.
 
-TARGET = simple_image_transform
+TARGET = ip_sampling
 
 QT       += core
 TEMPLATE = app

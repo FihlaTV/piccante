@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
         pic::Image *imgOut = pic::FilterDCT2D::Inverse(img_dct, NULL, 8);
 
         printf("Writing the file to disk...");
-        bool bWritten = ImageWrite(imgOut, "../data/output/simple_dct.png");
+        bool bWritten = ImageWrite(imgOut, "../data/output/ip_simple_dct.png");
 
         if(bWritten) {
             printf(" Ok\n");

@@ -40,12 +40,13 @@ int main(int argc, char *argv[])
     }
 
     printf("Reading an image...");
-    pic::Image *img = ImageRead(img_str, NULL, pic::LT_NOR);
+    pic::Image img;
+    ImageRead(img_str, &img, pic::LT_NOR);
 
     printf("Ok\n");
 
     printf("Is it valid? ");
-    if(img->isValid()) {
+    if(img.isValid()) {
         printf("OK\n");
 
         pic::Image *grid_move = pic::FilterDeformGrid::getUniformGrid(17, 17);
@@ -55,7 +56,7 @@ int main(int argc, char *argv[])
 
         pic::FilterDeformGrid flt_dg(grid_move);
 
-        pic::Image *out = flt_dg.ProcessP(Single(img), NULL);
+        pic::Image *out = flt_dg.ProcessP(Single(&img), NULL);
 
         bool bWrite = ImageWrite(out, "../data/output/grid_output_deformation.png", pic::LT_NOR);
 

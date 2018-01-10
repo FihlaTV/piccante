@@ -22,23 +22,27 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 //This means that OpenGL acceleration layer is disabled
 #define PIC_DISABLE_OPENGL
 
+#include "../common_code/image_qimage_interop.hpp"
+
 #include "piccante.hpp"
 
 int main(int argc, char *argv[])
 {
     printf("Reading source and target images...");
 
-    pic::Image img_source("../data/input/histogram_matching/source.png");
-    pic::Image img_target("../data/input/histogram_matching/target.png");
+    pic::Image img_source, img_target;
+
+    ImageRead("../data/input/histogram_matching/source.png", &img_source);
+    ImageRead("../data/input/histogram_matching/target.png", &img_target);
 
     printf("Ok\n");
 
     printf("Are these valid? ");
     if(img_source.isValid() && img_target.isValid()) {
 
-        pic::Image *out = pic::HistogramMatching(&img_source, &img_target);
+        pic::Image *out = pic::matchHistograms(&img_source, &img_target);
 
-        out->Write("../data/output/histogram_matching.png");
+        ImageWrite(out, "../data/output/histogram_matching.png");
     } else {
         printf("No, the files are not valid!\n");
     }

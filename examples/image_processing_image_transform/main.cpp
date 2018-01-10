@@ -19,15 +19,16 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 //For example, estimating the camera response function
 #define PIC_DISABLE_EIGEN
 
-#include "../common_code/image_qimage_interop.hpp"
-
 //This means that OpenGL acceleration layer is disabled
 #define PIC_DISABLE_OPENGL
 
 //This means we do not use QT for I/O
 #define PIC_DISABLE_QT
 
+#include "../common_code/image_qimage_interop.hpp"
+
 #include "piccante.hpp"
+
 #include<chrono>
 #include<ctime>
 
@@ -36,47 +37,12 @@ int main(int argc, char *argv[])
     printf("Reading an HDR file...");
 
     pic::Image img;
-    ImageRead("../data/input/inera_test.jpg", &img);
+    ImageRead("../data/input/tommaseo_statue.png", &img);
 
     printf("Ok\n");
 
     printf("Is it valid? ");
     if(img.isValid()) {
-
-        pic::Matrix3x3 h;
-        h.SetRotationMatrix(pic::Deg2Rad(30.0f));
-
-        pic::FilterDownSampler2D down(0.5f, 0.5f);
-        pic::FilterWarp2D warp(h, true, false);
-
-        auto start = std::chrono::system_clock::now();
-        pic::Image *out_d = down.Process(Single(&img), NULL, false);
-        pic::Image *imgOut_rot = warp.Process(Single(out_d), NULL);
-        auto end = std::chrono::system_clock::now();
-
-        std::chrono::duration<double> elapsed_seconds = end-start;
-        std::time_t end_time = std::chrono::system_clock::to_time_t(end);
-
-        std::cout << "finished computation at " << std::ctime(&end_time)
-                  << "elapsed time: " << elapsed_seconds.count() << "s\n";
-
-         start = std::chrono::system_clock::now();
-        out_d = down.Process(Single(&img), out_d, false);
-        imgOut_rot = warp.Process(Single(out_d), imgOut_rot);
-         end = std::chrono::system_clock::now();
-
-
-         elapsed_seconds = end-start;
-         end_time = std::chrono::system_clock::to_time_t(end);
-
-        std::cout << "finished computation at " << std::ctime(&end_time)
-                  << "elapsed time: " << elapsed_seconds.count() << "s\n";
-
-        imgOut_rot->Write("tmp.bmp");
-        printf("Ok\n");
-
-
-        /*
         printf("OK\n");
 
         bool bSameSize = true;//the output image is going to be the sames size of the input one
@@ -90,7 +56,7 @@ int main(int argc, char *argv[])
         printf("Ok\n");
 
         printf("Writing the output...");
-        bool bWritten = imgOut_tra->Write("../data/output/bottles_translated_64_64_pixels.bmp");
+        bool bWritten = imgOut_tra->Write("../data/output/ip_translated_64_64_pixels.bmp");
 
         if(bWritten) {
             printf("Ok\n");
@@ -106,7 +72,7 @@ int main(int argc, char *argv[])
         printf("Ok\n");
 
         printf("Writing the output...");
-        bWritten = imgOut_rot->Write("../data/output/bottles_rotated_45_degrees.bmp");
+        bWritten = imgOut_rot->Write("../data/output/ip_rotated_45_degrees.bmp");
 
         if(bWritten) {
             printf("Ok\n");
@@ -122,7 +88,7 @@ int main(int argc, char *argv[])
         printf("Ok\n");
 
         printf("Writing the output...");
-        bWritten = imgOut_sheared->Write("../data/output/bottles_shear_transform.bmp");
+        bWritten = imgOut_sheared->Write("../data/output/ip_shear_transform.bmp");
 
         if(bWritten) {
             printf("Ok\n");
@@ -138,14 +104,13 @@ int main(int argc, char *argv[])
         printf("Ok\n");
 
         printf("Writing the output...");
-        bWritten = imgOut_scaled->Write("../data/output/bottles_scaled.bmp");
+        bWritten = imgOut_scaled->Write("../data/output/ip_scaled.bmp");
 
         if(bWritten) {
             printf("Ok\n");
         } else {
             printf("Writing had some issues!\n");
         }
-*/
     } else {
         printf("No, the file is not valid!\n");
     }

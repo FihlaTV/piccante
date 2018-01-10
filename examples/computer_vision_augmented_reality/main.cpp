@@ -53,13 +53,14 @@ int main(int argc, char *argv[])
     Eigen::Matrix3d K = pic::getIntrinsicsMatrix(fx, fy, 2592.0 / 2.0, 1936.0 / 2.0);
 
     printf("Reading LDR images...");
-    pic::Image *img0 = ImageRead(img0_str, NULL, pic::LT_NOR);
-    pic::Image *img1 = ImageRead(img1_str, NULL, pic::LT_NOR);
+    pic::Image img0, img1;
+    ImageRead(img0_str, &img0, pic::LT_NOR);
+    ImageRead(img1_str, &img1, pic::LT_NOR);
 
     printf("Ok\n");
 
     printf("Are they both valid? ");
-    if(img0->isValid() && img1->isValid()) {
+    if(img0.isValid() && img1.isValid()) {
         printf("OK\n");
 
         //output corners
@@ -67,8 +68,8 @@ int main(int argc, char *argv[])
         std::vector< Eigen::Vector3f > corners_from_img1;
 
         //compute the luminance images
-        pic::Image *L0 = pic::FilterLuminance::Execute(img0, NULL, pic::LT_CIE_LUMINANCE);
-        pic::Image *L1 = pic::FilterLuminance::Execute(img1, NULL, pic::LT_CIE_LUMINANCE);
+        pic::Image *L0 = pic::FilterLuminance::Execute(&img0, NULL, pic::LT_CIE_LUMINANCE);
+        pic::Image *L1 = pic::FilterLuminance::Execute(&img1, NULL, pic::LT_CIE_LUMINANCE);
 
         //get corners
         printf("Extracting corners...\n");
@@ -115,7 +116,7 @@ int main(int argc, char *argv[])
 
         Eigen::Matrix34d cam = pic::getCameraMatrixFromHomography(H, K);
 
-        (*img1) *= 0.25f;
+        img1 *= 0.25f;
 
         //Augmentation: drawing a 3D grid
         int res = 10;
@@ -128,7 +129,7 @@ int main(int argc, char *argv[])
                 Eigen::Vector4d point(u, v, 0.0f, 1.0f);
                 Eigen::Vector2i coord = pic::cameraMatrixProject(cam, point);
 
-                float *tmp = (*img1)(coord[0], coord[1]);
+                float *tmp = img1(coord[0], coord[1]);
                 tmp[0] = 1.0f;
                 tmp[1] = 0.25f;
                 tmp[2] = 0.25f;
@@ -150,11 +151,11 @@ int main(int argc, char *argv[])
         Eigen::Vector2i coord3 = pic::cameraMatrixProject(cam, p3);
 
         float color[]={0.25f, 1.0f, 0.25f};
-        DrawLine(img1, pic::Vec<2, int>(coord0[0], coord0[1]), pic::Vec<2, int>(coord1[0], coord1[1]), color);
-        DrawLine(img1, pic::Vec<2, int>(coord0[0], coord0[1]), pic::Vec<2, int>(coord2[0], coord2[1]), color);
-        DrawLine(img1, pic::Vec<2, int>(coord0[0], coord0[1]), pic::Vec<2, int>(coord3[0], coord3[1]), color);
+        DrawLine(&img1, pic::Vec<2, int>(coord0[0], coord0[1]), pic::Vec<2, int>(coord1[0], coord1[1]), color);
+        DrawLine(&img1, pic::Vec<2, int>(coord0[0], coord0[1]), pic::Vec<2, int>(coord2[0], coord2[1]), color);
+        DrawLine(&img1, pic::Vec<2, int>(coord0[0], coord0[1]), pic::Vec<2, int>(coord3[0], coord3[1]), color);
 
-        ImageWrite(img1, "../data/output/simple_augmented_reality.png", pic::LT_NOR);
+        ImageWrite(&img1, "../data/output/simple_augmented_reality.png", pic::LT_NOR);
 
     } else {
         printf("No, there is at least an invalid file!\n");
