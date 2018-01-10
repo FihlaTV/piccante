@@ -36,8 +36,8 @@ This program is free software: you can redistribute it and/or modify
 
 int main(int argc, char *argv[])
 {
-//    Q_UNUSED(argc);
-//    Q_UNUSED(argv);
+    Q_UNUSED(argc);
+    Q_UNUSED(argv);
     
     printf("Reading an LDR images...");
     

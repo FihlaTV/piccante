@@ -21,7 +21,7 @@
 #    ( http://www.gnu.org/licenses/lgpl-3.0.html ) for more details.
 #
 
-TARGET = computer_vision_triangulation
+TARGET = cv_triangulation
 
 QT       += core
 #TEMPLATE = app
@@ -41,7 +41,6 @@ win32-msvc*{
 win32{
 	DEFINES += NOMINMAX
 }
-
 
 linux-g++*{
     QMAKE_CXXFLAGS += -fopenmp -pthread
