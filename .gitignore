@@ -5,3 +5,8 @@
 
 *.stash
 *.Release
+*.exe
+*.ilk
+*.pdb
+*.Debug
+*.obj
