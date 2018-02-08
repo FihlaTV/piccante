@@ -68,7 +68,7 @@ protected:
         int k = 0;
 
         for(int i = 0; i < nSamples; i++) {
-            for(int j = 0; j < nExposure; j++) {
+            for(unsigned int j = 0; j < nExposure; j++) {
                 int tmp = samples[i * nExposure + j];
 
                 float w_ij = w[tmp];

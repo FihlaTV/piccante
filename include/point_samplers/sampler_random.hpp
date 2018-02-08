@@ -219,10 +219,10 @@ template <unsigned int N> PIC_INLINE void RandomSampler<N>::CutRescale(
             }
         }
 
-        int tmpCutSamples_size = tmpCutSamples.size();
+        int tmpCutSamples_size = int(tmpCutSamples.size());
         if(prevCutSamples != tmpCutSamples_size) {
             tmpCutLevels.push_back(tmpCutSamples.size());
-            prevCutSamples = tmpCutSamples.size();
+            prevCutSamples = int(tmpCutSamples.size());
         }
     }
 
@@ -346,7 +346,7 @@ template <unsigned int N>  PIC_INLINE void RandomSampler<N>::Render2Int()
             }
         }
 
-        levelsR.push_back(samplesR.size());
+        levelsR.push_back(int(samplesR.size()));
     }
 
 #ifdef PIC_DEBUG

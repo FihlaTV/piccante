@@ -57,7 +57,7 @@ protected:
         int width = dst->width;
         int channels = dst->channels;
 
-        unsigned int n = src.size();
+        unsigned int n = unsigned int(src.size());
 
         float t_min = FLT_MAX;
         int index = -1;

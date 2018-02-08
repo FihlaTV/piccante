@@ -151,7 +151,7 @@ public:
                                      float threshold,
                                      int max_limit)
     {
-        unsigned int n = MIN(corners->size(), max_limit);
+        unsigned int n = MIN(int(corners->size()), max_limit);
         bool *processed = new bool [n];
         memset(processed, 0, sizeof(bool) * n);
 

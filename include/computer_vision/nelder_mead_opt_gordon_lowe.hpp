@@ -87,10 +87,10 @@ public:
        Eigen::Matrix34d P = parseCameraMatrix(x, index);
 
        //offset of vertices
-       unsigned int c = GL_PACKED_CAMERA_SIZE * m.size();
+       unsigned int c = GL_PACKED_CAMERA_SIZE * unsigned int(m.size());
 
        Eigen::Vector4d point;
-       for(unsigned int i = 0; i < m[index].size(); i++) {
+       for(int i = 0; i < m[index].size(); i++) {
            point = Eigen::Vector4d(x[c], x[c + 1], x[c + 2], 1.0);
 
            Eigen::Vector3d point_proj = P * point;
@@ -117,7 +117,7 @@ public:
      */
     float function(float *x, unsigned int n)
     {       
-        int n2 = m.size() * m[0].size();
+        int n2 = int(m.size() * m[0].size());
         double err = sqrt((ProjectionError(x, 0) + ProjectionError(x, 1)) / double(n2));
 
         return float(err);
@@ -135,7 +135,7 @@ public:
     {
         Eigen::Matrix3d K_inv = K.inverse();
     \
-        printf("Points: %d\n", m.size());
+        printf("Points: %zd\n", m.size());
 
         for(unsigned int i = 0; i < m.size(); i++) {
             Eigen::Vector3d point = Eigen::Vector3d (m[i][0], m[i][1], 1.0);
@@ -167,7 +167,7 @@ public:
             return NULL;
         }
 
-        unsigned int n = R.size();
+        unsigned int n = unsigned int (R.size());
         ret_size = GL_PACKED_CAMERA_SIZE * n + GL_3D_POINT_SIZE * x.size();
         double *ret = new double[ret_size];
 
