@@ -63,11 +63,37 @@ int main(int argc, char *argv[])
 
         ImageWrite(img_wb, "../data/output/s_input_wb.png");
 
-        pic::Image *out = flt_rbf.ProcessP(pic::Single(img_wb), NULL);
+        pic::Image *img_wb_rbf = flt_rbf.ProcessP(pic::Single(img_wb), NULL);
 
-        out->clamp(0.0f, 1.0f);
+        img_wb_rbf->clamp(0.0f, 1.0f);
 
-        ImageWrite(out, "../data/output/s_radial_basis_function.png");
+        pic::Image *img_L = pic::FilterLuminance::Execute(&img, NULL);
+
+        ImageWrite(img_L, "../data/output/img_L.pfm");
+        ImageWrite(img_wb_rbf, "../data/output/img_wb_rbf.pfm");
+
+        pic::Image *opt = pic::LischinskiMinimization(img_L, img_wb_rbf);
+
+        float value = 1.0f;
+        bool *mask = opt->convertToMask(&value, 0.25f, false, NULL);
+
+        int width = opt->width;
+        int height = opt->height;
+        bool *tmp;
+        tmp = pic::MaskDilate(mask, NULL, width, height, 3);
+        pic::MaskDilate(tmp, mask, width, height, 3);
+        pic::MaskDilate(mask, tmp, width, height, 3);
+        pic::MaskDilate(tmp, mask, width, height, 3);
+
+        pic::MaskRemoveIsolatedPixels(mask, tmp, width, height);
+
+        pic::MaskErode(tmp, mask, width, height, 3);
+        pic::MaskErode(mask, tmp, width, height, 3);
+        pic::MaskErode(tmp, mask, width, height, 3);
+
+        opt->convertFromMask(mask, width, height);
+
+        ImageWrite(opt, "../data/output/opt.png");
     }
 
     return 0;

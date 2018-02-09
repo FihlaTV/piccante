@@ -593,7 +593,7 @@ public:
             }
 
             if (lower[i]  == -1) {
-                lower[i]  = i;
+                lower[i]  = int(i);
             }
 
             if (higher[i] == -1) {
