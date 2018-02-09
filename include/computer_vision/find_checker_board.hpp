@@ -34,7 +34,7 @@ namespace pic {
  * @param points
  * @return
  */
-float estimateCheckerBoardSize(std::vector< Eigen::Vector3f > &points)
+float estimateCheckerBoardSize(std::vector< Eigen::Vector2f > &points)
 {
     if(points.size() < 2) {
         return -1.0f;
@@ -46,7 +46,7 @@ float estimateCheckerBoardSize(std::vector< Eigen::Vector3f > &points)
 
     std::vector<float> m_d;
     for(int i = 0; i < n; i++) {
-        Eigen::Vector3f p_i = points.at(i);
+        Eigen::Vector2f p_i = points.at(i);
 
         float closest = FLT_MAX;
 
@@ -55,7 +55,7 @@ float estimateCheckerBoardSize(std::vector< Eigen::Vector3f > &points)
                 continue;
             }
 
-            Eigen::Vector3f delta_ij = p_i - points.at(j);
+            Eigen::Vector2f delta_ij = p_i - points.at(j);
 
             float dist = delta_ij.norm();
 
@@ -80,10 +80,11 @@ void findCheckerBoard(Image *img)
 {
     pic::Image *img_L = FilterLuminance::Execute(img, NULL, pic::LT_CIE_LUMINANCE);
 
-    std::vector< Eigen::Vector3f > corners_fast;
+    std::vector< Eigen::Vector2f > corners, corners_new;
     pic::FastCornerDetector fcd;
     fcd.update(1.0f, 5);
-    fcd.execute(img, &corners_fast);
+    fcd.execute(img, &corners);
+
 
 }
 
