@@ -168,7 +168,7 @@ public:
         }
 
         unsigned int n = unsigned int (R.size());
-        ret_size = GL_PACKED_CAMERA_SIZE * n + GL_3D_POINT_SIZE * x.size();
+        ret_size = GL_PACKED_CAMERA_SIZE * n + GL_3D_POINT_SIZE * unsigned int(x.size());
         double *ret = new double[ret_size];
 
         int c = 0;

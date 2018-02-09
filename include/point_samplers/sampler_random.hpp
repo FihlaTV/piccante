@@ -221,7 +221,7 @@ template <unsigned int N> PIC_INLINE void RandomSampler<N>::CutRescale(
 
         int tmpCutSamples_size = int(tmpCutSamples.size());
         if(prevCutSamples != tmpCutSamples_size) {
-            tmpCutLevels.push_back(tmpCutSamples.size());
+            tmpCutLevels.push_back(int(tmpCutSamples.size()));
             prevCutSamples = int(tmpCutSamples.size());
         }
     }
@@ -291,10 +291,10 @@ template <unsigned int N> PIC_INLINE void RandomSampler<N>::Update(
             break;
         }
 
-        levels.push_back(samples.size());
+        levels.push_back(int(samples.size()));
     }
 
-    //Generate integer addresses
+    //generate integer addresses
     CutRescale(2);
     Render2Int();
 }

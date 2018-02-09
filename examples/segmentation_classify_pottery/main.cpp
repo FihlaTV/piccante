@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 
         out->clamp(0.0f, 1.0f);
 
-        ImageWrite(out, "../data/output/s_radial_basis_function.pfm");
+        ImageWrite(out, "../data/output/s_radial_basis_function.png");
     }
 
     return 0;
