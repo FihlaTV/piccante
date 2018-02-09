@@ -10,3 +10,6 @@
 *.pdb
 *.Debug
 *.obj
+*.html
+*.js
+*.css
