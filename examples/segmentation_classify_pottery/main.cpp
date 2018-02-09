@@ -69,9 +69,6 @@ int main(int argc, char *argv[])
 
         pic::Image *img_L = pic::FilterLuminance::Execute(&img, NULL);
 
-        ImageWrite(img_L, "../data/output/img_L.pfm");
-        ImageWrite(img_wb_rbf, "../data/output/img_wb_rbf.pfm");
-
         pic::Image *opt = pic::LischinskiMinimization(img_L, img_wb_rbf);
 
         float value = 1.0f;
