@@ -94,12 +94,15 @@ public:
             int I0 = matches[i][0];
             int I1 = matches[i][1];
 
-            p0.push_back(c0[I0]);
-            p1.push_back(c1[I1]);
+            Eigen::Vector2f x = c0.at(I0);
+            Eigen::Vector2f y = c1.at(I1);
 
-            /*
+            p0.push_back(x);
+            p1.push_back(y);
+
+
             printf("I1: %d (%d %d) -- I2: %d (%d %d) -- Score: %d\n",
-                   I0, int(x[0]), int(x[1]), I1, int(y[0]), int(y[1]), matches[i][2]);*/
+                   I0, int(x[0]), int(x[1]), I1, int(y[0]), int(y[1]), matches[i][2]);
         }
     }
 
