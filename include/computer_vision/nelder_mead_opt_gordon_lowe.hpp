@@ -87,7 +87,7 @@ public:
        Eigen::Matrix34d P = parseCameraMatrix(x, index);
 
        //offset of vertices
-       unsigned int c = GL_PACKED_CAMERA_SIZE * unsigned int(m.size());
+       int c = GL_PACKED_CAMERA_SIZE * int(m.size());
 
        Eigen::Vector4d point;
        for(int i = 0; i < m[index].size(); i++) {
@@ -100,7 +100,6 @@ public:
            double dy = point_proj[1] - m[index][i][1];
 
            err += dx * dx + dy * dy;
-
 
            c += 3;
        }
@@ -167,12 +166,12 @@ public:
             return NULL;
         }
 
-        unsigned int n = unsigned int (R.size());
-        ret_size = GL_PACKED_CAMERA_SIZE * n + GL_3D_POINT_SIZE * unsigned int(x.size());
+        int n = int (R.size());
+        ret_size = GL_PACKED_CAMERA_SIZE * n + GL_3D_POINT_SIZE * int(x.size());
         double *ret = new double[ret_size];
 
         int c = 0;
-        for(unsigned int i = 0; i < n; i++) {
+        for(int i = 0; i < n; i++) {
 
             Eigen::Quaternion<double> reg(R[i]);
 
@@ -191,7 +190,7 @@ public:
             ret[c] = K[i](1, 2); c++;
         }
 
-        for(unsigned int i = 0; i < x.size(); i++) {
+        for(size_t i = 0; i < x.size(); i++) {
             ret[c] = x[i][0]; c++;
             ret[c] = x[i][1]; c++;
             ret[c] = x[i][2]; c++;

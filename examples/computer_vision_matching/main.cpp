@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
         pic::BinaryFeatureBruteForceMatcher bfm(&descs1, n);
         std::vector< Eigen::Vector3i > matches;
         bfm.getAllMatches(descs0, matches);
-        printf("Matches: %d\n", matches.size());
+        printf("Number of Matches: %d\n", matches.size());
 
         printf("Matches:\n");
         std::vector< Eigen::Vector2f > m0, m1;

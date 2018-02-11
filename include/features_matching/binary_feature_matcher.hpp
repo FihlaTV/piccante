@@ -100,9 +100,10 @@ public:
             p0.push_back(x);
             p1.push_back(y);
 
-
+            #ifdef PIC_DEBUG
             printf("I1: %d (%d %d) -- I2: %d (%d %d) -- Score: %d\n",
                    I0, int(x[0]), int(x[1]), I1, int(y[0]), int(y[1]), matches[i][2]);
+            #endif
         }
     }
 
